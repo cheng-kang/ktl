@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Select, Form, Typography } from 'antd';
+import { Select, Form, Typography, Button, Tooltip } from 'antd';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import * as child_process from 'child_process';
-import { getCurrentProfile } from '../redux';
+import { getProfile } from '../redux';
 import * as actions from '../redux/actions';
 import { State, Pod, Actions, Profile } from '../redux/*';
 
@@ -85,7 +85,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
 
   loadContexts = () => {
     child_process.exec("kubectl config get-contexts | awk -F ' ' '{print $2}'", (error, stdout, stderr) => {
-      // console.log(error, stdout, stderr);
+      console.log(error, stdout, stderr);
       if (stdout) {
         const contexts = stdout
           .split('\n')
@@ -122,7 +122,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
     child_process.exec(
       `kubectl --context=${context} get namespace | awk -F ' ' '{print $1}'`,
       (error, stdout, stderr) => {
-        // console.log(error, stdout, stderr);
+        console.log(error, stdout, stderr);
         if (stdout) {
           const namespaces = stdout
             .split('\n')
@@ -164,7 +164,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
     child_process.exec(
       `kubectl --context=${this.state.selectedContext} -n${namespace} get pods | awk -F ' ' '{print $1}'`,
       (error, stdout, stderr) => {
-        // console.log(error, stdout, stderr);
+        console.log(error, stdout, stderr);
         if (stdout) {
           const pods = stdout
             .split('\n')
@@ -220,6 +220,79 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
     });
   };
 
+  onDeselectPod = (pod: string) => {
+    const { selectedContext, selectedNamespace } = this.state;
+
+    if (!selectedContext) {
+      throw new Error('Should not happen.');
+    }
+
+    if (!selectedNamespace) {
+      throw new Error('Should not happen.');
+    }
+
+    this.props.removeProfilePod({
+      name: pod,
+      context: selectedContext,
+      namespace: selectedNamespace,
+    });
+  };
+
+  reloadContexts = () => {
+    this.setState({
+      selectedContext: undefined,
+      selectedNamespace: undefined,
+      selectedPods: [],
+      contexts: [],
+      namespaces: [],
+      pods: [],
+      isContextsLoaded: false,
+      isNamespacesLoaded: false,
+      isPodsLoaded: false,
+    });
+
+    this.loadContexts();
+  };
+
+  reloadNamespaces = () => {
+    const { selectedContext } = this.state;
+
+    if (!selectedContext) {
+      throw new Error('Should not happen.');
+    }
+
+    this.setState({
+      selectedNamespace: undefined,
+      selectedPods: [],
+      namespaces: [],
+      pods: [],
+      isNamespacesLoaded: false,
+      isPodsLoaded: false,
+    });
+
+    this.loadNamespaces(selectedContext);
+  };
+
+  reloadPods = () => {
+    const { selectedContext, selectedNamespace } = this.state;
+
+    if (!selectedContext) {
+      throw new Error('Should not happen.');
+    }
+
+    if (!selectedNamespace) {
+      throw new Error('Should not happen.');
+    }
+
+    this.setState({
+      selectedPods: [],
+      pods: [],
+      isPodsLoaded: false,
+    });
+
+    this.loadPods(selectedContext, selectedNamespace);
+  };
+
   render() {
     const {
       contexts,
@@ -242,7 +315,15 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
           overflow: 'scroll',
         }}
       >
-        <Form.Item label={<Typography.Text style={{ color: 'white' }}>Context</Typography.Text>}>
+        <Form.Item
+          label={
+            <Tooltip title="Click to reload">
+              <span onClick={this.reloadContexts} style={{ cursor: 'pointer' }}>
+                <Typography.Text style={{ color: 'white' }}>Context</Typography.Text>
+              </span>
+            </Tooltip>
+          }
+        >
           <Select
             showSearch={true}
             style={{ width: 168 }}
@@ -261,7 +342,15 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item label={<Typography.Text style={{ color: 'white' }}>Namespace</Typography.Text>}>
+        <Form.Item
+          label={
+            <Tooltip title="Click to reload">
+              <span onClick={this.reloadNamespaces} style={{ cursor: 'pointer' }}>
+                <Typography.Text style={{ color: 'white' }}>Namespace</Typography.Text>
+              </span>
+            </Tooltip>
+          }
+        >
           <Select
             showSearch={true}
             style={{ width: 168 }}
@@ -280,13 +369,22 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item label={<Typography.Text style={{ color: 'white' }}>Pods</Typography.Text>}>
+        <Form.Item
+          label={
+            <Tooltip title="Click to reload">
+              <span onClick={this.reloadPods} style={{ cursor: 'pointer' }}>
+                <Typography.Text style={{ color: 'white' }}>Pods</Typography.Text>
+              </span>
+            </Tooltip>
+          }
+        >
           <Select
             mode="multiple"
             style={{ width: 168 }}
             placeholder="Select pods"
             value={selectedPods}
             onChange={this.onSelectPod}
+            onDeselect={this.onDeselectPod}
             loading={!!(selectedNamespace && !isPodsLoaded)}
             disabled={!isPodsLoaded}
           >
@@ -308,8 +406,8 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
 }
 
 export default connect(
-  (state: State) => {
-    const profile = getCurrentProfile(state);
+  (state: State, props: { id: string }) => {
+    const profile = getProfile(state, props.id);
     return {
       profile,
     };

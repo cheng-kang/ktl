@@ -5,11 +5,8 @@ import { AppContainer } from 'react-hot-loader';
 
 import Application from './components/Application';
 import { store } from './redux';
-import * as shell from 'shelljs';
 
 import './app.css';
-
-shell.config.execPath = shell.which('node').toString();
 
 // Create main element
 const mainElement = document.createElement('div');
@@ -28,4 +25,4 @@ const render = (Component: () => JSX.Element) => {
   );
 };
 
-render(Application);
+render(() => <Application />);

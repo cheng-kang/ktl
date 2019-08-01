@@ -1,3 +1,3 @@
 import * as Store from 'electron-store';
 
-export const persist = new Store();
+export const persist = new Store<any>();

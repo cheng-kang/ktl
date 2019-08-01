@@ -3,7 +3,7 @@ import { List, Row, Col } from 'antd';
 import * as _ from 'lodash';
 import PodsTableCell from './PodsTableCell';
 import { connect } from 'react-redux';
-import { getCurrentProfilePods } from '../redux';
+import { getCurrentProfilePods, getProfile } from '../redux';
 import { Pod, State, Actions } from '../redux/*';
 import * as actions from '../redux/actions';
 
@@ -51,10 +51,10 @@ function PodsTable({ pods }: PodsTableProps) {
 }
 
 export default connect(
-  (state: State) => {
-    const pods = getCurrentProfilePods(state);
+  (state: State, props: { id: string }) => {
+    const profile = getProfile(state, props.id);
     return {
-      pods,
+      pods: _.get(profile, 'pods', []),
     };
   },
   (dispatch: React.Dispatch<Actions>) => ({

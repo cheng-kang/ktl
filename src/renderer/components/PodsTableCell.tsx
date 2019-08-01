@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { List, Col, Input, Button, Icon, Badge, Popover } from 'antd';
+import { List, Col, Input, Button, Icon, Badge, Popover, Tooltip } from 'antd';
 import * as _ from 'lodash';
 import { usePortForward } from '../hooks/usePortForward';
 import Paragraph from 'antd/lib/typography/Paragraph';
-import { emitter } from '../emitter';
 import { Pod, State, Actions } from '../redux/*';
 import { connect } from 'react-redux';
 import { getCurrentProfile } from '../redux';
@@ -74,7 +73,18 @@ function PodsTableCell({ pod, updateProfilePod, removeProfilePod }: PodsTableCel
 
   return (
     <List.Item>
-      <Col span={8}>{name}</Col>
+      <Col span={8}>
+        <Tooltip
+          title={
+            <div>
+              <div>context: {context}</div>
+              <div>namespace: {namespace}</div>
+            </div>
+          }
+        >
+          {name}
+        </Tooltip>
+      </Col>
       <Col span={4} style={{ display: 'flex', justifyContent: 'center', padding: '0 8px' }}>
         <Input value={localPort} onChange={onChangeLocalPort} />
       </Col>
@@ -101,6 +111,7 @@ function PodsTableCell({ pod, updateProfilePod, removeProfilePod }: PodsTableCel
                 : stdout.join('\n')}
             </Paragraph>
           }
+          overlayStyle={{ maxWidth: 320, maxHeight: 320, overflow: 'scroll' }}
         >
           {error || stderr.length > 0 ? (
             <Badge status="error" text="error" />

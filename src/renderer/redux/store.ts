@@ -15,9 +15,8 @@ const persistor = (store: Store<State | undefined>) => (next: any) => (action: A
 const configureStore = (initialState?: State): Store<State | undefined> => {
   const middlewares: any[] = [persistor];
   const enhancer = composeWithDevTools(applyMiddleware(...middlewares));
-  return createStore<State, Actions, any, any>(reducer, initialState, enhancer);
+  return createStore<State | undefined, Actions, any, any>(reducer, initialState, enhancer);
 };
-
 const persistedStore = persist.get('store');
 const initialState = _.isEmpty(persistedStore) ? undefined : (persistedStore as State);
 

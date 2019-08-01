@@ -1,6 +1,9 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import fixPath from 'fix-path';
+
+fixPath();
 
 let win: BrowserWindow | null;
 
@@ -17,7 +20,7 @@ const createWindow = async () => {
     await installExtensions();
   }
 
-  win = new BrowserWindow({ width: 800, height: 600 });
+  win = new BrowserWindow({ width: 800, height: 600, title: 'Ktl' });
 
   if (process.env.NODE_ENV !== 'production') {
     process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
@@ -38,6 +41,7 @@ const createWindow = async () => {
       win!.webContents.openDevTools();
     });
   }
+  // win!.webContents.openDevTools();
 
   win.on('closed', () => {
     win = null;

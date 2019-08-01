@@ -11,6 +11,7 @@ export interface Pod {
 
 export interface Profile {
   id: string;
+  name: string;
   context: string;
   namespace: string;
   pods: Pod[];
@@ -19,6 +20,29 @@ export interface Profile {
 export interface State {
   profiles: Profile[];
   currentProfileId: string;
+}
+
+export interface AddProfileAction extends Action {
+  type: 'ADD_PROFILE';
+  payload: string;
+}
+
+export interface RemoveProfileAction extends Action {
+  type: 'REMOVE_PROFILE';
+  payload: string;
+}
+
+export interface SetCurrentProfileIdAction extends Action {
+  type: 'SET_CURRENT_PROFILE_ID';
+  payload: string;
+}
+
+export interface UpdateProfileNameAction extends Action {
+  type: 'UPDATE_PROFILE_NAME';
+  payload: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface UpdateProfileContextAction extends Action {
@@ -47,6 +71,10 @@ export interface UpdateProfilePodAction extends Action {
 }
 
 export type Actions =
+  | AddProfileAction
+  | RemoveProfileAction
+  | SetCurrentProfileIdAction
+  | UpdateProfileNameAction
   | UpdateProfileContextAction
   | UpdateProfileNamespaceAction
   | AddProfilePodAction

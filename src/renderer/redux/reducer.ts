@@ -9,6 +9,7 @@ const defaultState: State = {
   profiles: [
     {
       id: 'default',
+      name: 'default',
       namespace: '',
       context: '',
       pods: [],
@@ -17,7 +18,7 @@ const defaultState: State = {
   currentProfileId: 'default',
 };
 
-export const reducer: Reducer<State, Actions> = (state = defaultState, action: Actions) => {
+export const reducer: Reducer<State | undefined, Actions> = (state = defaultState, action: Actions) => {
   const currentProfileId = getCurrentProfileId(state);
 
   if (!currentProfileId) {
@@ -33,18 +34,21 @@ export const reducer: Reducer<State, Actions> = (state = defaultState, action: A
 
   switch (action.type) {
     case actions.UPDATE_PROFILE_CONTEXT:
-      return _.cloneDeep(_.set(state, `profiles[${profileIdx}].context`, action.payload));
+      _.set(state, `profiles[${profileIdx}].context`, action.payload);
+      return _.cloneDeep(state);
     case actions.UPDATE_PROFILE_NAMESPACE:
-      return _.cloneDeep(_.set(state, `profiles[${profileIdx}].namespace`, action.payload));
+      _.set(state, `profiles[${profileIdx}].namespace`, action.payload);
+      return _.cloneDeep(state);
     case actions.Add_PROFILE_POD: {
       const pods = _.get(state, `profiles[${profileIdx}].pods`, []);
-      return _.cloneDeep(_.set(state, `profiles[${profileIdx}].pods`, [...pods, action.payload]));
+      _.set(state, `profiles[${profileIdx}].pods`, [...pods, action.payload]);
+      return _.cloneDeep(state);
     }
     case actions.REMOVE_PROFILE_POD: {
       const pods = _.get(state, `profiles[${profileIdx}].pods`, []) as Pod[];
-      return _.cloneDeep(
-        _.set(state, `profiles[${profileIdx}].pods`, pods.filter(pod => !_.isEqual(pod, action.payload))),
-      );
+
+      _.set(state, `profiles[${profileIdx}].pods`, pods.filter(pod => !_.isEqual(pod, action.payload)));
+      return _.cloneDeep(state);
     }
     case actions.UPDATE_PROFILE_POD: {
       const pods = _.get(state, `profiles[${profileIdx}].pods`, []) as Pod[];
@@ -57,9 +61,55 @@ export const reducer: Reducer<State, Actions> = (state = defaultState, action: A
         return state;
       }
 
-      return _.cloneDeep(
-        _.set(state, `profiles[${profileIdx}].pods[${podIdx}]`, _.merge(pods[podIdx], action.payload)),
-      );
+      _.set(state, `profiles[${profileIdx}].pods[${podIdx}]`, _.merge(pods[podIdx], action.payload));
+      return _.cloneDeep(state);
+    }
+    case actions.ADD_PROFILE:
+      state.profiles = [
+        ...state.profiles,
+        { id: action.payload, name: action.payload, context: '', namespace: '', pods: [] },
+      ];
+      state.currentProfileId = action.payload;
+      return _.cloneDeep(state);
+    case actions.REMOVE_PROFILE:
+      if (state.profiles.length === 1) {
+        return;
+      }
+
+      const idx = state.profiles.findIndex(({ id }) => id === action.payload);
+
+      if (idx === -1) {
+        return state;
+      }
+
+      let currentProfileId = state.currentProfileId;
+      if (action.payload === state.currentProfileId) {
+        if (idx === 0) {
+          currentProfileId = state.profiles[1].id;
+        }
+        if (idx > 0) {
+          currentProfileId = state.profiles[idx - 1].id;
+        }
+      }
+
+      state.currentProfileId = currentProfileId;
+      state.profiles.splice(idx, 1);
+
+      return _.cloneDeep(state);
+    case actions.SET_CURRENT_PROFILE_ID:
+      _.set(state, 'currentProfileId', action.payload);
+      return _.cloneDeep(state);
+    case actions.UPDATE_PROFILE_NAME: {
+      const { id, name } = action.payload;
+      const idx = state.profiles.findIndex(profile => id === profile.id);
+
+      if (idx === -1) {
+        return state;
+      }
+
+      state.profiles[idx].name = name;
+
+      return _.cloneDeep(state);
     }
     default:
       return state;
