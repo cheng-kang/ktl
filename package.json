@@ -1,6 +1,6 @@
 {
   "name": "ktl",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "author": {
     "name": "Kang Cheng",
@@ -143,9 +143,11 @@
   },
   "dependencies": {
     "antd": "^3.20.7",
+    "dayjs": "^1.8.15",
     "electron-store": "^4.0.0",
     "fix-path": "^2.1.0",
     "lodash": "^4.17.15",
+    "query-string": "^6.8.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-redux": "^7.1.0",

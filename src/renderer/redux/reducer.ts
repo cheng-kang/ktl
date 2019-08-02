@@ -2,8 +2,9 @@ import { Reducer } from 'redux';
 import * as _ from 'lodash';
 
 import * as actions from './actions';
-import { State, Pod, Actions } from './*';
+import { State, Actions } from './redux';
 import { getCurrentProfileId } from './selectors';
+import { Service } from '../types/*';
 
 const defaultState: State = {
   profiles: [
@@ -12,7 +13,7 @@ const defaultState: State = {
       name: 'default',
       namespace: '',
       context: '',
-      pods: [],
+      services: [],
     },
   ],
   currentProfileId: 'default',
@@ -40,34 +41,34 @@ export const reducer: Reducer<State | undefined, Actions> = (state = defaultStat
       _.set(state, `profiles[${profileIdx}].namespace`, action.payload);
       return _.cloneDeep(state);
     case actions.Add_PROFILE_POD: {
-      const pods = _.get(state, `profiles[${profileIdx}].pods`, []);
-      _.set(state, `profiles[${profileIdx}].pods`, [...pods, action.payload]);
+      const services = _.get(state, `profiles[${profileIdx}].services`, []);
+      _.set(state, `profiles[${profileIdx}].services`, [...services, action.payload]);
       return _.cloneDeep(state);
     }
     case actions.REMOVE_PROFILE_POD: {
-      const pods = _.get(state, `profiles[${profileIdx}].pods`, []) as Pod[];
+      const services = _.get(state, `profiles[${profileIdx}].services`, []) as Service[];
 
-      _.set(state, `profiles[${profileIdx}].pods`, pods.filter(pod => !_.isEqual(pod, action.payload)));
+      _.set(state, `profiles[${profileIdx}].services`, services.filter(service => !_.isEqual(service, action.payload)));
       return _.cloneDeep(state);
     }
     case actions.UPDATE_PROFILE_POD: {
-      const pods = _.get(state, `profiles[${profileIdx}].pods`, []) as Pod[];
-      const podIdx = pods.findIndex(
+      const services = _.get(state, `profiles[${profileIdx}].services`, []) as Service[];
+      const serviceIdx = services.findIndex(
         ({ context, namespace, name }) =>
           context === action.payload.context && namespace === action.payload.namespace && name === action.payload.name,
       );
 
-      if (podIdx === -1) {
+      if (serviceIdx === -1) {
         return state;
       }
 
-      _.set(state, `profiles[${profileIdx}].pods[${podIdx}]`, _.merge(pods[podIdx], action.payload));
+      _.set(state, `profiles[${profileIdx}].services[${serviceIdx}]`, _.merge(services[serviceIdx], action.payload));
       return _.cloneDeep(state);
     }
     case actions.ADD_PROFILE:
       state.profiles = [
         ...state.profiles,
-        { id: action.payload, name: action.payload, context: '', namespace: '', pods: [] },
+        { id: action.payload, name: action.payload, context: '', namespace: '', services: [] },
       ];
       state.currentProfileId = action.payload;
       return _.cloneDeep(state);

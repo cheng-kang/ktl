@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as actions from '../redux/actions';
-import { State, Actions } from '../redux/*';
+import { State, Actions } from '../redux/redux';
 import { getProfile } from '../redux';
 import * as _ from 'lodash';
 

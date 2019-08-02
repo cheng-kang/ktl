@@ -1,7 +1,9112 @@
-!function(t){var e={};function r(n){if(e[n])return e[n].exports;var i=e[n]={i:n,l:!1,exports:{}};return t[n].call(i.exports,i,i.exports,r),i.l=!0,i.exports}r.m=t,r.c=e,r.d=function(t,e,n){r.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},r.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},r.t=function(t,e){if(1&e&&(t=r(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var i in t)r.d(n,i,function(e){return t[e]}.bind(null,i));return n},r.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return r.d(e,"a",e),e},r.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},r.p="",r(r.s=20)}([function(t,e){t.exports=require("path")},function(t,e){t.exports=require("fs")},function(t,e){t.exports=require("electron")},function(t,e){t.exports=require("util")},function(t,e){t.exports=require("assert")},function(t,e){t.exports=require("child_process")},function(t,e,r){t.exports=d,d.Minimatch=v;var n={sep:"/"};try{n=r(0)}catch(t){}var i=d.GLOBSTAR=v.GLOBSTAR={},o=r(56),s={"!":{open:"(?:(?!(?:",close:"))[^/]*?)"},"?":{open:"(?:",close:")?"},"+":{open:"(?:",close:")+"},"*":{open:"(?:",close:")*"},"@":{open:"(?:",close:")"}},a="[^/]",c=a+"*?",u="(?:(?!(?:\\/|^)(?:\\.{1,2})($|\\/)).)*?",l="(?:(?!(?:\\/|^)\\.).)*?",h="().*{}+?[]^$\\!".split("").reduce(function(t,e){return t[e]=!0,t},{});var f=/\/+/;function p(t,e){t=t||{},e=e||{};var r={};return Object.keys(e).forEach(function(t){r[t]=e[t]}),Object.keys(t).forEach(function(e){r[e]=t[e]}),r}function d(t,e,r){if("string"!=typeof e)throw new TypeError("glob pattern string required");return r||(r={}),!(!r.nocomment&&"#"===e.charAt(0))&&(""===e.trim()?""===t:new v(e,r).match(t))}function v(t,e){if(!(this instanceof v))return new v(t,e);if("string"!=typeof t)throw new TypeError("glob pattern string required");e||(e={}),t=t.trim(),"/"!==n.sep&&(t=t.split(n.sep).join("/")),this.options=e,this.set=[],this.pattern=t,this.regexp=null,this.negate=!1,this.comment=!1,this.empty=!1,this.make()}function m(t,e){if(e||(e=this instanceof v?this.options:{}),void 0===(t=void 0===t?this.pattern:t))throw new TypeError("undefined pattern");return e.nobrace||!t.match(/\{.*\}/)?[t]:o(t)}d.filter=function(t,e){return e=e||{},function(r,n,i){return d(r,t,e)}},d.defaults=function(t){if(!t||!Object.keys(t).length)return d;var e=d,r=function(r,n,i){return e.minimatch(r,n,p(t,i))};return r.Minimatch=function(r,n){return new e.Minimatch(r,p(t,n))},r},v.defaults=function(t){return t&&Object.keys(t).length?d.defaults(t).Minimatch:v},v.prototype.debug=function(){},v.prototype.make=function(){if(this._made)return;var t=this.pattern,e=this.options;if(!e.nocomment&&"#"===t.charAt(0))return void(this.comment=!0);if(!t)return void(this.empty=!0);this.parseNegate();var r=this.globSet=this.braceExpand();e.debug&&(this.debug=console.error);this.debug(this.pattern,r),r=this.globParts=r.map(function(t){return t.split(f)}),this.debug(this.pattern,r),r=r.map(function(t,e,r){return t.map(this.parse,this)},this),this.debug(this.pattern,r),r=r.filter(function(t){return-1===t.indexOf(!1)}),this.debug(this.pattern,r),this.set=r},v.prototype.parseNegate=function(){var t=this.pattern,e=!1,r=this.options,n=0;if(r.nonegate)return;for(var i=0,o=t.length;i<o&&"!"===t.charAt(i);i++)e=!e,n++;n&&(this.pattern=t.substr(n));this.negate=e},d.braceExpand=function(t,e){return m(t,e)},v.prototype.braceExpand=m,v.prototype.parse=function(t,e){if(t.length>65536)throw new TypeError("pattern is too long");var r=this.options;if(!r.noglobstar&&"**"===t)return i;if(""===t)return"";var n,o="",u=!!r.nocase,l=!1,f=[],p=[],d=!1,v=-1,m=-1,g="."===t.charAt(0)?"":r.dot?"(?!(?:^|\\/)\\.{1,2}(?:$|\\/))":"(?!\\.)",b=this;function w(){if(n){switch(n){case"*":o+=c,u=!0;break;case"?":o+=a,u=!0;break;default:o+="\\"+n}b.debug("clearStateChar %j %j",n,o),n=!1}}for(var E,x=0,_=t.length;x<_&&(E=t.charAt(x));x++)if(this.debug("%s\t%s %s %j",t,x,o,E),l&&h[E])o+="\\"+E,l=!1;else switch(E){case"/":return!1;case"\\":w(),l=!0;continue;case"?":case"*":case"+":case"@":case"!":if(this.debug("%s\t%s %s %j <-- stateChar",t,x,o,E),d){this.debug("  in class"),"!"===E&&x===m+1&&(E="^"),o+=E;continue}b.debug("call clearStateChar %j",n),w(),n=E,r.noext&&w();continue;case"(":if(d){o+="(";continue}if(!n){o+="\\(";continue}f.push({type:n,start:x-1,reStart:o.length,open:s[n].open,close:s[n].close}),o+="!"===n?"(?:(?!(?:":"(?:",this.debug("plType %j %j",n,o),n=!1;continue;case")":if(d||!f.length){o+="\\)";continue}w(),u=!0;var O=f.pop();o+=O.close,"!"===O.type&&p.push(O),O.reEnd=o.length;continue;case"|":if(d||!f.length||l){o+="\\|",l=!1;continue}w(),o+="|";continue;case"[":if(w(),d){o+="\\"+E;continue}d=!0,m=x,v=o.length,o+=E;continue;case"]":if(x===m+1||!d){o+="\\"+E,l=!1;continue}if(d){var S=t.substring(m+1,x);try{RegExp("["+S+"]")}catch(t){var j=this.parse(S,y);o=o.substr(0,v)+"\\["+j[0]+"\\]",u=u||j[1],d=!1;continue}}u=!0,d=!1,o+=E;continue;default:w(),l?l=!1:!h[E]||"^"===E&&d||(o+="\\"),o+=E}d&&(S=t.substr(m+1),j=this.parse(S,y),o=o.substr(0,v)+"\\["+j[0],u=u||j[1]);for(O=f.pop();O;O=f.pop()){var k=o.slice(O.reStart+O.open.length);this.debug("setting tail",o,O),k=k.replace(/((?:\\{2}){0,64})(\\?)\|/g,function(t,e,r){return r||(r="\\"),e+e+r+"|"}),this.debug("tail=%j\n   %s",k,k,O,o);var A="*"===O.type?c:"?"===O.type?a:"\\"+O.type;u=!0,o=o.slice(0,O.reStart)+A+"\\("+k}w(),l&&(o+="\\\\");var T=!1;switch(o.charAt(0)){case".":case"[":case"(":T=!0}for(var P=p.length-1;P>-1;P--){var R=p[P],N=o.slice(0,R.reStart),I=o.slice(R.reStart,R.reEnd-8),L=o.slice(R.reEnd-8,R.reEnd),C=o.slice(R.reEnd);L+=C;var D=N.split("(").length-1,M=C;for(x=0;x<D;x++)M=M.replace(/\)[+*?]?/,"");var G="";""===(C=M)&&e!==y&&(G="$");var $=N+I+C+G+L;o=$}""!==o&&u&&(o="(?=.)"+o);T&&(o=g+o);if(e===y)return[o,u];if(!u)return function(t){return t.replace(/\\(.)/g,"$1")}(t);var B=r.nocase?"i":"";try{var U=new RegExp("^"+o+"$",B)}catch(t){return new RegExp("$.")}return U._glob=t,U._src=o,U};var y={};d.makeRe=function(t,e){return new v(t,e||{}).makeRe()},v.prototype.makeRe=function(){if(this.regexp||!1===this.regexp)return this.regexp;var t=this.set;if(!t.length)return this.regexp=!1,this.regexp;var e=this.options,r=e.noglobstar?c:e.dot?u:l,n=e.nocase?"i":"",o=t.map(function(t){return t.map(function(t){return t===i?r:"string"==typeof t?function(t){return t.replace(/[-[\]{}()*+?.,\\^$|#\s]/g,"\\$&")}(t):t._src}).join("\\/")}).join("|");o="^(?:"+o+")$",this.negate&&(o="^(?!"+o+").*$");try{this.regexp=new RegExp(o,n)}catch(t){this.regexp=!1}return this.regexp},d.match=function(t,e,r){var n=new v(e,r=r||{});return t=t.filter(function(t){return n.match(t)}),n.options.nonull&&!t.length&&t.push(e),t},v.prototype.match=function(t,e){if(this.debug("match",t,this.pattern),this.comment)return!1;if(this.empty)return""===t;if("/"===t&&e)return!0;var r=this.options;"/"!==n.sep&&(t=t.split(n.sep).join("/"));t=t.split(f),this.debug(this.pattern,"split",t);var i,o,s=this.set;for(this.debug(this.pattern,"set",s),o=t.length-1;o>=0&&!(i=t[o]);o--);for(o=0;o<s.length;o++){var a=s[o],c=t;r.matchBase&&1===a.length&&(c=[i]);var u=this.matchOne(c,a,e);if(u)return!!r.flipNegate||!this.negate}return!r.flipNegate&&this.negate},v.prototype.matchOne=function(t,e,r){var n=this.options;this.debug("matchOne",{this:this,file:t,pattern:e}),this.debug("matchOne",t.length,e.length);for(var o=0,s=0,a=t.length,c=e.length;o<a&&s<c;o++,s++){this.debug("matchOne loop");var u,l=e[s],h=t[o];if(this.debug(e,l,h),!1===l)return!1;if(l===i){this.debug("GLOBSTAR",[e,l,h]);var f=o,p=s+1;if(p===c){for(this.debug("** at the end");o<a;o++)if("."===t[o]||".."===t[o]||!n.dot&&"."===t[o].charAt(0))return!1;return!0}for(;f<a;){var d=t[f];if(this.debug("\nglobstar while",t,f,e,p,d),this.matchOne(t.slice(f),e.slice(p),r))return this.debug("globstar found match!",f,a,d),!0;if("."===d||".."===d||!n.dot&&"."===d.charAt(0)){this.debug("dot detected!",t,f,e,p);break}this.debug("globstar swallow a segment, and continue"),f++}return!(!r||(this.debug("\n>>> no match, partial?",t,f,e,p),f!==a))}if("string"==typeof l?(u=n.nocase?h.toLowerCase()===l.toLowerCase():h===l,this.debug("string match",l,h,u)):(u=h.match(l),this.debug("pattern match",l,h,u)),!u)return!1}if(o===a&&s===c)return!0;if(o===a)return r;if(s===c)return o===a-1&&""===t[o];throw new Error("wtf?")}},function(t,e,r){"use strict";function n(t){return"/"===t.charAt(0)}function i(t){var e=/^([a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/]+[^\\\/]+)?([\\\/])?([\s\S]*?)$/.exec(t),r=e[1]||"",n=Boolean(r&&":"!==r.charAt(1));return Boolean(e[2]||n)}t.exports="win32"===process.platform?i:n,t.exports.posix=n,t.exports.win32=i},function(t,e,r){"use strict";t.exports=y;var n,i=r(26),o=r(3),s=r(28),a=(n="function"==typeof Symbol&&"1"!==process.env._nodeLRUCacheForceNoSymbol?function(t){return Symbol(t)}:function(t){return"_"+t})("max"),c=n("length"),u=n("lengthCalculator"),l=n("allowStale"),h=n("maxAge"),f=n("dispose"),p=n("noDisposeOnSet"),d=n("lruList"),v=n("cache");function m(){return 1}function y(t){if(!(this instanceof y))return new y(t);"number"==typeof t&&(t={max:t}),t||(t={});var e=this[a]=t.max;(!e||"number"!=typeof e||e<=0)&&(this[a]=1/0);var r=t.length||m;"function"!=typeof r&&(r=m),this[u]=r,this[l]=t.stale||!1,this[h]=t.maxAge||0,this[f]=t.dispose,this[p]=t.noDisposeOnSet||!1,this.reset()}function g(t,e,r,n){var i=r.value;w(t,i)&&(x(t,r),t[l]||(i=void 0)),i&&e.call(n,i.value,i.key,t)}function b(t,e,r){var n=t[v].get(e);if(n){var i=n.value;w(t,i)?(x(t,n),t[l]||(i=void 0)):r&&t[d].unshiftNode(n),i&&(i=i.value)}return i}function w(t,e){if(!e||!e.maxAge&&!t[h])return!1;var r=Date.now()-e.now;return e.maxAge?r>e.maxAge:t[h]&&r>t[h]}function E(t){if(t[c]>t[a])for(var e=t[d].tail;t[c]>t[a]&&null!==e;){var r=e.prev;x(t,e),e=r}}function x(t,e){if(e){var r=e.value;t[f]&&t[f](r.key,r.value),t[c]-=r.length,t[v].delete(r.key),t[d].removeNode(e)}}function _(t,e,r,n,i){this.key=t,this.value=e,this.length=r,this.now=n,this.maxAge=i||0}Object.defineProperty(y.prototype,"max",{set:function(t){(!t||"number"!=typeof t||t<=0)&&(t=1/0),this[a]=t,E(this)},get:function(){return this[a]},enumerable:!0}),Object.defineProperty(y.prototype,"allowStale",{set:function(t){this[l]=!!t},get:function(){return this[l]},enumerable:!0}),Object.defineProperty(y.prototype,"maxAge",{set:function(t){(!t||"number"!=typeof t||t<0)&&(t=0),this[h]=t,E(this)},get:function(){return this[h]},enumerable:!0}),Object.defineProperty(y.prototype,"lengthCalculator",{set:function(t){"function"!=typeof t&&(t=m),t!==this[u]&&(this[u]=t,this[c]=0,this[d].forEach(function(t){t.length=this[u](t.value,t.key),this[c]+=t.length},this)),E(this)},get:function(){return this[u]},enumerable:!0}),Object.defineProperty(y.prototype,"length",{get:function(){return this[c]},enumerable:!0}),Object.defineProperty(y.prototype,"itemCount",{get:function(){return this[d].length},enumerable:!0}),y.prototype.rforEach=function(t,e){e=e||this;for(var r=this[d].tail;null!==r;){var n=r.prev;g(this,t,r,e),r=n}},y.prototype.forEach=function(t,e){e=e||this;for(var r=this[d].head;null!==r;){var n=r.next;g(this,t,r,e),r=n}},y.prototype.keys=function(){return this[d].toArray().map(function(t){return t.key},this)},y.prototype.values=function(){return this[d].toArray().map(function(t){return t.value},this)},y.prototype.reset=function(){this[f]&&this[d]&&this[d].length&&this[d].forEach(function(t){this[f](t.key,t.value)},this),this[v]=new i,this[d]=new s,this[c]=0},y.prototype.dump=function(){return this[d].map(function(t){if(!w(this,t))return{k:t.key,v:t.value,e:t.now+(t.maxAge||0)}},this).toArray().filter(function(t){return t})},y.prototype.dumpLru=function(){return this[d]},y.prototype.inspect=function(t,e){var r="LRUCache {",n=!1;this[l]&&(r+="\n  allowStale: true",n=!0);var i=this[a];i&&i!==1/0&&(n&&(r+=","),r+="\n  max: "+o.inspect(i,e),n=!0);var s=this[h];s&&(n&&(r+=","),r+="\n  maxAge: "+o.inspect(s,e),n=!0);var f=this[u];f&&f!==m&&(n&&(r+=","),r+="\n  length: "+o.inspect(this[c],e),n=!0);var p=!1;return this[d].forEach(function(t){p?r+=",\n  ":(n&&(r+=",\n"),p=!0,r+="\n  ");var i=o.inspect(t.key).split("\n").join("\n  "),a={value:t.value};t.maxAge!==s&&(a.maxAge=t.maxAge),f!==m&&(a.length=t.length),w(this,t)&&(a.stale=!0),a=o.inspect(a,e).split("\n").join("\n  "),r+=i+" => "+a}),(p||n)&&(r+="\n"),r+="}"},y.prototype.set=function(t,e,r){var n=(r=r||this[h])?Date.now():0,i=this[u](e,t);if(this[v].has(t)){if(i>this[a])return x(this,this[v].get(t)),!1;var o=this[v].get(t).value;return this[f]&&(this[p]||this[f](t,o.value)),o.now=n,o.maxAge=r,o.value=e,this[c]+=i-o.length,o.length=i,this.get(t),E(this),!0}var s=new _(t,e,i,n,r);return s.length>this[a]?(this[f]&&this[f](t,e),!1):(this[c]+=s.length,this[d].unshift(s),this[v].set(t,this[d].head),E(this),!0)},y.prototype.has=function(t){return!!this[v].has(t)&&!w(this,this[v].get(t).value)},y.prototype.get=function(t){return b(this,t,!0)},y.prototype.peek=function(t){return b(this,t,!1)},y.prototype.pop=function(){var t=this[d].tail;return t?(x(this,t),t.value):null},y.prototype.del=function(t){x(this,this[v].get(t))},y.prototype.load=function(t){this.reset();for(var e=Date.now(),r=t.length-1;r>=0;r--){var n=t[r],i=n.e||0;if(0===i)this.set(n.k,n.v);else{var o=i-e;o>0&&this.set(n.k,n.v,o)}}},y.prototype.prune=function(){var t=this;this[v].forEach(function(e,r){b(t,r,!1)})}},function(t,e,r){"use strict";var n=r(0),i=r(29),o=new(r(8))({max:50,maxAge:3e4});t.exports=function(t,e){var r;if(e=!!e,r=o.get(t+"!"+e),o.has(t))return o.get(t);try{r=e?i.sync(t,{pathExt:n.delimiter+(process.env.PATHEXT||"")}):i.sync(t)}catch(t){}return o.set(t+"!"+e,r),r}},function(t,e,r){"use strict";
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/main/main.ts");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./node_modules/7zip/index.js":
+/*!************************************!*\
+  !*** ./node_modules/7zip/index.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var resolve = __webpack_require__(/*! path */ "path").resolve
+var bin = __webpack_require__(/*! ./package */ "./node_modules/7zip/package.json").bin
+
+module.exports = map_obj(bin, function(v){
+  return resolve(__dirname, v)
+})
+
+function map_obj(obj, fn){
+  return Object.keys(obj).reduce(function(m, k){
+    m[k] = fn(obj[k])
+    return m
+  }, {})
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/7zip/package.json":
+/*!****************************************!*\
+  !*** ./node_modules/7zip/package.json ***!
+  \****************************************/
+/*! exports provided: _args, _development, _from, _id, _inBundle, _integrity, _location, _phantomChildren, _requested, _requiredBy, _resolved, _spec, _where, bin, bugs, description, homepage, keywords, license, main, name, repository, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = {"_args":[["7zip@0.0.6","/Users/kangcheng/Documents/GitHub/kube"]],"_development":true,"_from":"7zip@0.0.6","_id":"7zip@0.0.6","_inBundle":false,"_integrity":"sha1-nK+xca+CMpSQNTtIFvAzR6oVCjA=","_location":"/7zip","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"7zip@0.0.6","name":"7zip","escapedName":"7zip","rawSpec":"0.0.6","saveSpec":null,"fetchSpec":"0.0.6"},"_requiredBy":["/electron-devtools-installer"],"_resolved":"https://registry.npmjs.org/7zip/-/7zip-0.0.6.tgz","_spec":"0.0.6","_where":"/Users/kangcheng/Documents/GitHub/kube","bin":{"7z":"7zip-lite/7z.exe"},"bugs":{"url":"https://github.com/fritx/win-7zip/issues"},"description":"7zip Windows Package via Node.js","homepage":"https://github.com/fritx/win-7zip#readme","keywords":["7z","7zip","7-zip","windows","install"],"license":"GNU LGPL","main":"index.js","name":"7zip","repository":{"type":"git","url":"git+ssh://git@github.com/fritx/win-7zip.git"},"scripts":{"test":"mocha"},"version":"0.0.6"};
+
+/***/ }),
+
+/***/ "./node_modules/ansi-regex/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/ansi-regex/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = function () {
+	return /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]/g;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/balanced-match/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/balanced-match/index.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = balanced;
+function balanced(a, b, str) {
+  if (a instanceof RegExp) a = maybeMatch(a, str);
+  if (b instanceof RegExp) b = maybeMatch(b, str);
+
+  var r = range(a, b, str);
+
+  return r && {
+    start: r[0],
+    end: r[1],
+    pre: str.slice(0, r[0]),
+    body: str.slice(r[0] + a.length, r[1]),
+    post: str.slice(r[1] + b.length)
+  };
+}
+
+function maybeMatch(reg, str) {
+  var m = str.match(reg);
+  return m ? m[0] : null;
+}
+
+balanced.range = range;
+function range(a, b, str) {
+  var begs, beg, left, right, result;
+  var ai = str.indexOf(a);
+  var bi = str.indexOf(b, ai + 1);
+  var i = ai;
+
+  if (ai >= 0 && bi > 0) {
+    begs = [];
+    left = str.length;
+
+    while (i >= 0 && !result) {
+      if (i == ai) {
+        begs.push(i);
+        ai = str.indexOf(a, i + 1);
+      } else if (begs.length == 1) {
+        result = [ begs.pop(), bi ];
+      } else {
+        beg = begs.pop();
+        if (beg < left) {
+          left = beg;
+          right = bi;
+        }
+
+        bi = str.indexOf(b, i + 1);
+      }
+
+      i = ai < bi && ai >= 0 ? ai : bi;
+    }
+
+    if (begs.length) {
+      result = [ left, right ];
+    }
+  }
+
+  return result;
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/brace-expansion/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/brace-expansion/index.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var concatMap = __webpack_require__(/*! concat-map */ "./node_modules/concat-map/index.js");
+var balanced = __webpack_require__(/*! balanced-match */ "./node_modules/balanced-match/index.js");
+
+module.exports = expandTop;
+
+var escSlash = '\0SLASH'+Math.random()+'\0';
+var escOpen = '\0OPEN'+Math.random()+'\0';
+var escClose = '\0CLOSE'+Math.random()+'\0';
+var escComma = '\0COMMA'+Math.random()+'\0';
+var escPeriod = '\0PERIOD'+Math.random()+'\0';
+
+function numeric(str) {
+  return parseInt(str, 10) == str
+    ? parseInt(str, 10)
+    : str.charCodeAt(0);
+}
+
+function escapeBraces(str) {
+  return str.split('\\\\').join(escSlash)
+            .split('\\{').join(escOpen)
+            .split('\\}').join(escClose)
+            .split('\\,').join(escComma)
+            .split('\\.').join(escPeriod);
+}
+
+function unescapeBraces(str) {
+  return str.split(escSlash).join('\\')
+            .split(escOpen).join('{')
+            .split(escClose).join('}')
+            .split(escComma).join(',')
+            .split(escPeriod).join('.');
+}
+
+
+// Basically just str.split(","), but handling cases
+// where we have nested braced sections, which should be
+// treated as individual members, like {a,{b,c},d}
+function parseCommaParts(str) {
+  if (!str)
+    return [''];
+
+  var parts = [];
+  var m = balanced('{', '}', str);
+
+  if (!m)
+    return str.split(',');
+
+  var pre = m.pre;
+  var body = m.body;
+  var post = m.post;
+  var p = pre.split(',');
+
+  p[p.length-1] += '{' + body + '}';
+  var postParts = parseCommaParts(post);
+  if (post.length) {
+    p[p.length-1] += postParts.shift();
+    p.push.apply(p, postParts);
+  }
+
+  parts.push.apply(parts, p);
+
+  return parts;
+}
+
+function expandTop(str) {
+  if (!str)
+    return [];
+
+  // I don't know why Bash 4.3 does this, but it does.
+  // Anything starting with {} will have the first two bytes preserved
+  // but *only* at the top level, so {},a}b will not expand to anything,
+  // but a{},b}c will be expanded to [a}c,abc].
+  // One could argue that this is a bug in Bash, but since the goal of
+  // this module is to match Bash's rules, we escape a leading {}
+  if (str.substr(0, 2) === '{}') {
+    str = '\\{\\}' + str.substr(2);
+  }
+
+  return expand(escapeBraces(str), true).map(unescapeBraces);
+}
+
+function identity(e) {
+  return e;
+}
+
+function embrace(str) {
+  return '{' + str + '}';
+}
+function isPadded(el) {
+  return /^-?0\d/.test(el);
+}
+
+function lte(i, y) {
+  return i <= y;
+}
+function gte(i, y) {
+  return i >= y;
+}
+
+function expand(str, isTop) {
+  var expansions = [];
+
+  var m = balanced('{', '}', str);
+  if (!m || /\$$/.test(m.pre)) return [str];
+
+  var isNumericSequence = /^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(m.body);
+  var isAlphaSequence = /^[a-zA-Z]\.\.[a-zA-Z](?:\.\.-?\d+)?$/.test(m.body);
+  var isSequence = isNumericSequence || isAlphaSequence;
+  var isOptions = m.body.indexOf(',') >= 0;
+  if (!isSequence && !isOptions) {
+    // {a},b}
+    if (m.post.match(/,.*\}/)) {
+      str = m.pre + '{' + m.body + escClose + m.post;
+      return expand(str);
+    }
+    return [str];
+  }
+
+  var n;
+  if (isSequence) {
+    n = m.body.split(/\.\./);
+  } else {
+    n = parseCommaParts(m.body);
+    if (n.length === 1) {
+      // x{{a,b}}y ==> x{a}y x{b}y
+      n = expand(n[0], false).map(embrace);
+      if (n.length === 1) {
+        var post = m.post.length
+          ? expand(m.post, false)
+          : [''];
+        return post.map(function(p) {
+          return m.pre + n[0] + p;
+        });
+      }
+    }
+  }
+
+  // at this point, n is the parts, and we know it's not a comma set
+  // with a single entry.
+
+  // no need to expand pre, since it is guaranteed to be free of brace-sets
+  var pre = m.pre;
+  var post = m.post.length
+    ? expand(m.post, false)
+    : [''];
+
+  var N;
+
+  if (isSequence) {
+    var x = numeric(n[0]);
+    var y = numeric(n[1]);
+    var width = Math.max(n[0].length, n[1].length)
+    var incr = n.length == 3
+      ? Math.abs(numeric(n[2]))
+      : 1;
+    var test = lte;
+    var reverse = y < x;
+    if (reverse) {
+      incr *= -1;
+      test = gte;
+    }
+    var pad = n.some(isPadded);
+
+    N = [];
+
+    for (var i = x; test(i, y); i += incr) {
+      var c;
+      if (isAlphaSequence) {
+        c = String.fromCharCode(i);
+        if (c === '\\')
+          c = '';
+      } else {
+        c = String(i);
+        if (pad) {
+          var need = width - c.length;
+          if (need > 0) {
+            var z = new Array(need + 1).join('0');
+            if (i < 0)
+              c = '-' + z + c.slice(1);
+            else
+              c = z + c;
+          }
+        }
+      }
+      N.push(c);
+    }
+  } else {
+    N = concatMap(n, function(el) { return expand(el, false) });
+  }
+
+  for (var j = 0; j < N.length; j++) {
+    for (var k = 0; k < post.length; k++) {
+      var expansion = pre + N[j] + post[k];
+      if (!isTop || isSequence || expansion)
+        expansions.push(expansion);
+    }
+  }
+
+  return expansions;
+}
+
+
+
+/***/ }),
+
+/***/ "./node_modules/concat-map/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/concat-map/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function (xs, fn) {
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        var x = fn(xs[i], i);
+        if (isArray(x)) res.push.apply(res, x);
+        else res.push(x);
+    }
+    return res;
+};
+
+var isArray = Array.isArray || function (xs) {
+    return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/cross-unzip/index.js":
+/*!*******************************************!*\
+  !*** ./node_modules/cross-unzip/index.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var spawn = __webpack_require__(/*! child_process */ "child_process").spawn
+var slice = Array.prototype.slice
+
+var unzip = process.platform === 'win32' ? forWin32 : forUnix
+unzip.unzip = unzip
+module.exports = unzip
+
+// todo: progress feedback
+
+// https://github.com/fritx/win-7zip
+function forWin32 (inPath, outPath, callback) {
+  var _7z = __webpack_require__(/*! 7zip */ "./node_modules/7zip/index.js")['7z']
+
+  // very 奇葩
+  // eg. 7z x archive.zip -oc:\Doc
+  run(_7z, ['x', inPath, '-y', '-o' + outPath], callback)
+}
+
+function forUnix (inPath, outPath, callback) {
+  run('unzip', ['-o', inPath, '-d', outPath], callback)
+}
+
+// https://nodejs.org/api/child_process.html#child_process_event_error
+// Note that the 'exit' event may or may not fire after an error has occurred.
+// If you are listening to both the 'exit' and 'error' events,
+// it is important to guard against accidentally invoking handler functions multiple times.
+function run (bin, args, callback) {
+  callback = onceify(callback)
+
+  var prc = spawn(bin, args, {
+    stdio: 'ignore'
+  })
+  prc.on('error', function (err) {
+    callback(err)
+  })
+  prc.on('exit', function (code) {
+    callback(code ? new Error('Exited with code ' + code) : null)
+  })
+}
+
+// http://stackoverflow.com/questions/30234908/javascript-v8-optimisation-and-leaking-arguments
+// javascript V8 optimisation and “leaking arguments”
+// making callback to be invoked only once
+function onceify (fn) {
+  var called = false
+  return function () {
+    if (called) return
+    called = true
+    fn.apply(this, slice.call(arguments)) // slice arguments
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/default-shell/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/default-shell/index.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = (() => {
+	const env = process.env;
+
+	if (process.platform === 'darwin') {
+		return env.SHELL || '/bin/bash';
+	}
+
+	if (process.platform === 'win32') {
+		return env.COMSPEC || 'cmd.exe';
+	}
+
+	return env.SHELL || '/bin/sh';
+})();
+
+
+/***/ }),
+
+/***/ "./node_modules/electron-devtools-installer/dist/downloadChromeExtension.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/electron-devtools-installer/dist/downloadChromeExtension.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _fs = __webpack_require__(/*! fs */ "fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = __webpack_require__(/*! path */ "path");
+
+var _path2 = _interopRequireDefault(_path);
+
+var _rimraf = __webpack_require__(/*! rimraf */ "./node_modules/rimraf/rimraf.js");
+
+var _rimraf2 = _interopRequireDefault(_rimraf);
+
+var _crossUnzip = __webpack_require__(/*! cross-unzip */ "./node_modules/cross-unzip/index.js");
+
+var _crossUnzip2 = _interopRequireDefault(_crossUnzip);
+
+var _utils = __webpack_require__(/*! ./utils */ "./node_modules/electron-devtools-installer/dist/utils.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var downloadChromeExtension = function downloadChromeExtension(chromeStoreID, forceDownload) {
+  var attempts = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 5;
+
+  var extensionsStore = (0, _utils.getPath)();
+  if (!_fs2.default.existsSync(extensionsStore)) {
+    _fs2.default.mkdirSync(extensionsStore);
+  }
+  var extensionFolder = _path2.default.resolve(extensionsStore + '/' + chromeStoreID);
+  return new Promise(function (resolve, reject) {
+    if (!_fs2.default.existsSync(extensionFolder) || forceDownload) {
+      if (_fs2.default.existsSync(extensionFolder)) {
+        _rimraf2.default.sync(extensionFolder);
+      }
+      var fileURL = 'https://clients2.google.com/service/update2/crx?response=redirect&x=id%3D' + chromeStoreID + '%26uc&prodversion=32'; // eslint-disable-line
+      var filePath = _path2.default.resolve(extensionFolder + '.crx');
+      (0, _utils.downloadFile)(fileURL, filePath).then(function () {
+        (0, _crossUnzip2.default)(filePath, extensionFolder, function (err) {
+          if (err && !_fs2.default.existsSync(_path2.default.resolve(extensionFolder, 'manifest.json'))) {
+            return reject(err);
+          }
+          (0, _utils.changePermissions)(extensionFolder, 755);
+          resolve(extensionFolder);
+        });
+      }).catch(function (err) {
+        console.log('Failed to fetch extension, trying ' + (attempts - 1) + ' more times'); // eslint-disable-line
+        if (attempts <= 1) {
+          return reject(err);
+        }
+        setTimeout(function () {
+          downloadChromeExtension(chromeStoreID, forceDownload, attempts - 1).then(resolve).catch(reject);
+        }, 200);
+      });
+    } else {
+      resolve(extensionFolder);
+    }
+  });
+};
+
+exports.default = downloadChromeExtension;
+
+/***/ }),
+
+/***/ "./node_modules/electron-devtools-installer/dist/index.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/electron-devtools-installer/dist/index.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MOBX_DEVTOOLS = exports.APOLLO_DEVELOPER_TOOLS = exports.CYCLEJS_DEVTOOL = exports.REACT_PERF = exports.REDUX_DEVTOOLS = exports.VUEJS_DEVTOOLS = exports.ANGULARJS_BATARANG = exports.JQUERY_DEBUGGER = exports.BACKBONE_DEBUGGER = exports.REACT_DEVELOPER_TOOLS = exports.EMBER_INSPECTOR = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _electron = __webpack_require__(/*! electron */ "electron");
+
+var _electron2 = _interopRequireDefault(_electron);
+
+var _fs = __webpack_require__(/*! fs */ "fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = __webpack_require__(/*! path */ "path");
+
+var _path2 = _interopRequireDefault(_path);
+
+var _semver = __webpack_require__(/*! semver */ "./node_modules/semver/semver.js");
+
+var _semver2 = _interopRequireDefault(_semver);
+
+var _downloadChromeExtension = __webpack_require__(/*! ./downloadChromeExtension */ "./node_modules/electron-devtools-installer/dist/downloadChromeExtension.js");
+
+var _downloadChromeExtension2 = _interopRequireDefault(_downloadChromeExtension);
+
+var _utils = __webpack_require__(/*! ./utils */ "./node_modules/electron-devtools-installer/dist/utils.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var _ref = _electron.remote || _electron2.default,
+    BrowserWindow = _ref.BrowserWindow;
+
+var IDMap = {};
+var IDMapPath = _path2.default.resolve((0, _utils.getPath)(), 'IDMap.json');
+if (_fs2.default.existsSync(IDMapPath)) {
+  try {
+    IDMap = JSON.parse(_fs2.default.readFileSync(IDMapPath, 'utf8'));
+  } catch (err) {
+    console.error('electron-devtools-installer: Invalid JSON present in the IDMap file');
+  }
+}
+
+var install = function install(extensionReference) {
+  var forceDownload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+  if (Array.isArray(extensionReference)) {
+    return Promise.all(extensionReference.map(function (extension) {
+      return install(extension, forceDownload);
+    }));
+  }
+  var chromeStoreID = void 0;
+  if ((typeof extensionReference === 'undefined' ? 'undefined' : _typeof(extensionReference)) === 'object' && extensionReference.id) {
+    chromeStoreID = extensionReference.id;
+    var electronVersion = process.versions.electron.split('-')[0];
+    if (!_semver2.default.satisfies(electronVersion, extensionReference.electron)) {
+      return Promise.reject(new Error('Version of Electron: ' + electronVersion + ' does not match required range ' + extensionReference.electron + ' for extension ' + chromeStoreID) // eslint-disable-line
+      );
+    }
+  } else if (typeof extensionReference === 'string') {
+    chromeStoreID = extensionReference;
+  } else {
+    return Promise.reject(new Error('Invalid extensionReference passed in: "' + extensionReference + '"'));
+  }
+  var extensionName = IDMap[chromeStoreID];
+  var extensionInstalled = extensionName && BrowserWindow.getDevToolsExtensions && BrowserWindow.getDevToolsExtensions()[extensionName];
+  if (!forceDownload && extensionInstalled) {
+    return Promise.resolve(IDMap[chromeStoreID]);
+  }
+  return (0, _downloadChromeExtension2.default)(chromeStoreID, forceDownload).then(function (extensionFolder) {
+    // Use forceDownload, but already installed
+    if (extensionInstalled) {
+      BrowserWindow.removeDevToolsExtension(extensionName);
+    }
+    var name = BrowserWindow.addDevToolsExtension(extensionFolder); // eslint-disable-line
+    _fs2.default.writeFileSync(IDMapPath, JSON.stringify(Object.assign(IDMap, _defineProperty({}, chromeStoreID, name))));
+    return Promise.resolve(name);
+  });
+};
+
+exports.default = install;
+var EMBER_INSPECTOR = exports.EMBER_INSPECTOR = {
+  id: 'bmdblncegkenkacieihfhpjfppoconhi',
+  electron: '>=1.2.1'
+};
+var REACT_DEVELOPER_TOOLS = exports.REACT_DEVELOPER_TOOLS = {
+  id: 'fmkadmapgofadopljbjfkapdkoienihi',
+  electron: '>=1.2.1'
+};
+var BACKBONE_DEBUGGER = exports.BACKBONE_DEBUGGER = {
+  id: 'bhljhndlimiafopmmhjlgfpnnchjjbhd',
+  electron: '>=1.2.1'
+};
+var JQUERY_DEBUGGER = exports.JQUERY_DEBUGGER = {
+  id: 'dbhhnnnpaeobfddmlalhnehgclcmjimi',
+  electron: '>=1.2.1'
+};
+var ANGULARJS_BATARANG = exports.ANGULARJS_BATARANG = {
+  id: 'ighdmehidhipcmcojjgiloacoafjmpfk',
+  electron: '>=1.2.1'
+};
+var VUEJS_DEVTOOLS = exports.VUEJS_DEVTOOLS = {
+  id: 'nhdogjmejiglipccpnnnanhbledajbpd',
+  electron: '>=1.2.1'
+};
+var REDUX_DEVTOOLS = exports.REDUX_DEVTOOLS = {
+  id: 'lmhkpmbekcpmknklioeibfkpmmfibljd',
+  electron: '>=1.2.1'
+};
+var REACT_PERF = exports.REACT_PERF = {
+  id: 'hacmcodfllhbnekmghgdlplbdnahmhmm',
+  electron: '>=1.2.6'
+};
+var CYCLEJS_DEVTOOL = exports.CYCLEJS_DEVTOOL = {
+  id: 'dfgplfmhhmdekalbpejekgfegkonjpfp',
+  electron: '>=1.2.1'
+};
+var APOLLO_DEVELOPER_TOOLS = exports.APOLLO_DEVELOPER_TOOLS = {
+  id: 'jdkknkkbebbapilgoeccciglkfbmbnfm',
+  electron: '>=1.2.1'
+};
+var MOBX_DEVTOOLS = exports.MOBX_DEVTOOLS = {
+  id: 'pfgnfdagidkfgccljigdamigbcnndkod',
+  electron: '>=1.2.1'
+};
+
+/***/ }),
+
+/***/ "./node_modules/electron-devtools-installer/dist/utils.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/electron-devtools-installer/dist/utils.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.changePermissions = exports.downloadFile = exports.getPath = undefined;
+
+var _electron = __webpack_require__(/*! electron */ "electron");
+
+var _electron2 = _interopRequireDefault(_electron);
+
+var _fs = __webpack_require__(/*! fs */ "fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = __webpack_require__(/*! path */ "path");
+
+var _path2 = _interopRequireDefault(_path);
+
+var _https = __webpack_require__(/*! https */ "https");
+
+var _https2 = _interopRequireDefault(_https);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var getPath = exports.getPath = function getPath() {
+  var savePath = (_electron.remote || _electron2.default).app.getPath('userData');
+  return _path2.default.resolve(savePath + '/extensions');
+};
+
+// Use https.get fallback for Electron < 1.4.5
+
+var _ref = _electron.remote || _electron2.default,
+    net = _ref.net;
+
+var request = net ? net.request : _https2.default.get;
+
+var downloadFile = exports.downloadFile = function downloadFile(from, to) {
+  return new Promise(function (resolve, reject) {
+    var req = request(from);
+    req.on('response', function (res) {
+      // Shouldn't handle redirect with `electron.net`, this is for https.get fallback
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        return downloadFile(res.headers.location, to).then(resolve).catch(reject);
+      }
+      res.pipe(_fs2.default.createWriteStream(to)).on('close', resolve);
+    });
+    req.on('error', reject);
+    req.end();
+  });
+};
+
+var changePermissions = exports.changePermissions = function changePermissions(dir, mode) {
+  var files = _fs2.default.readdirSync(dir);
+  files.forEach(function (file) {
+    var filePath = _path2.default.join(dir, file);
+    _fs2.default.chmodSync(filePath, parseInt(mode, 8));
+    if (_fs2.default.statSync(filePath).isDirectory()) {
+      changePermissions(filePath, mode);
+    }
+  });
+};
+
+/***/ }),
+
+/***/ "./node_modules/fix-path/index.js":
+/*!****************************************!*\
+  !*** ./node_modules/fix-path/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const shellPath = __webpack_require__(/*! shell-path */ "./node_modules/shell-path/index.js");
+
+module.exports = () => {
+	if (process.platform !== 'darwin') {
+		return;
+	}
+
+	process.env.PATH = shellPath.sync() || [
+		'./node_modules/.bin',
+		'/.nodebrew/current/bin',
+		'/usr/local/bin',
+		process.env.PATH
+	].join(':');
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/fs.realpath/index.js":
+/*!*******************************************!*\
+  !*** ./node_modules/fs.realpath/index.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = realpath
+realpath.realpath = realpath
+realpath.sync = realpathSync
+realpath.realpathSync = realpathSync
+realpath.monkeypatch = monkeypatch
+realpath.unmonkeypatch = unmonkeypatch
+
+var fs = __webpack_require__(/*! fs */ "fs")
+var origRealpath = fs.realpath
+var origRealpathSync = fs.realpathSync
+
+var version = process.version
+var ok = /^v[0-5]\./.test(version)
+var old = __webpack_require__(/*! ./old.js */ "./node_modules/fs.realpath/old.js")
+
+function newError (er) {
+  return er && er.syscall === 'realpath' && (
+    er.code === 'ELOOP' ||
+    er.code === 'ENOMEM' ||
+    er.code === 'ENAMETOOLONG'
+  )
+}
+
+function realpath (p, cache, cb) {
+  if (ok) {
+    return origRealpath(p, cache, cb)
+  }
+
+  if (typeof cache === 'function') {
+    cb = cache
+    cache = null
+  }
+  origRealpath(p, cache, function (er, result) {
+    if (newError(er)) {
+      old.realpath(p, cache, cb)
+    } else {
+      cb(er, result)
+    }
+  })
+}
+
+function realpathSync (p, cache) {
+  if (ok) {
+    return origRealpathSync(p, cache)
+  }
+
+  try {
+    return origRealpathSync(p, cache)
+  } catch (er) {
+    if (newError(er)) {
+      return old.realpathSync(p, cache)
+    } else {
+      throw er
+    }
+  }
+}
+
+function monkeypatch () {
+  fs.realpath = realpath
+  fs.realpathSync = realpathSync
+}
+
+function unmonkeypatch () {
+  fs.realpath = origRealpath
+  fs.realpathSync = origRealpathSync
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/fs.realpath/old.js":
+/*!*****************************************!*\
+  !*** ./node_modules/fs.realpath/old.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var pathModule = __webpack_require__(/*! path */ "path");
+var isWindows = process.platform === 'win32';
+var fs = __webpack_require__(/*! fs */ "fs");
+
+// JavaScript implementation of realpath, ported from node pre-v6
+
+var DEBUG = process.env.NODE_DEBUG && /fs/.test(process.env.NODE_DEBUG);
+
+function rethrow() {
+  // Only enable in debug mode. A backtrace uses ~1000 bytes of heap space and
+  // is fairly slow to generate.
+  var callback;
+  if (DEBUG) {
+    var backtrace = new Error;
+    callback = debugCallback;
+  } else
+    callback = missingCallback;
+
+  return callback;
+
+  function debugCallback(err) {
+    if (err) {
+      backtrace.message = err.message;
+      err = backtrace;
+      missingCallback(err);
+    }
+  }
+
+  function missingCallback(err) {
+    if (err) {
+      if (process.throwDeprecation)
+        throw err;  // Forgot a callback but don't know where? Use NODE_DEBUG=fs
+      else if (!process.noDeprecation) {
+        var msg = 'fs: missing callback ' + (err.stack || err.message);
+        if (process.traceDeprecation)
+          console.trace(msg);
+        else
+          console.error(msg);
+      }
+    }
+  }
+}
+
+function maybeCallback(cb) {
+  return typeof cb === 'function' ? cb : rethrow();
+}
+
+var normalize = pathModule.normalize;
+
+// Regexp that finds the next partion of a (partial) path
+// result is [base_with_slash, base], e.g. ['somedir/', 'somedir']
+if (isWindows) {
+  var nextPartRe = /(.*?)(?:[\/\\]+|$)/g;
+} else {
+  var nextPartRe = /(.*?)(?:[\/]+|$)/g;
+}
+
+// Regex to find the device root, including trailing slash. E.g. 'c:\\'.
+if (isWindows) {
+  var splitRootRe = /^(?:[a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/][^\\\/]+)?[\\\/]*/;
+} else {
+  var splitRootRe = /^[\/]*/;
+}
+
+exports.realpathSync = function realpathSync(p, cache) {
+  // make p is absolute
+  p = pathModule.resolve(p);
+
+  if (cache && Object.prototype.hasOwnProperty.call(cache, p)) {
+    return cache[p];
+  }
+
+  var original = p,
+      seenLinks = {},
+      knownHard = {};
+
+  // current character position in p
+  var pos;
+  // the partial path so far, including a trailing slash if any
+  var current;
+  // the partial path without a trailing slash (except when pointing at a root)
+  var base;
+  // the partial path scanned in the previous round, with slash
+  var previous;
+
+  start();
+
+  function start() {
+    // Skip over roots
+    var m = splitRootRe.exec(p);
+    pos = m[0].length;
+    current = m[0];
+    base = m[0];
+    previous = '';
+
+    // On windows, check that the root exists. On unix there is no need.
+    if (isWindows && !knownHard[base]) {
+      fs.lstatSync(base);
+      knownHard[base] = true;
+    }
+  }
+
+  // walk down the path, swapping out linked pathparts for their real
+  // values
+  // NB: p.length changes.
+  while (pos < p.length) {
+    // find the next part
+    nextPartRe.lastIndex = pos;
+    var result = nextPartRe.exec(p);
+    previous = current;
+    current += result[0];
+    base = previous + result[1];
+    pos = nextPartRe.lastIndex;
+
+    // continue if not a symlink
+    if (knownHard[base] || (cache && cache[base] === base)) {
+      continue;
+    }
+
+    var resolvedLink;
+    if (cache && Object.prototype.hasOwnProperty.call(cache, base)) {
+      // some known symbolic link.  no need to stat again.
+      resolvedLink = cache[base];
+    } else {
+      var stat = fs.lstatSync(base);
+      if (!stat.isSymbolicLink()) {
+        knownHard[base] = true;
+        if (cache) cache[base] = base;
+        continue;
+      }
+
+      // read the link if it wasn't read before
+      // dev/ino always return 0 on windows, so skip the check.
+      var linkTarget = null;
+      if (!isWindows) {
+        var id = stat.dev.toString(32) + ':' + stat.ino.toString(32);
+        if (seenLinks.hasOwnProperty(id)) {
+          linkTarget = seenLinks[id];
+        }
+      }
+      if (linkTarget === null) {
+        fs.statSync(base);
+        linkTarget = fs.readlinkSync(base);
+      }
+      resolvedLink = pathModule.resolve(previous, linkTarget);
+      // track this, if given a cache.
+      if (cache) cache[base] = resolvedLink;
+      if (!isWindows) seenLinks[id] = linkTarget;
+    }
+
+    // resolve the link, then start over
+    p = pathModule.resolve(resolvedLink, p.slice(pos));
+    start();
+  }
+
+  if (cache) cache[original] = p;
+
+  return p;
+};
+
+
+exports.realpath = function realpath(p, cache, cb) {
+  if (typeof cb !== 'function') {
+    cb = maybeCallback(cache);
+    cache = null;
+  }
+
+  // make p is absolute
+  p = pathModule.resolve(p);
+
+  if (cache && Object.prototype.hasOwnProperty.call(cache, p)) {
+    return process.nextTick(cb.bind(null, null, cache[p]));
+  }
+
+  var original = p,
+      seenLinks = {},
+      knownHard = {};
+
+  // current character position in p
+  var pos;
+  // the partial path so far, including a trailing slash if any
+  var current;
+  // the partial path without a trailing slash (except when pointing at a root)
+  var base;
+  // the partial path scanned in the previous round, with slash
+  var previous;
+
+  start();
+
+  function start() {
+    // Skip over roots
+    var m = splitRootRe.exec(p);
+    pos = m[0].length;
+    current = m[0];
+    base = m[0];
+    previous = '';
+
+    // On windows, check that the root exists. On unix there is no need.
+    if (isWindows && !knownHard[base]) {
+      fs.lstat(base, function(err) {
+        if (err) return cb(err);
+        knownHard[base] = true;
+        LOOP();
+      });
+    } else {
+      process.nextTick(LOOP);
+    }
+  }
+
+  // walk down the path, swapping out linked pathparts for their real
+  // values
+  function LOOP() {
+    // stop if scanned past end of path
+    if (pos >= p.length) {
+      if (cache) cache[original] = p;
+      return cb(null, p);
+    }
+
+    // find the next part
+    nextPartRe.lastIndex = pos;
+    var result = nextPartRe.exec(p);
+    previous = current;
+    current += result[0];
+    base = previous + result[1];
+    pos = nextPartRe.lastIndex;
+
+    // continue if not a symlink
+    if (knownHard[base] || (cache && cache[base] === base)) {
+      return process.nextTick(LOOP);
+    }
+
+    if (cache && Object.prototype.hasOwnProperty.call(cache, base)) {
+      // known symbolic link.  no need to stat again.
+      return gotResolvedLink(cache[base]);
+    }
+
+    return fs.lstat(base, gotStat);
+  }
+
+  function gotStat(err, stat) {
+    if (err) return cb(err);
+
+    // if not a symlink, skip to the next path part
+    if (!stat.isSymbolicLink()) {
+      knownHard[base] = true;
+      if (cache) cache[base] = base;
+      return process.nextTick(LOOP);
+    }
+
+    // stat & read the link if not read before
+    // call gotTarget as soon as the link target is known
+    // dev/ino always return 0 on windows, so skip the check.
+    if (!isWindows) {
+      var id = stat.dev.toString(32) + ':' + stat.ino.toString(32);
+      if (seenLinks.hasOwnProperty(id)) {
+        return gotTarget(null, seenLinks[id], base);
+      }
+    }
+    fs.stat(base, function(err) {
+      if (err) return cb(err);
+
+      fs.readlink(base, function(err, target) {
+        if (!isWindows) seenLinks[id] = target;
+        gotTarget(err, target);
+      });
+    });
+  }
+
+  function gotTarget(err, target, base) {
+    if (err) return cb(err);
+
+    var resolvedLink = pathModule.resolve(previous, target);
+    if (cache) cache[base] = resolvedLink;
+    gotResolvedLink(resolvedLink);
+  }
+
+  function gotResolvedLink(resolvedLink) {
+    // resolve the link, then start over
+    p = pathModule.resolve(resolvedLink, p.slice(pos));
+    start();
+  }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/glob/common.js":
+/*!*************************************!*\
+  !*** ./node_modules/glob/common.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports.alphasort = alphasort
+exports.alphasorti = alphasorti
+exports.setopts = setopts
+exports.ownProp = ownProp
+exports.makeAbs = makeAbs
+exports.finish = finish
+exports.mark = mark
+exports.isIgnored = isIgnored
+exports.childrenIgnored = childrenIgnored
+
+function ownProp (obj, field) {
+  return Object.prototype.hasOwnProperty.call(obj, field)
+}
+
+var path = __webpack_require__(/*! path */ "path")
+var minimatch = __webpack_require__(/*! minimatch */ "./node_modules/minimatch/minimatch.js")
+var isAbsolute = __webpack_require__(/*! path-is-absolute */ "./node_modules/path-is-absolute/index.js")
+var Minimatch = minimatch.Minimatch
+
+function alphasorti (a, b) {
+  return a.toLowerCase().localeCompare(b.toLowerCase())
+}
+
+function alphasort (a, b) {
+  return a.localeCompare(b)
+}
+
+function setupIgnores (self, options) {
+  self.ignore = options.ignore || []
+
+  if (!Array.isArray(self.ignore))
+    self.ignore = [self.ignore]
+
+  if (self.ignore.length) {
+    self.ignore = self.ignore.map(ignoreMap)
+  }
+}
+
+// ignore patterns are always in dot:true mode.
+function ignoreMap (pattern) {
+  var gmatcher = null
+  if (pattern.slice(-3) === '/**') {
+    var gpattern = pattern.replace(/(\/\*\*)+$/, '')
+    gmatcher = new Minimatch(gpattern, { dot: true })
+  }
+
+  return {
+    matcher: new Minimatch(pattern, { dot: true }),
+    gmatcher: gmatcher
+  }
+}
+
+function setopts (self, pattern, options) {
+  if (!options)
+    options = {}
+
+  // base-matching: just use globstar for that.
+  if (options.matchBase && -1 === pattern.indexOf("/")) {
+    if (options.noglobstar) {
+      throw new Error("base matching requires globstar")
+    }
+    pattern = "**/" + pattern
+  }
+
+  self.silent = !!options.silent
+  self.pattern = pattern
+  self.strict = options.strict !== false
+  self.realpath = !!options.realpath
+  self.realpathCache = options.realpathCache || Object.create(null)
+  self.follow = !!options.follow
+  self.dot = !!options.dot
+  self.mark = !!options.mark
+  self.nodir = !!options.nodir
+  if (self.nodir)
+    self.mark = true
+  self.sync = !!options.sync
+  self.nounique = !!options.nounique
+  self.nonull = !!options.nonull
+  self.nosort = !!options.nosort
+  self.nocase = !!options.nocase
+  self.stat = !!options.stat
+  self.noprocess = !!options.noprocess
+  self.absolute = !!options.absolute
+
+  self.maxLength = options.maxLength || Infinity
+  self.cache = options.cache || Object.create(null)
+  self.statCache = options.statCache || Object.create(null)
+  self.symlinks = options.symlinks || Object.create(null)
+
+  setupIgnores(self, options)
+
+  self.changedCwd = false
+  var cwd = process.cwd()
+  if (!ownProp(options, "cwd"))
+    self.cwd = cwd
+  else {
+    self.cwd = path.resolve(options.cwd)
+    self.changedCwd = self.cwd !== cwd
+  }
+
+  self.root = options.root || path.resolve(self.cwd, "/")
+  self.root = path.resolve(self.root)
+  if (process.platform === "win32")
+    self.root = self.root.replace(/\\/g, "/")
+
+  // TODO: is an absolute `cwd` supposed to be resolved against `root`?
+  // e.g. { cwd: '/test', root: __dirname } === path.join(__dirname, '/test')
+  self.cwdAbs = isAbsolute(self.cwd) ? self.cwd : makeAbs(self, self.cwd)
+  if (process.platform === "win32")
+    self.cwdAbs = self.cwdAbs.replace(/\\/g, "/")
+  self.nomount = !!options.nomount
+
+  // disable comments and negation in Minimatch.
+  // Note that they are not supported in Glob itself anyway.
+  options.nonegate = true
+  options.nocomment = true
+
+  self.minimatch = new Minimatch(pattern, options)
+  self.options = self.minimatch.options
+}
+
+function finish (self) {
+  var nou = self.nounique
+  var all = nou ? [] : Object.create(null)
+
+  for (var i = 0, l = self.matches.length; i < l; i ++) {
+    var matches = self.matches[i]
+    if (!matches || Object.keys(matches).length === 0) {
+      if (self.nonull) {
+        // do like the shell, and spit out the literal glob
+        var literal = self.minimatch.globSet[i]
+        if (nou)
+          all.push(literal)
+        else
+          all[literal] = true
+      }
+    } else {
+      // had matches
+      var m = Object.keys(matches)
+      if (nou)
+        all.push.apply(all, m)
+      else
+        m.forEach(function (m) {
+          all[m] = true
+        })
+    }
+  }
+
+  if (!nou)
+    all = Object.keys(all)
+
+  if (!self.nosort)
+    all = all.sort(self.nocase ? alphasorti : alphasort)
+
+  // at *some* point we statted all of these
+  if (self.mark) {
+    for (var i = 0; i < all.length; i++) {
+      all[i] = self._mark(all[i])
+    }
+    if (self.nodir) {
+      all = all.filter(function (e) {
+        var notDir = !(/\/$/.test(e))
+        var c = self.cache[e] || self.cache[makeAbs(self, e)]
+        if (notDir && c)
+          notDir = c !== 'DIR' && !Array.isArray(c)
+        return notDir
+      })
+    }
+  }
+
+  if (self.ignore.length)
+    all = all.filter(function(m) {
+      return !isIgnored(self, m)
+    })
+
+  self.found = all
+}
+
+function mark (self, p) {
+  var abs = makeAbs(self, p)
+  var c = self.cache[abs]
+  var m = p
+  if (c) {
+    var isDir = c === 'DIR' || Array.isArray(c)
+    var slash = p.slice(-1) === '/'
+
+    if (isDir && !slash)
+      m += '/'
+    else if (!isDir && slash)
+      m = m.slice(0, -1)
+
+    if (m !== p) {
+      var mabs = makeAbs(self, m)
+      self.statCache[mabs] = self.statCache[abs]
+      self.cache[mabs] = self.cache[abs]
+    }
+  }
+
+  return m
+}
+
+// lotta situps...
+function makeAbs (self, f) {
+  var abs = f
+  if (f.charAt(0) === '/') {
+    abs = path.join(self.root, f)
+  } else if (isAbsolute(f) || f === '') {
+    abs = f
+  } else if (self.changedCwd) {
+    abs = path.resolve(self.cwd, f)
+  } else {
+    abs = path.resolve(f)
+  }
+
+  if (process.platform === 'win32')
+    abs = abs.replace(/\\/g, '/')
+
+  return abs
+}
+
+
+// Return true, if pattern ends with globstar '**', for the accompanying parent directory.
+// Ex:- If node_modules/** is the pattern, add 'node_modules' to ignore list along with it's contents
+function isIgnored (self, path) {
+  if (!self.ignore.length)
+    return false
+
+  return self.ignore.some(function(item) {
+    return item.matcher.match(path) || !!(item.gmatcher && item.gmatcher.match(path))
+  })
+}
+
+function childrenIgnored (self, path) {
+  if (!self.ignore.length)
+    return false
+
+  return self.ignore.some(function(item) {
+    return !!(item.gmatcher && item.gmatcher.match(path))
+  })
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/glob/glob.js":
+/*!***********************************!*\
+  !*** ./node_modules/glob/glob.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Approach:
+//
+// 1. Get the minimatch set
+// 2. For each pattern in the set, PROCESS(pattern, false)
+// 3. Store matches per-set, then uniq them
+//
+// PROCESS(pattern, inGlobStar)
+// Get the first [n] items from pattern that are all strings
+// Join these together.  This is PREFIX.
+//   If there is no more remaining, then stat(PREFIX) and
+//   add to matches if it succeeds.  END.
+//
+// If inGlobStar and PREFIX is symlink and points to dir
+//   set ENTRIES = []
+// else readdir(PREFIX) as ENTRIES
+//   If fail, END
+//
+// with ENTRIES
+//   If pattern[n] is GLOBSTAR
+//     // handle the case where the globstar match is empty
+//     // by pruning it out, and testing the resulting pattern
+//     PROCESS(pattern[0..n] + pattern[n+1 .. $], false)
+//     // handle other cases.
+//     for ENTRY in ENTRIES (not dotfiles)
+//       // attach globstar + tail onto the entry
+//       // Mark that this entry is a globstar match
+//       PROCESS(pattern[0..n] + ENTRY + pattern[n .. $], true)
+//
+//   else // not globstar
+//     for ENTRY in ENTRIES (not dotfiles, unless pattern[n] is dot)
+//       Test ENTRY against pattern[n]
+//       If fails, continue
+//       If passes, PROCESS(pattern[0..n] + item + pattern[n+1 .. $])
+//
+// Caveat:
+//   Cache all stats and readdirs results to minimize syscall.  Since all
+//   we ever care about is existence and directory-ness, we can just keep
+//   `true` for files, and [children,...] for directories, or `false` for
+//   things that don't exist.
+
+module.exports = glob
+
+var fs = __webpack_require__(/*! fs */ "fs")
+var rp = __webpack_require__(/*! fs.realpath */ "./node_modules/fs.realpath/index.js")
+var minimatch = __webpack_require__(/*! minimatch */ "./node_modules/minimatch/minimatch.js")
+var Minimatch = minimatch.Minimatch
+var inherits = __webpack_require__(/*! inherits */ "./node_modules/inherits/inherits.js")
+var EE = __webpack_require__(/*! events */ "events").EventEmitter
+var path = __webpack_require__(/*! path */ "path")
+var assert = __webpack_require__(/*! assert */ "assert")
+var isAbsolute = __webpack_require__(/*! path-is-absolute */ "./node_modules/path-is-absolute/index.js")
+var globSync = __webpack_require__(/*! ./sync.js */ "./node_modules/glob/sync.js")
+var common = __webpack_require__(/*! ./common.js */ "./node_modules/glob/common.js")
+var alphasort = common.alphasort
+var alphasorti = common.alphasorti
+var setopts = common.setopts
+var ownProp = common.ownProp
+var inflight = __webpack_require__(/*! inflight */ "./node_modules/inflight/inflight.js")
+var util = __webpack_require__(/*! util */ "util")
+var childrenIgnored = common.childrenIgnored
+var isIgnored = common.isIgnored
+
+var once = __webpack_require__(/*! once */ "./node_modules/once/once.js")
+
+function glob (pattern, options, cb) {
+  if (typeof options === 'function') cb = options, options = {}
+  if (!options) options = {}
+
+  if (options.sync) {
+    if (cb)
+      throw new TypeError('callback provided to sync glob')
+    return globSync(pattern, options)
+  }
+
+  return new Glob(pattern, options, cb)
+}
+
+glob.sync = globSync
+var GlobSync = glob.GlobSync = globSync.GlobSync
+
+// old api surface
+glob.glob = glob
+
+function extend (origin, add) {
+  if (add === null || typeof add !== 'object') {
+    return origin
+  }
+
+  var keys = Object.keys(add)
+  var i = keys.length
+  while (i--) {
+    origin[keys[i]] = add[keys[i]]
+  }
+  return origin
+}
+
+glob.hasMagic = function (pattern, options_) {
+  var options = extend({}, options_)
+  options.noprocess = true
+
+  var g = new Glob(pattern, options)
+  var set = g.minimatch.set
+
+  if (!pattern)
+    return false
+
+  if (set.length > 1)
+    return true
+
+  for (var j = 0; j < set[0].length; j++) {
+    if (typeof set[0][j] !== 'string')
+      return true
+  }
+
+  return false
+}
+
+glob.Glob = Glob
+inherits(Glob, EE)
+function Glob (pattern, options, cb) {
+  if (typeof options === 'function') {
+    cb = options
+    options = null
+  }
+
+  if (options && options.sync) {
+    if (cb)
+      throw new TypeError('callback provided to sync glob')
+    return new GlobSync(pattern, options)
+  }
+
+  if (!(this instanceof Glob))
+    return new Glob(pattern, options, cb)
+
+  setopts(this, pattern, options)
+  this._didRealPath = false
+
+  // process each pattern in the minimatch set
+  var n = this.minimatch.set.length
+
+  // The matches are stored as {<filename>: true,...} so that
+  // duplicates are automagically pruned.
+  // Later, we do an Object.keys() on these.
+  // Keep them as a list so we can fill in when nonull is set.
+  this.matches = new Array(n)
+
+  if (typeof cb === 'function') {
+    cb = once(cb)
+    this.on('error', cb)
+    this.on('end', function (matches) {
+      cb(null, matches)
+    })
+  }
+
+  var self = this
+  this._processing = 0
+
+  this._emitQueue = []
+  this._processQueue = []
+  this.paused = false
+
+  if (this.noprocess)
+    return this
+
+  if (n === 0)
+    return done()
+
+  var sync = true
+  for (var i = 0; i < n; i ++) {
+    this._process(this.minimatch.set[i], i, false, done)
+  }
+  sync = false
+
+  function done () {
+    --self._processing
+    if (self._processing <= 0) {
+      if (sync) {
+        process.nextTick(function () {
+          self._finish()
+        })
+      } else {
+        self._finish()
+      }
+    }
+  }
+}
+
+Glob.prototype._finish = function () {
+  assert(this instanceof Glob)
+  if (this.aborted)
+    return
+
+  if (this.realpath && !this._didRealpath)
+    return this._realpath()
+
+  common.finish(this)
+  this.emit('end', this.found)
+}
+
+Glob.prototype._realpath = function () {
+  if (this._didRealpath)
+    return
+
+  this._didRealpath = true
+
+  var n = this.matches.length
+  if (n === 0)
+    return this._finish()
+
+  var self = this
+  for (var i = 0; i < this.matches.length; i++)
+    this._realpathSet(i, next)
+
+  function next () {
+    if (--n === 0)
+      self._finish()
+  }
+}
+
+Glob.prototype._realpathSet = function (index, cb) {
+  var matchset = this.matches[index]
+  if (!matchset)
+    return cb()
+
+  var found = Object.keys(matchset)
+  var self = this
+  var n = found.length
+
+  if (n === 0)
+    return cb()
+
+  var set = this.matches[index] = Object.create(null)
+  found.forEach(function (p, i) {
+    // If there's a problem with the stat, then it means that
+    // one or more of the links in the realpath couldn't be
+    // resolved.  just return the abs value in that case.
+    p = self._makeAbs(p)
+    rp.realpath(p, self.realpathCache, function (er, real) {
+      if (!er)
+        set[real] = true
+      else if (er.syscall === 'stat')
+        set[p] = true
+      else
+        self.emit('error', er) // srsly wtf right here
+
+      if (--n === 0) {
+        self.matches[index] = set
+        cb()
+      }
+    })
+  })
+}
+
+Glob.prototype._mark = function (p) {
+  return common.mark(this, p)
+}
+
+Glob.prototype._makeAbs = function (f) {
+  return common.makeAbs(this, f)
+}
+
+Glob.prototype.abort = function () {
+  this.aborted = true
+  this.emit('abort')
+}
+
+Glob.prototype.pause = function () {
+  if (!this.paused) {
+    this.paused = true
+    this.emit('pause')
+  }
+}
+
+Glob.prototype.resume = function () {
+  if (this.paused) {
+    this.emit('resume')
+    this.paused = false
+    if (this._emitQueue.length) {
+      var eq = this._emitQueue.slice(0)
+      this._emitQueue.length = 0
+      for (var i = 0; i < eq.length; i ++) {
+        var e = eq[i]
+        this._emitMatch(e[0], e[1])
+      }
+    }
+    if (this._processQueue.length) {
+      var pq = this._processQueue.slice(0)
+      this._processQueue.length = 0
+      for (var i = 0; i < pq.length; i ++) {
+        var p = pq[i]
+        this._processing--
+        this._process(p[0], p[1], p[2], p[3])
+      }
+    }
+  }
+}
+
+Glob.prototype._process = function (pattern, index, inGlobStar, cb) {
+  assert(this instanceof Glob)
+  assert(typeof cb === 'function')
+
+  if (this.aborted)
+    return
+
+  this._processing++
+  if (this.paused) {
+    this._processQueue.push([pattern, index, inGlobStar, cb])
+    return
+  }
+
+  //console.error('PROCESS %d', this._processing, pattern)
+
+  // Get the first [n] parts of pattern that are all strings.
+  var n = 0
+  while (typeof pattern[n] === 'string') {
+    n ++
+  }
+  // now n is the index of the first one that is *not* a string.
+
+  // see if there's anything else
+  var prefix
+  switch (n) {
+    // if not, then this is rather simple
+    case pattern.length:
+      this._processSimple(pattern.join('/'), index, cb)
+      return
+
+    case 0:
+      // pattern *starts* with some non-trivial item.
+      // going to readdir(cwd), but not include the prefix in matches.
+      prefix = null
+      break
+
+    default:
+      // pattern has some string bits in the front.
+      // whatever it starts with, whether that's 'absolute' like /foo/bar,
+      // or 'relative' like '../baz'
+      prefix = pattern.slice(0, n).join('/')
+      break
+  }
+
+  var remain = pattern.slice(n)
+
+  // get the list of entries.
+  var read
+  if (prefix === null)
+    read = '.'
+  else if (isAbsolute(prefix) || isAbsolute(pattern.join('/'))) {
+    if (!prefix || !isAbsolute(prefix))
+      prefix = '/' + prefix
+    read = prefix
+  } else
+    read = prefix
+
+  var abs = this._makeAbs(read)
+
+  //if ignored, skip _processing
+  if (childrenIgnored(this, read))
+    return cb()
+
+  var isGlobStar = remain[0] === minimatch.GLOBSTAR
+  if (isGlobStar)
+    this._processGlobStar(prefix, read, abs, remain, index, inGlobStar, cb)
+  else
+    this._processReaddir(prefix, read, abs, remain, index, inGlobStar, cb)
+}
+
+Glob.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+  var self = this
+  this._readdir(abs, inGlobStar, function (er, entries) {
+    return self._processReaddir2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
+  })
+}
+
+Glob.prototype._processReaddir2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+
+  // if the abs isn't a dir, then nothing can match!
+  if (!entries)
+    return cb()
+
+  // It will only match dot entries if it starts with a dot, or if
+  // dot is set.  Stuff like @(.foo|.bar) isn't allowed.
+  var pn = remain[0]
+  var negate = !!this.minimatch.negate
+  var rawGlob = pn._glob
+  var dotOk = this.dot || rawGlob.charAt(0) === '.'
+
+  var matchedEntries = []
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i]
+    if (e.charAt(0) !== '.' || dotOk) {
+      var m
+      if (negate && !prefix) {
+        m = !e.match(pn)
+      } else {
+        m = e.match(pn)
+      }
+      if (m)
+        matchedEntries.push(e)
+    }
+  }
+
+  //console.error('prd2', prefix, entries, remain[0]._glob, matchedEntries)
+
+  var len = matchedEntries.length
+  // If there are no matched entries, then nothing matches.
+  if (len === 0)
+    return cb()
+
+  // if this is the last remaining pattern bit, then no need for
+  // an additional stat *unless* the user has specified mark or
+  // stat explicitly.  We know they exist, since readdir returned
+  // them.
+
+  if (remain.length === 1 && !this.mark && !this.stat) {
+    if (!this.matches[index])
+      this.matches[index] = Object.create(null)
+
+    for (var i = 0; i < len; i ++) {
+      var e = matchedEntries[i]
+      if (prefix) {
+        if (prefix !== '/')
+          e = prefix + '/' + e
+        else
+          e = prefix + e
+      }
+
+      if (e.charAt(0) === '/' && !this.nomount) {
+        e = path.join(this.root, e)
+      }
+      this._emitMatch(index, e)
+    }
+    // This was the last one, and no stats were needed
+    return cb()
+  }
+
+  // now test all matched entries as stand-ins for that part
+  // of the pattern.
+  remain.shift()
+  for (var i = 0; i < len; i ++) {
+    var e = matchedEntries[i]
+    var newPattern
+    if (prefix) {
+      if (prefix !== '/')
+        e = prefix + '/' + e
+      else
+        e = prefix + e
+    }
+    this._process([e].concat(remain), index, inGlobStar, cb)
+  }
+  cb()
+}
+
+Glob.prototype._emitMatch = function (index, e) {
+  if (this.aborted)
+    return
+
+  if (isIgnored(this, e))
+    return
+
+  if (this.paused) {
+    this._emitQueue.push([index, e])
+    return
+  }
+
+  var abs = isAbsolute(e) ? e : this._makeAbs(e)
+
+  if (this.mark)
+    e = this._mark(e)
+
+  if (this.absolute)
+    e = abs
+
+  if (this.matches[index][e])
+    return
+
+  if (this.nodir) {
+    var c = this.cache[abs]
+    if (c === 'DIR' || Array.isArray(c))
+      return
+  }
+
+  this.matches[index][e] = true
+
+  var st = this.statCache[abs]
+  if (st)
+    this.emit('stat', e, st)
+
+  this.emit('match', e)
+}
+
+Glob.prototype._readdirInGlobStar = function (abs, cb) {
+  if (this.aborted)
+    return
+
+  // follow all symlinked directories forever
+  // just proceed as if this is a non-globstar situation
+  if (this.follow)
+    return this._readdir(abs, false, cb)
+
+  var lstatkey = 'lstat\0' + abs
+  var self = this
+  var lstatcb = inflight(lstatkey, lstatcb_)
+
+  if (lstatcb)
+    fs.lstat(abs, lstatcb)
+
+  function lstatcb_ (er, lstat) {
+    if (er && er.code === 'ENOENT')
+      return cb()
+
+    var isSym = lstat && lstat.isSymbolicLink()
+    self.symlinks[abs] = isSym
+
+    // If it's not a symlink or a dir, then it's definitely a regular file.
+    // don't bother doing a readdir in that case.
+    if (!isSym && lstat && !lstat.isDirectory()) {
+      self.cache[abs] = 'FILE'
+      cb()
+    } else
+      self._readdir(abs, false, cb)
+  }
+}
+
+Glob.prototype._readdir = function (abs, inGlobStar, cb) {
+  if (this.aborted)
+    return
+
+  cb = inflight('readdir\0'+abs+'\0'+inGlobStar, cb)
+  if (!cb)
+    return
+
+  //console.error('RD %j %j', +inGlobStar, abs)
+  if (inGlobStar && !ownProp(this.symlinks, abs))
+    return this._readdirInGlobStar(abs, cb)
+
+  if (ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+    if (!c || c === 'FILE')
+      return cb()
+
+    if (Array.isArray(c))
+      return cb(null, c)
+  }
+
+  var self = this
+  fs.readdir(abs, readdirCb(this, abs, cb))
+}
+
+function readdirCb (self, abs, cb) {
+  return function (er, entries) {
+    if (er)
+      self._readdirError(abs, er, cb)
+    else
+      self._readdirEntries(abs, entries, cb)
+  }
+}
+
+Glob.prototype._readdirEntries = function (abs, entries, cb) {
+  if (this.aborted)
+    return
+
+  // if we haven't asked to stat everything, then just
+  // assume that everything in there exists, so we can avoid
+  // having to stat it a second time.
+  if (!this.mark && !this.stat) {
+    for (var i = 0; i < entries.length; i ++) {
+      var e = entries[i]
+      if (abs === '/')
+        e = abs + e
+      else
+        e = abs + '/' + e
+      this.cache[e] = true
+    }
+  }
+
+  this.cache[abs] = entries
+  return cb(null, entries)
+}
+
+Glob.prototype._readdirError = function (f, er, cb) {
+  if (this.aborted)
+    return
+
+  // handle errors, and cache the information
+  switch (er.code) {
+    case 'ENOTSUP': // https://github.com/isaacs/node-glob/issues/205
+    case 'ENOTDIR': // totally normal. means it *does* exist.
+      var abs = this._makeAbs(f)
+      this.cache[abs] = 'FILE'
+      if (abs === this.cwdAbs) {
+        var error = new Error(er.code + ' invalid cwd ' + this.cwd)
+        error.path = this.cwd
+        error.code = er.code
+        this.emit('error', error)
+        this.abort()
+      }
+      break
+
+    case 'ENOENT': // not terribly unusual
+    case 'ELOOP':
+    case 'ENAMETOOLONG':
+    case 'UNKNOWN':
+      this.cache[this._makeAbs(f)] = false
+      break
+
+    default: // some unusual error.  Treat as failure.
+      this.cache[this._makeAbs(f)] = false
+      if (this.strict) {
+        this.emit('error', er)
+        // If the error is handled, then we abort
+        // if not, we threw out of here
+        this.abort()
+      }
+      if (!this.silent)
+        console.error('glob error', er)
+      break
+  }
+
+  return cb()
+}
+
+Glob.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+  var self = this
+  this._readdir(abs, inGlobStar, function (er, entries) {
+    self._processGlobStar2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
+  })
+}
+
+
+Glob.prototype._processGlobStar2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+  //console.error('pgs2', prefix, remain[0], entries)
+
+  // no entries means not a dir, so it can never have matches
+  // foo.txt/** doesn't match foo.txt
+  if (!entries)
+    return cb()
+
+  // test without the globstar, and with every child both below
+  // and replacing the globstar.
+  var remainWithoutGlobStar = remain.slice(1)
+  var gspref = prefix ? [ prefix ] : []
+  var noGlobStar = gspref.concat(remainWithoutGlobStar)
+
+  // the noGlobStar pattern exits the inGlobStar state
+  this._process(noGlobStar, index, false, cb)
+
+  var isSym = this.symlinks[abs]
+  var len = entries.length
+
+  // If it's a symlink, and we're in a globstar, then stop
+  if (isSym && inGlobStar)
+    return cb()
+
+  for (var i = 0; i < len; i++) {
+    var e = entries[i]
+    if (e.charAt(0) === '.' && !this.dot)
+      continue
+
+    // these two cases enter the inGlobStar state
+    var instead = gspref.concat(entries[i], remainWithoutGlobStar)
+    this._process(instead, index, true, cb)
+
+    var below = gspref.concat(entries[i], remain)
+    this._process(below, index, true, cb)
+  }
+
+  cb()
+}
+
+Glob.prototype._processSimple = function (prefix, index, cb) {
+  // XXX review this.  Shouldn't it be doing the mounting etc
+  // before doing stat?  kinda weird?
+  var self = this
+  this._stat(prefix, function (er, exists) {
+    self._processSimple2(prefix, index, er, exists, cb)
+  })
+}
+Glob.prototype._processSimple2 = function (prefix, index, er, exists, cb) {
+
+  //console.error('ps2', prefix, exists)
+
+  if (!this.matches[index])
+    this.matches[index] = Object.create(null)
+
+  // If it doesn't exist, then just mark the lack of results
+  if (!exists)
+    return cb()
+
+  if (prefix && isAbsolute(prefix) && !this.nomount) {
+    var trail = /[\/\\]$/.test(prefix)
+    if (prefix.charAt(0) === '/') {
+      prefix = path.join(this.root, prefix)
+    } else {
+      prefix = path.resolve(this.root, prefix)
+      if (trail)
+        prefix += '/'
+    }
+  }
+
+  if (process.platform === 'win32')
+    prefix = prefix.replace(/\\/g, '/')
+
+  // Mark this as a match
+  this._emitMatch(index, prefix)
+  cb()
+}
+
+// Returns either 'DIR', 'FILE', or false
+Glob.prototype._stat = function (f, cb) {
+  var abs = this._makeAbs(f)
+  var needDir = f.slice(-1) === '/'
+
+  if (f.length > this.maxLength)
+    return cb()
+
+  if (!this.stat && ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+
+    if (Array.isArray(c))
+      c = 'DIR'
+
+    // It exists, but maybe not how we need it
+    if (!needDir || c === 'DIR')
+      return cb(null, c)
+
+    if (needDir && c === 'FILE')
+      return cb()
+
+    // otherwise we have to stat, because maybe c=true
+    // if we know it exists, but not what it is.
+  }
+
+  var exists
+  var stat = this.statCache[abs]
+  if (stat !== undefined) {
+    if (stat === false)
+      return cb(null, stat)
+    else {
+      var type = stat.isDirectory() ? 'DIR' : 'FILE'
+      if (needDir && type === 'FILE')
+        return cb()
+      else
+        return cb(null, type, stat)
+    }
+  }
+
+  var self = this
+  var statcb = inflight('stat\0' + abs, lstatcb_)
+  if (statcb)
+    fs.lstat(abs, statcb)
+
+  function lstatcb_ (er, lstat) {
+    if (lstat && lstat.isSymbolicLink()) {
+      // If it's a symlink, then treat it as the target, unless
+      // the target does not exist, then treat it as a file.
+      return fs.stat(abs, function (er, stat) {
+        if (er)
+          self._stat2(f, abs, null, lstat, cb)
+        else
+          self._stat2(f, abs, er, stat, cb)
+      })
+    } else {
+      self._stat2(f, abs, er, lstat, cb)
+    }
+  }
+}
+
+Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
+  if (er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')) {
+    this.statCache[abs] = false
+    return cb()
+  }
+
+  var needDir = f.slice(-1) === '/'
+  this.statCache[abs] = stat
+
+  if (abs.slice(-1) === '/' && stat && !stat.isDirectory())
+    return cb(null, false, stat)
+
+  var c = true
+  if (stat)
+    c = stat.isDirectory() ? 'DIR' : 'FILE'
+  this.cache[abs] = this.cache[abs] || c
+
+  if (needDir && c === 'FILE')
+    return cb()
+
+  return cb(null, c, stat)
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/glob/sync.js":
+/*!***********************************!*\
+  !*** ./node_modules/glob/sync.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = globSync
+globSync.GlobSync = GlobSync
+
+var fs = __webpack_require__(/*! fs */ "fs")
+var rp = __webpack_require__(/*! fs.realpath */ "./node_modules/fs.realpath/index.js")
+var minimatch = __webpack_require__(/*! minimatch */ "./node_modules/minimatch/minimatch.js")
+var Minimatch = minimatch.Minimatch
+var Glob = __webpack_require__(/*! ./glob.js */ "./node_modules/glob/glob.js").Glob
+var util = __webpack_require__(/*! util */ "util")
+var path = __webpack_require__(/*! path */ "path")
+var assert = __webpack_require__(/*! assert */ "assert")
+var isAbsolute = __webpack_require__(/*! path-is-absolute */ "./node_modules/path-is-absolute/index.js")
+var common = __webpack_require__(/*! ./common.js */ "./node_modules/glob/common.js")
+var alphasort = common.alphasort
+var alphasorti = common.alphasorti
+var setopts = common.setopts
+var ownProp = common.ownProp
+var childrenIgnored = common.childrenIgnored
+var isIgnored = common.isIgnored
+
+function globSync (pattern, options) {
+  if (typeof options === 'function' || arguments.length === 3)
+    throw new TypeError('callback provided to sync glob\n'+
+                        'See: https://github.com/isaacs/node-glob/issues/167')
+
+  return new GlobSync(pattern, options).found
+}
+
+function GlobSync (pattern, options) {
+  if (!pattern)
+    throw new Error('must provide pattern')
+
+  if (typeof options === 'function' || arguments.length === 3)
+    throw new TypeError('callback provided to sync glob\n'+
+                        'See: https://github.com/isaacs/node-glob/issues/167')
+
+  if (!(this instanceof GlobSync))
+    return new GlobSync(pattern, options)
+
+  setopts(this, pattern, options)
+
+  if (this.noprocess)
+    return this
+
+  var n = this.minimatch.set.length
+  this.matches = new Array(n)
+  for (var i = 0; i < n; i ++) {
+    this._process(this.minimatch.set[i], i, false)
+  }
+  this._finish()
+}
+
+GlobSync.prototype._finish = function () {
+  assert(this instanceof GlobSync)
+  if (this.realpath) {
+    var self = this
+    this.matches.forEach(function (matchset, index) {
+      var set = self.matches[index] = Object.create(null)
+      for (var p in matchset) {
+        try {
+          p = self._makeAbs(p)
+          var real = rp.realpathSync(p, self.realpathCache)
+          set[real] = true
+        } catch (er) {
+          if (er.syscall === 'stat')
+            set[self._makeAbs(p)] = true
+          else
+            throw er
+        }
+      }
+    })
+  }
+  common.finish(this)
+}
+
+
+GlobSync.prototype._process = function (pattern, index, inGlobStar) {
+  assert(this instanceof GlobSync)
+
+  // Get the first [n] parts of pattern that are all strings.
+  var n = 0
+  while (typeof pattern[n] === 'string') {
+    n ++
+  }
+  // now n is the index of the first one that is *not* a string.
+
+  // See if there's anything else
+  var prefix
+  switch (n) {
+    // if not, then this is rather simple
+    case pattern.length:
+      this._processSimple(pattern.join('/'), index)
+      return
+
+    case 0:
+      // pattern *starts* with some non-trivial item.
+      // going to readdir(cwd), but not include the prefix in matches.
+      prefix = null
+      break
+
+    default:
+      // pattern has some string bits in the front.
+      // whatever it starts with, whether that's 'absolute' like /foo/bar,
+      // or 'relative' like '../baz'
+      prefix = pattern.slice(0, n).join('/')
+      break
+  }
+
+  var remain = pattern.slice(n)
+
+  // get the list of entries.
+  var read
+  if (prefix === null)
+    read = '.'
+  else if (isAbsolute(prefix) || isAbsolute(pattern.join('/'))) {
+    if (!prefix || !isAbsolute(prefix))
+      prefix = '/' + prefix
+    read = prefix
+  } else
+    read = prefix
+
+  var abs = this._makeAbs(read)
+
+  //if ignored, skip processing
+  if (childrenIgnored(this, read))
+    return
+
+  var isGlobStar = remain[0] === minimatch.GLOBSTAR
+  if (isGlobStar)
+    this._processGlobStar(prefix, read, abs, remain, index, inGlobStar)
+  else
+    this._processReaddir(prefix, read, abs, remain, index, inGlobStar)
+}
+
+
+GlobSync.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar) {
+  var entries = this._readdir(abs, inGlobStar)
+
+  // if the abs isn't a dir, then nothing can match!
+  if (!entries)
+    return
+
+  // It will only match dot entries if it starts with a dot, or if
+  // dot is set.  Stuff like @(.foo|.bar) isn't allowed.
+  var pn = remain[0]
+  var negate = !!this.minimatch.negate
+  var rawGlob = pn._glob
+  var dotOk = this.dot || rawGlob.charAt(0) === '.'
+
+  var matchedEntries = []
+  for (var i = 0; i < entries.length; i++) {
+    var e = entries[i]
+    if (e.charAt(0) !== '.' || dotOk) {
+      var m
+      if (negate && !prefix) {
+        m = !e.match(pn)
+      } else {
+        m = e.match(pn)
+      }
+      if (m)
+        matchedEntries.push(e)
+    }
+  }
+
+  var len = matchedEntries.length
+  // If there are no matched entries, then nothing matches.
+  if (len === 0)
+    return
+
+  // if this is the last remaining pattern bit, then no need for
+  // an additional stat *unless* the user has specified mark or
+  // stat explicitly.  We know they exist, since readdir returned
+  // them.
+
+  if (remain.length === 1 && !this.mark && !this.stat) {
+    if (!this.matches[index])
+      this.matches[index] = Object.create(null)
+
+    for (var i = 0; i < len; i ++) {
+      var e = matchedEntries[i]
+      if (prefix) {
+        if (prefix.slice(-1) !== '/')
+          e = prefix + '/' + e
+        else
+          e = prefix + e
+      }
+
+      if (e.charAt(0) === '/' && !this.nomount) {
+        e = path.join(this.root, e)
+      }
+      this._emitMatch(index, e)
+    }
+    // This was the last one, and no stats were needed
+    return
+  }
+
+  // now test all matched entries as stand-ins for that part
+  // of the pattern.
+  remain.shift()
+  for (var i = 0; i < len; i ++) {
+    var e = matchedEntries[i]
+    var newPattern
+    if (prefix)
+      newPattern = [prefix, e]
+    else
+      newPattern = [e]
+    this._process(newPattern.concat(remain), index, inGlobStar)
+  }
+}
+
+
+GlobSync.prototype._emitMatch = function (index, e) {
+  if (isIgnored(this, e))
+    return
+
+  var abs = this._makeAbs(e)
+
+  if (this.mark)
+    e = this._mark(e)
+
+  if (this.absolute) {
+    e = abs
+  }
+
+  if (this.matches[index][e])
+    return
+
+  if (this.nodir) {
+    var c = this.cache[abs]
+    if (c === 'DIR' || Array.isArray(c))
+      return
+  }
+
+  this.matches[index][e] = true
+
+  if (this.stat)
+    this._stat(e)
+}
+
+
+GlobSync.prototype._readdirInGlobStar = function (abs) {
+  // follow all symlinked directories forever
+  // just proceed as if this is a non-globstar situation
+  if (this.follow)
+    return this._readdir(abs, false)
+
+  var entries
+  var lstat
+  var stat
+  try {
+    lstat = fs.lstatSync(abs)
+  } catch (er) {
+    if (er.code === 'ENOENT') {
+      // lstat failed, doesn't exist
+      return null
+    }
+  }
+
+  var isSym = lstat && lstat.isSymbolicLink()
+  this.symlinks[abs] = isSym
+
+  // If it's not a symlink or a dir, then it's definitely a regular file.
+  // don't bother doing a readdir in that case.
+  if (!isSym && lstat && !lstat.isDirectory())
+    this.cache[abs] = 'FILE'
+  else
+    entries = this._readdir(abs, false)
+
+  return entries
+}
+
+GlobSync.prototype._readdir = function (abs, inGlobStar) {
+  var entries
+
+  if (inGlobStar && !ownProp(this.symlinks, abs))
+    return this._readdirInGlobStar(abs)
+
+  if (ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+    if (!c || c === 'FILE')
+      return null
+
+    if (Array.isArray(c))
+      return c
+  }
+
+  try {
+    return this._readdirEntries(abs, fs.readdirSync(abs))
+  } catch (er) {
+    this._readdirError(abs, er)
+    return null
+  }
+}
+
+GlobSync.prototype._readdirEntries = function (abs, entries) {
+  // if we haven't asked to stat everything, then just
+  // assume that everything in there exists, so we can avoid
+  // having to stat it a second time.
+  if (!this.mark && !this.stat) {
+    for (var i = 0; i < entries.length; i ++) {
+      var e = entries[i]
+      if (abs === '/')
+        e = abs + e
+      else
+        e = abs + '/' + e
+      this.cache[e] = true
+    }
+  }
+
+  this.cache[abs] = entries
+
+  // mark and cache dir-ness
+  return entries
+}
+
+GlobSync.prototype._readdirError = function (f, er) {
+  // handle errors, and cache the information
+  switch (er.code) {
+    case 'ENOTSUP': // https://github.com/isaacs/node-glob/issues/205
+    case 'ENOTDIR': // totally normal. means it *does* exist.
+      var abs = this._makeAbs(f)
+      this.cache[abs] = 'FILE'
+      if (abs === this.cwdAbs) {
+        var error = new Error(er.code + ' invalid cwd ' + this.cwd)
+        error.path = this.cwd
+        error.code = er.code
+        throw error
+      }
+      break
+
+    case 'ENOENT': // not terribly unusual
+    case 'ELOOP':
+    case 'ENAMETOOLONG':
+    case 'UNKNOWN':
+      this.cache[this._makeAbs(f)] = false
+      break
+
+    default: // some unusual error.  Treat as failure.
+      this.cache[this._makeAbs(f)] = false
+      if (this.strict)
+        throw er
+      if (!this.silent)
+        console.error('glob error', er)
+      break
+  }
+}
+
+GlobSync.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar) {
+
+  var entries = this._readdir(abs, inGlobStar)
+
+  // no entries means not a dir, so it can never have matches
+  // foo.txt/** doesn't match foo.txt
+  if (!entries)
+    return
+
+  // test without the globstar, and with every child both below
+  // and replacing the globstar.
+  var remainWithoutGlobStar = remain.slice(1)
+  var gspref = prefix ? [ prefix ] : []
+  var noGlobStar = gspref.concat(remainWithoutGlobStar)
+
+  // the noGlobStar pattern exits the inGlobStar state
+  this._process(noGlobStar, index, false)
+
+  var len = entries.length
+  var isSym = this.symlinks[abs]
+
+  // If it's a symlink, and we're in a globstar, then stop
+  if (isSym && inGlobStar)
+    return
+
+  for (var i = 0; i < len; i++) {
+    var e = entries[i]
+    if (e.charAt(0) === '.' && !this.dot)
+      continue
+
+    // these two cases enter the inGlobStar state
+    var instead = gspref.concat(entries[i], remainWithoutGlobStar)
+    this._process(instead, index, true)
+
+    var below = gspref.concat(entries[i], remain)
+    this._process(below, index, true)
+  }
+}
+
+GlobSync.prototype._processSimple = function (prefix, index) {
+  // XXX review this.  Shouldn't it be doing the mounting etc
+  // before doing stat?  kinda weird?
+  var exists = this._stat(prefix)
+
+  if (!this.matches[index])
+    this.matches[index] = Object.create(null)
+
+  // If it doesn't exist, then just mark the lack of results
+  if (!exists)
+    return
+
+  if (prefix && isAbsolute(prefix) && !this.nomount) {
+    var trail = /[\/\\]$/.test(prefix)
+    if (prefix.charAt(0) === '/') {
+      prefix = path.join(this.root, prefix)
+    } else {
+      prefix = path.resolve(this.root, prefix)
+      if (trail)
+        prefix += '/'
+    }
+  }
+
+  if (process.platform === 'win32')
+    prefix = prefix.replace(/\\/g, '/')
+
+  // Mark this as a match
+  this._emitMatch(index, prefix)
+}
+
+// Returns either 'DIR', 'FILE', or false
+GlobSync.prototype._stat = function (f) {
+  var abs = this._makeAbs(f)
+  var needDir = f.slice(-1) === '/'
+
+  if (f.length > this.maxLength)
+    return false
+
+  if (!this.stat && ownProp(this.cache, abs)) {
+    var c = this.cache[abs]
+
+    if (Array.isArray(c))
+      c = 'DIR'
+
+    // It exists, but maybe not how we need it
+    if (!needDir || c === 'DIR')
+      return c
+
+    if (needDir && c === 'FILE')
+      return false
+
+    // otherwise we have to stat, because maybe c=true
+    // if we know it exists, but not what it is.
+  }
+
+  var exists
+  var stat = this.statCache[abs]
+  if (!stat) {
+    var lstat
+    try {
+      lstat = fs.lstatSync(abs)
+    } catch (er) {
+      if (er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')) {
+        this.statCache[abs] = false
+        return false
+      }
+    }
+
+    if (lstat && lstat.isSymbolicLink()) {
+      try {
+        stat = fs.statSync(abs)
+      } catch (er) {
+        stat = lstat
+      }
+    } else {
+      stat = lstat
+    }
+  }
+
+  this.statCache[abs] = stat
+
+  var c = true
+  if (stat)
+    c = stat.isDirectory() ? 'DIR' : 'FILE'
+
+  this.cache[abs] = this.cache[abs] || c
+
+  if (needDir && c === 'FILE')
+    return false
+
+  return c
+}
+
+GlobSync.prototype._mark = function (p) {
+  return common.mark(this, p)
+}
+
+GlobSync.prototype._makeAbs = function (f) {
+  return common.makeAbs(this, f)
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/inflight/inflight.js":
+/*!*******************************************!*\
+  !*** ./node_modules/inflight/inflight.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var wrappy = __webpack_require__(/*! wrappy */ "./node_modules/wrappy/wrappy.js")
+var reqs = Object.create(null)
+var once = __webpack_require__(/*! once */ "./node_modules/once/once.js")
+
+module.exports = wrappy(inflight)
+
+function inflight (key, cb) {
+  if (reqs[key]) {
+    reqs[key].push(cb)
+    return null
+  } else {
+    reqs[key] = [cb]
+    return makeres(key)
+  }
+}
+
+function makeres (key) {
+  return once(function RES () {
+    var cbs = reqs[key]
+    var len = cbs.length
+    var args = slice(arguments)
+
+    // XXX It's somewhat ambiguous whether a new callback added in this
+    // pass should be queued for later execution if something in the
+    // list of callbacks throws, or if it should just be discarded.
+    // However, it's such an edge case that it hardly matters, and either
+    // choice is likely as surprising as the other.
+    // As it happens, we do go ahead and schedule it for later execution.
+    try {
+      for (var i = 0; i < len; i++) {
+        cbs[i].apply(null, args)
+      }
+    } finally {
+      if (cbs.length > len) {
+        // added more in the interim.
+        // de-zalgo, just in case, but don't call again.
+        cbs.splice(0, len)
+        process.nextTick(function () {
+          RES.apply(null, args)
+        })
+      } else {
+        delete reqs[key]
+      }
+    }
+  })
+}
+
+function slice (args) {
+  var length = args.length
+  var array = []
+
+  for (var i = 0; i < length; i++) array[i] = args[i]
+  return array
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/inherits/inherits.js":
+/*!*******************************************!*\
+  !*** ./node_modules/inherits/inherits.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+try {
+  var util = __webpack_require__(/*! util */ "util");
+  if (typeof util.inherits !== 'function') throw '';
+  module.exports = util.inherits;
+} catch (e) {
+  module.exports = __webpack_require__(/*! ./inherits_browser.js */ "./node_modules/inherits/inherits_browser.js");
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/inherits/inherits_browser.js":
+/*!***************************************************!*\
+  !*** ./node_modules/inherits/inherits_browser.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/is-stream/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/is-stream/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isStream = module.exports = function (stream) {
+	return stream !== null && typeof stream === 'object' && typeof stream.pipe === 'function';
+};
+
+isStream.writable = function (stream) {
+	return isStream(stream) && stream.writable !== false && typeof stream._write === 'function' && typeof stream._writableState === 'object';
+};
+
+isStream.readable = function (stream) {
+	return isStream(stream) && stream.readable !== false && typeof stream._read === 'function' && typeof stream._readableState === 'object';
+};
+
+isStream.duplex = function (stream) {
+	return isStream.writable(stream) && isStream.readable(stream);
+};
+
+isStream.transform = function (stream) {
+	return isStream.duplex(stream) && typeof stream._transform === 'function' && typeof stream._transformState === 'object';
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/isexe/index.js":
+/*!*************************************!*\
+  !*** ./node_modules/isexe/index.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var fs = __webpack_require__(/*! fs */ "fs")
+var core
+if (process.platform === 'win32' || global.TESTING_WINDOWS) {
+  core = __webpack_require__(/*! ./windows.js */ "./node_modules/isexe/windows.js")
+} else {
+  core = __webpack_require__(/*! ./mode.js */ "./node_modules/isexe/mode.js")
+}
+
+module.exports = isexe
+isexe.sync = sync
+
+function isexe (path, options, cb) {
+  if (typeof options === 'function') {
+    cb = options
+    options = {}
+  }
+
+  if (!cb) {
+    if (typeof Promise !== 'function') {
+      throw new TypeError('callback not provided')
+    }
+
+    return new Promise(function (resolve, reject) {
+      isexe(path, options || {}, function (er, is) {
+        if (er) {
+          reject(er)
+        } else {
+          resolve(is)
+        }
+      })
+    })
+  }
+
+  core(path, options || {}, function (er, is) {
+    // ignore EACCES because that just means we aren't allowed to run it
+    if (er) {
+      if (er.code === 'EACCES' || options && options.ignoreErrors) {
+        er = null
+        is = false
+      }
+    }
+    cb(er, is)
+  })
+}
+
+function sync (path, options) {
+  // my kingdom for a filtered catch
+  try {
+    return core.sync(path, options || {})
+  } catch (er) {
+    if (options && options.ignoreErrors || er.code === 'EACCES') {
+      return false
+    } else {
+      throw er
+    }
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/isexe/mode.js":
+/*!************************************!*\
+  !*** ./node_modules/isexe/mode.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = isexe
+isexe.sync = sync
+
+var fs = __webpack_require__(/*! fs */ "fs")
+
+function isexe (path, options, cb) {
+  fs.stat(path, function (er, stat) {
+    cb(er, er ? false : checkStat(stat, options))
+  })
+}
+
+function sync (path, options) {
+  return checkStat(fs.statSync(path), options)
+}
+
+function checkStat (stat, options) {
+  return stat.isFile() && checkMode(stat, options)
+}
+
+function checkMode (stat, options) {
+  var mod = stat.mode
+  var uid = stat.uid
+  var gid = stat.gid
+
+  var myUid = options.uid !== undefined ?
+    options.uid : process.getuid && process.getuid()
+  var myGid = options.gid !== undefined ?
+    options.gid : process.getgid && process.getgid()
+
+  var u = parseInt('100', 8)
+  var g = parseInt('010', 8)
+  var o = parseInt('001', 8)
+  var ug = u | g
+
+  var ret = (mod & o) ||
+    (mod & g) && gid === myGid ||
+    (mod & u) && uid === myUid ||
+    (mod & ug) && myUid === 0
+
+  return ret
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/isexe/windows.js":
+/*!***************************************!*\
+  !*** ./node_modules/isexe/windows.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = isexe
+isexe.sync = sync
+
+var fs = __webpack_require__(/*! fs */ "fs")
+
+function checkPathExt (path, options) {
+  var pathext = options.pathExt !== undefined ?
+    options.pathExt : process.env.PATHEXT
+
+  if (!pathext) {
+    return true
+  }
+
+  pathext = pathext.split(';')
+  if (pathext.indexOf('') !== -1) {
+    return true
+  }
+  for (var i = 0; i < pathext.length; i++) {
+    var p = pathext[i].toLowerCase()
+    if (p && path.substr(-p.length).toLowerCase() === p) {
+      return true
+    }
+  }
+  return false
+}
+
+function checkStat (stat, path, options) {
+  if (!stat.isSymbolicLink() && !stat.isFile()) {
+    return false
+  }
+  return checkPathExt(path, options)
+}
+
+function isexe (path, options, cb) {
+  fs.stat(path, function (er, stat) {
+    cb(er, er ? false : checkStat(stat, path, options))
+  })
+}
+
+function sync (path, options) {
+  return checkStat(fs.statSync(path), path, options)
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/lru-cache/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/lru-cache/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = LRUCache
+
+// This will be a proper iterable 'Map' in engines that support it,
+// or a fakey-fake PseudoMap in older versions.
+var Map = __webpack_require__(/*! pseudomap */ "./node_modules/pseudomap/map.js")
+var util = __webpack_require__(/*! util */ "util")
+
+// A linked list to keep track of recently-used-ness
+var Yallist = __webpack_require__(/*! yallist */ "./node_modules/yallist/yallist.js")
+
+// use symbols if possible, otherwise just _props
+var hasSymbol = typeof Symbol === 'function' && process.env._nodeLRUCacheForceNoSymbol !== '1'
+var makeSymbol
+if (hasSymbol) {
+  makeSymbol = function (key) {
+    return Symbol(key)
+  }
+} else {
+  makeSymbol = function (key) {
+    return '_' + key
+  }
+}
+
+var MAX = makeSymbol('max')
+var LENGTH = makeSymbol('length')
+var LENGTH_CALCULATOR = makeSymbol('lengthCalculator')
+var ALLOW_STALE = makeSymbol('allowStale')
+var MAX_AGE = makeSymbol('maxAge')
+var DISPOSE = makeSymbol('dispose')
+var NO_DISPOSE_ON_SET = makeSymbol('noDisposeOnSet')
+var LRU_LIST = makeSymbol('lruList')
+var CACHE = makeSymbol('cache')
+
+function naiveLength () { return 1 }
+
+// lruList is a yallist where the head is the youngest
+// item, and the tail is the oldest.  the list contains the Hit
+// objects as the entries.
+// Each Hit object has a reference to its Yallist.Node.  This
+// never changes.
+//
+// cache is a Map (or PseudoMap) that matches the keys to
+// the Yallist.Node object.
+function LRUCache (options) {
+  if (!(this instanceof LRUCache)) {
+    return new LRUCache(options)
+  }
+
+  if (typeof options === 'number') {
+    options = { max: options }
+  }
+
+  if (!options) {
+    options = {}
+  }
+
+  var max = this[MAX] = options.max
+  // Kind of weird to have a default max of Infinity, but oh well.
+  if (!max ||
+      !(typeof max === 'number') ||
+      max <= 0) {
+    this[MAX] = Infinity
+  }
+
+  var lc = options.length || naiveLength
+  if (typeof lc !== 'function') {
+    lc = naiveLength
+  }
+  this[LENGTH_CALCULATOR] = lc
+
+  this[ALLOW_STALE] = options.stale || false
+  this[MAX_AGE] = options.maxAge || 0
+  this[DISPOSE] = options.dispose
+  this[NO_DISPOSE_ON_SET] = options.noDisposeOnSet || false
+  this.reset()
+}
+
+// resize the cache when the max changes.
+Object.defineProperty(LRUCache.prototype, 'max', {
+  set: function (mL) {
+    if (!mL || !(typeof mL === 'number') || mL <= 0) {
+      mL = Infinity
+    }
+    this[MAX] = mL
+    trim(this)
+  },
+  get: function () {
+    return this[MAX]
+  },
+  enumerable: true
+})
+
+Object.defineProperty(LRUCache.prototype, 'allowStale', {
+  set: function (allowStale) {
+    this[ALLOW_STALE] = !!allowStale
+  },
+  get: function () {
+    return this[ALLOW_STALE]
+  },
+  enumerable: true
+})
+
+Object.defineProperty(LRUCache.prototype, 'maxAge', {
+  set: function (mA) {
+    if (!mA || !(typeof mA === 'number') || mA < 0) {
+      mA = 0
+    }
+    this[MAX_AGE] = mA
+    trim(this)
+  },
+  get: function () {
+    return this[MAX_AGE]
+  },
+  enumerable: true
+})
+
+// resize the cache when the lengthCalculator changes.
+Object.defineProperty(LRUCache.prototype, 'lengthCalculator', {
+  set: function (lC) {
+    if (typeof lC !== 'function') {
+      lC = naiveLength
+    }
+    if (lC !== this[LENGTH_CALCULATOR]) {
+      this[LENGTH_CALCULATOR] = lC
+      this[LENGTH] = 0
+      this[LRU_LIST].forEach(function (hit) {
+        hit.length = this[LENGTH_CALCULATOR](hit.value, hit.key)
+        this[LENGTH] += hit.length
+      }, this)
+    }
+    trim(this)
+  },
+  get: function () { return this[LENGTH_CALCULATOR] },
+  enumerable: true
+})
+
+Object.defineProperty(LRUCache.prototype, 'length', {
+  get: function () { return this[LENGTH] },
+  enumerable: true
+})
+
+Object.defineProperty(LRUCache.prototype, 'itemCount', {
+  get: function () { return this[LRU_LIST].length },
+  enumerable: true
+})
+
+LRUCache.prototype.rforEach = function (fn, thisp) {
+  thisp = thisp || this
+  for (var walker = this[LRU_LIST].tail; walker !== null;) {
+    var prev = walker.prev
+    forEachStep(this, fn, walker, thisp)
+    walker = prev
+  }
+}
+
+function forEachStep (self, fn, node, thisp) {
+  var hit = node.value
+  if (isStale(self, hit)) {
+    del(self, node)
+    if (!self[ALLOW_STALE]) {
+      hit = undefined
+    }
+  }
+  if (hit) {
+    fn.call(thisp, hit.value, hit.key, self)
+  }
+}
+
+LRUCache.prototype.forEach = function (fn, thisp) {
+  thisp = thisp || this
+  for (var walker = this[LRU_LIST].head; walker !== null;) {
+    var next = walker.next
+    forEachStep(this, fn, walker, thisp)
+    walker = next
+  }
+}
+
+LRUCache.prototype.keys = function () {
+  return this[LRU_LIST].toArray().map(function (k) {
+    return k.key
+  }, this)
+}
+
+LRUCache.prototype.values = function () {
+  return this[LRU_LIST].toArray().map(function (k) {
+    return k.value
+  }, this)
+}
+
+LRUCache.prototype.reset = function () {
+  if (this[DISPOSE] &&
+      this[LRU_LIST] &&
+      this[LRU_LIST].length) {
+    this[LRU_LIST].forEach(function (hit) {
+      this[DISPOSE](hit.key, hit.value)
+    }, this)
+  }
+
+  this[CACHE] = new Map() // hash of items by key
+  this[LRU_LIST] = new Yallist() // list of items in order of use recency
+  this[LENGTH] = 0 // length of items in the list
+}
+
+LRUCache.prototype.dump = function () {
+  return this[LRU_LIST].map(function (hit) {
+    if (!isStale(this, hit)) {
+      return {
+        k: hit.key,
+        v: hit.value,
+        e: hit.now + (hit.maxAge || 0)
+      }
+    }
+  }, this).toArray().filter(function (h) {
+    return h
+  })
+}
+
+LRUCache.prototype.dumpLru = function () {
+  return this[LRU_LIST]
+}
+
+/* istanbul ignore next */
+LRUCache.prototype.inspect = function (n, opts) {
+  var str = 'LRUCache {'
+  var extras = false
+
+  var as = this[ALLOW_STALE]
+  if (as) {
+    str += '\n  allowStale: true'
+    extras = true
+  }
+
+  var max = this[MAX]
+  if (max && max !== Infinity) {
+    if (extras) {
+      str += ','
+    }
+    str += '\n  max: ' + util.inspect(max, opts)
+    extras = true
+  }
+
+  var maxAge = this[MAX_AGE]
+  if (maxAge) {
+    if (extras) {
+      str += ','
+    }
+    str += '\n  maxAge: ' + util.inspect(maxAge, opts)
+    extras = true
+  }
+
+  var lc = this[LENGTH_CALCULATOR]
+  if (lc && lc !== naiveLength) {
+    if (extras) {
+      str += ','
+    }
+    str += '\n  length: ' + util.inspect(this[LENGTH], opts)
+    extras = true
+  }
+
+  var didFirst = false
+  this[LRU_LIST].forEach(function (item) {
+    if (didFirst) {
+      str += ',\n  '
+    } else {
+      if (extras) {
+        str += ',\n'
+      }
+      didFirst = true
+      str += '\n  '
+    }
+    var key = util.inspect(item.key).split('\n').join('\n  ')
+    var val = { value: item.value }
+    if (item.maxAge !== maxAge) {
+      val.maxAge = item.maxAge
+    }
+    if (lc !== naiveLength) {
+      val.length = item.length
+    }
+    if (isStale(this, item)) {
+      val.stale = true
+    }
+
+    val = util.inspect(val, opts).split('\n').join('\n  ')
+    str += key + ' => ' + val
+  })
+
+  if (didFirst || extras) {
+    str += '\n'
+  }
+  str += '}'
+
+  return str
+}
+
+LRUCache.prototype.set = function (key, value, maxAge) {
+  maxAge = maxAge || this[MAX_AGE]
+
+  var now = maxAge ? Date.now() : 0
+  var len = this[LENGTH_CALCULATOR](value, key)
+
+  if (this[CACHE].has(key)) {
+    if (len > this[MAX]) {
+      del(this, this[CACHE].get(key))
+      return false
+    }
+
+    var node = this[CACHE].get(key)
+    var item = node.value
+
+    // dispose of the old one before overwriting
+    // split out into 2 ifs for better coverage tracking
+    if (this[DISPOSE]) {
+      if (!this[NO_DISPOSE_ON_SET]) {
+        this[DISPOSE](key, item.value)
+      }
+    }
+
+    item.now = now
+    item.maxAge = maxAge
+    item.value = value
+    this[LENGTH] += len - item.length
+    item.length = len
+    this.get(key)
+    trim(this)
+    return true
+  }
+
+  var hit = new Entry(key, value, len, now, maxAge)
+
+  // oversized objects fall out of cache automatically.
+  if (hit.length > this[MAX]) {
+    if (this[DISPOSE]) {
+      this[DISPOSE](key, value)
+    }
+    return false
+  }
+
+  this[LENGTH] += hit.length
+  this[LRU_LIST].unshift(hit)
+  this[CACHE].set(key, this[LRU_LIST].head)
+  trim(this)
+  return true
+}
+
+LRUCache.prototype.has = function (key) {
+  if (!this[CACHE].has(key)) return false
+  var hit = this[CACHE].get(key).value
+  if (isStale(this, hit)) {
+    return false
+  }
+  return true
+}
+
+LRUCache.prototype.get = function (key) {
+  return get(this, key, true)
+}
+
+LRUCache.prototype.peek = function (key) {
+  return get(this, key, false)
+}
+
+LRUCache.prototype.pop = function () {
+  var node = this[LRU_LIST].tail
+  if (!node) return null
+  del(this, node)
+  return node.value
+}
+
+LRUCache.prototype.del = function (key) {
+  del(this, this[CACHE].get(key))
+}
+
+LRUCache.prototype.load = function (arr) {
+  // reset the cache
+  this.reset()
+
+  var now = Date.now()
+  // A previous serialized cache has the most recent items first
+  for (var l = arr.length - 1; l >= 0; l--) {
+    var hit = arr[l]
+    var expiresAt = hit.e || 0
+    if (expiresAt === 0) {
+      // the item was created without expiration in a non aged cache
+      this.set(hit.k, hit.v)
+    } else {
+      var maxAge = expiresAt - now
+      // dont add already expired items
+      if (maxAge > 0) {
+        this.set(hit.k, hit.v, maxAge)
+      }
+    }
+  }
+}
+
+LRUCache.prototype.prune = function () {
+  var self = this
+  this[CACHE].forEach(function (value, key) {
+    get(self, key, false)
+  })
+}
+
+function get (self, key, doUse) {
+  var node = self[CACHE].get(key)
+  if (node) {
+    var hit = node.value
+    if (isStale(self, hit)) {
+      del(self, node)
+      if (!self[ALLOW_STALE]) hit = undefined
+    } else {
+      if (doUse) {
+        self[LRU_LIST].unshiftNode(node)
+      }
+    }
+    if (hit) hit = hit.value
+  }
+  return hit
+}
+
+function isStale (self, hit) {
+  if (!hit || (!hit.maxAge && !self[MAX_AGE])) {
+    return false
+  }
+  var stale = false
+  var diff = Date.now() - hit.now
+  if (hit.maxAge) {
+    stale = diff > hit.maxAge
+  } else {
+    stale = self[MAX_AGE] && (diff > self[MAX_AGE])
+  }
+  return stale
+}
+
+function trim (self) {
+  if (self[LENGTH] > self[MAX]) {
+    for (var walker = self[LRU_LIST].tail;
+      self[LENGTH] > self[MAX] && walker !== null;) {
+      // We know that we're about to delete this one, and also
+      // what the next least recently used key will be, so just
+      // go ahead and set it now.
+      var prev = walker.prev
+      del(self, walker)
+      walker = prev
+    }
+  }
+}
+
+function del (self, node) {
+  if (node) {
+    var hit = node.value
+    if (self[DISPOSE]) {
+      self[DISPOSE](hit.key, hit.value)
+    }
+    self[LENGTH] -= hit.length
+    self[CACHE].delete(hit.key)
+    self[LRU_LIST].removeNode(node)
+  }
+}
+
+// classy, since V8 prefers predictable objects.
+function Entry (key, value, length, now, maxAge) {
+  this.key = key
+  this.value = value
+  this.length = length
+  this.now = now
+  this.maxAge = maxAge || 0
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/minimatch/minimatch.js":
+/*!*********************************************!*\
+  !*** ./node_modules/minimatch/minimatch.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = minimatch
+minimatch.Minimatch = Minimatch
+
+var path = { sep: '/' }
+try {
+  path = __webpack_require__(/*! path */ "path")
+} catch (er) {}
+
+var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {}
+var expand = __webpack_require__(/*! brace-expansion */ "./node_modules/brace-expansion/index.js")
+
+var plTypes = {
+  '!': { open: '(?:(?!(?:', close: '))[^/]*?)'},
+  '?': { open: '(?:', close: ')?' },
+  '+': { open: '(?:', close: ')+' },
+  '*': { open: '(?:', close: ')*' },
+  '@': { open: '(?:', close: ')' }
+}
+
+// any single thing other than /
+// don't need to escape / when using new RegExp()
+var qmark = '[^/]'
+
+// * => any number of characters
+var star = qmark + '*?'
+
+// ** when dots are allowed.  Anything goes, except .. and .
+// not (^ or / followed by one or two dots followed by $ or /),
+// followed by anything, any number of times.
+var twoStarDot = '(?:(?!(?:\\\/|^)(?:\\.{1,2})($|\\\/)).)*?'
+
+// not a ^ or / followed by a dot,
+// followed by anything, any number of times.
+var twoStarNoDot = '(?:(?!(?:\\\/|^)\\.).)*?'
+
+// characters that need to be escaped in RegExp.
+var reSpecials = charSet('().*{}+?[]^$\\!')
+
+// "abc" -> { a:true, b:true, c:true }
+function charSet (s) {
+  return s.split('').reduce(function (set, c) {
+    set[c] = true
+    return set
+  }, {})
+}
+
+// normalizes slashes.
+var slashSplit = /\/+/
+
+minimatch.filter = filter
+function filter (pattern, options) {
+  options = options || {}
+  return function (p, i, list) {
+    return minimatch(p, pattern, options)
+  }
+}
+
+function ext (a, b) {
+  a = a || {}
+  b = b || {}
+  var t = {}
+  Object.keys(b).forEach(function (k) {
+    t[k] = b[k]
+  })
+  Object.keys(a).forEach(function (k) {
+    t[k] = a[k]
+  })
+  return t
+}
+
+minimatch.defaults = function (def) {
+  if (!def || !Object.keys(def).length) return minimatch
+
+  var orig = minimatch
+
+  var m = function minimatch (p, pattern, options) {
+    return orig.minimatch(p, pattern, ext(def, options))
+  }
+
+  m.Minimatch = function Minimatch (pattern, options) {
+    return new orig.Minimatch(pattern, ext(def, options))
+  }
+
+  return m
+}
+
+Minimatch.defaults = function (def) {
+  if (!def || !Object.keys(def).length) return Minimatch
+  return minimatch.defaults(def).Minimatch
+}
+
+function minimatch (p, pattern, options) {
+  if (typeof pattern !== 'string') {
+    throw new TypeError('glob pattern string required')
+  }
+
+  if (!options) options = {}
+
+  // shortcut: comments match nothing.
+  if (!options.nocomment && pattern.charAt(0) === '#') {
+    return false
+  }
+
+  // "" only matches ""
+  if (pattern.trim() === '') return p === ''
+
+  return new Minimatch(pattern, options).match(p)
+}
+
+function Minimatch (pattern, options) {
+  if (!(this instanceof Minimatch)) {
+    return new Minimatch(pattern, options)
+  }
+
+  if (typeof pattern !== 'string') {
+    throw new TypeError('glob pattern string required')
+  }
+
+  if (!options) options = {}
+  pattern = pattern.trim()
+
+  // windows support: need to use /, not \
+  if (path.sep !== '/') {
+    pattern = pattern.split(path.sep).join('/')
+  }
+
+  this.options = options
+  this.set = []
+  this.pattern = pattern
+  this.regexp = null
+  this.negate = false
+  this.comment = false
+  this.empty = false
+
+  // make the set of regexps etc.
+  this.make()
+}
+
+Minimatch.prototype.debug = function () {}
+
+Minimatch.prototype.make = make
+function make () {
+  // don't do it more than once.
+  if (this._made) return
+
+  var pattern = this.pattern
+  var options = this.options
+
+  // empty patterns and comments match nothing.
+  if (!options.nocomment && pattern.charAt(0) === '#') {
+    this.comment = true
+    return
+  }
+  if (!pattern) {
+    this.empty = true
+    return
+  }
+
+  // step 1: figure out negation, etc.
+  this.parseNegate()
+
+  // step 2: expand braces
+  var set = this.globSet = this.braceExpand()
+
+  if (options.debug) this.debug = console.error
+
+  this.debug(this.pattern, set)
+
+  // step 3: now we have a set, so turn each one into a series of path-portion
+  // matching patterns.
+  // These will be regexps, except in the case of "**", which is
+  // set to the GLOBSTAR object for globstar behavior,
+  // and will not contain any / characters
+  set = this.globParts = set.map(function (s) {
+    return s.split(slashSplit)
+  })
+
+  this.debug(this.pattern, set)
+
+  // glob --> regexps
+  set = set.map(function (s, si, set) {
+    return s.map(this.parse, this)
+  }, this)
+
+  this.debug(this.pattern, set)
+
+  // filter out everything that didn't compile properly.
+  set = set.filter(function (s) {
+    return s.indexOf(false) === -1
+  })
+
+  this.debug(this.pattern, set)
+
+  this.set = set
+}
+
+Minimatch.prototype.parseNegate = parseNegate
+function parseNegate () {
+  var pattern = this.pattern
+  var negate = false
+  var options = this.options
+  var negateOffset = 0
+
+  if (options.nonegate) return
+
+  for (var i = 0, l = pattern.length
+    ; i < l && pattern.charAt(i) === '!'
+    ; i++) {
+    negate = !negate
+    negateOffset++
+  }
+
+  if (negateOffset) this.pattern = pattern.substr(negateOffset)
+  this.negate = negate
+}
+
+// Brace expansion:
+// a{b,c}d -> abd acd
+// a{b,}c -> abc ac
+// a{0..3}d -> a0d a1d a2d a3d
+// a{b,c{d,e}f}g -> abg acdfg acefg
+// a{b,c}d{e,f}g -> abdeg acdeg abdeg abdfg
+//
+// Invalid sets are not expanded.
+// a{2..}b -> a{2..}b
+// a{b}c -> a{b}c
+minimatch.braceExpand = function (pattern, options) {
+  return braceExpand(pattern, options)
+}
+
+Minimatch.prototype.braceExpand = braceExpand
+
+function braceExpand (pattern, options) {
+  if (!options) {
+    if (this instanceof Minimatch) {
+      options = this.options
+    } else {
+      options = {}
+    }
+  }
+
+  pattern = typeof pattern === 'undefined'
+    ? this.pattern : pattern
+
+  if (typeof pattern === 'undefined') {
+    throw new TypeError('undefined pattern')
+  }
+
+  if (options.nobrace ||
+    !pattern.match(/\{.*\}/)) {
+    // shortcut. no need to expand.
+    return [pattern]
+  }
+
+  return expand(pattern)
+}
+
+// parse a component of the expanded set.
+// At this point, no pattern may contain "/" in it
+// so we're going to return a 2d array, where each entry is the full
+// pattern, split on '/', and then turned into a regular expression.
+// A regexp is made at the end which joins each array with an
+// escaped /, and another full one which joins each regexp with |.
+//
+// Following the lead of Bash 4.1, note that "**" only has special meaning
+// when it is the *only* thing in a path portion.  Otherwise, any series
+// of * is equivalent to a single *.  Globstar behavior is enabled by
+// default, and can be disabled by setting options.noglobstar.
+Minimatch.prototype.parse = parse
+var SUBPARSE = {}
+function parse (pattern, isSub) {
+  if (pattern.length > 1024 * 64) {
+    throw new TypeError('pattern is too long')
+  }
+
+  var options = this.options
+
+  // shortcuts
+  if (!options.noglobstar && pattern === '**') return GLOBSTAR
+  if (pattern === '') return ''
+
+  var re = ''
+  var hasMagic = !!options.nocase
+  var escaping = false
+  // ? => one single character
+  var patternListStack = []
+  var negativeLists = []
+  var stateChar
+  var inClass = false
+  var reClassStart = -1
+  var classStart = -1
+  // . and .. never match anything that doesn't start with .,
+  // even when options.dot is set.
+  var patternStart = pattern.charAt(0) === '.' ? '' // anything
+  // not (start or / followed by . or .. followed by / or end)
+  : options.dot ? '(?!(?:^|\\\/)\\.{1,2}(?:$|\\\/))'
+  : '(?!\\.)'
+  var self = this
+
+  function clearStateChar () {
+    if (stateChar) {
+      // we had some state-tracking character
+      // that wasn't consumed by this pass.
+      switch (stateChar) {
+        case '*':
+          re += star
+          hasMagic = true
+        break
+        case '?':
+          re += qmark
+          hasMagic = true
+        break
+        default:
+          re += '\\' + stateChar
+        break
+      }
+      self.debug('clearStateChar %j %j', stateChar, re)
+      stateChar = false
+    }
+  }
+
+  for (var i = 0, len = pattern.length, c
+    ; (i < len) && (c = pattern.charAt(i))
+    ; i++) {
+    this.debug('%s\t%s %s %j', pattern, i, re, c)
+
+    // skip over any that are escaped.
+    if (escaping && reSpecials[c]) {
+      re += '\\' + c
+      escaping = false
+      continue
+    }
+
+    switch (c) {
+      case '/':
+        // completely not allowed, even escaped.
+        // Should already be path-split by now.
+        return false
+
+      case '\\':
+        clearStateChar()
+        escaping = true
+      continue
+
+      // the various stateChar values
+      // for the "extglob" stuff.
+      case '?':
+      case '*':
+      case '+':
+      case '@':
+      case '!':
+        this.debug('%s\t%s %s %j <-- stateChar', pattern, i, re, c)
+
+        // all of those are literals inside a class, except that
+        // the glob [!a] means [^a] in regexp
+        if (inClass) {
+          this.debug('  in class')
+          if (c === '!' && i === classStart + 1) c = '^'
+          re += c
+          continue
+        }
+
+        // if we already have a stateChar, then it means
+        // that there was something like ** or +? in there.
+        // Handle the stateChar, then proceed with this one.
+        self.debug('call clearStateChar %j', stateChar)
+        clearStateChar()
+        stateChar = c
+        // if extglob is disabled, then +(asdf|foo) isn't a thing.
+        // just clear the statechar *now*, rather than even diving into
+        // the patternList stuff.
+        if (options.noext) clearStateChar()
+      continue
+
+      case '(':
+        if (inClass) {
+          re += '('
+          continue
+        }
+
+        if (!stateChar) {
+          re += '\\('
+          continue
+        }
+
+        patternListStack.push({
+          type: stateChar,
+          start: i - 1,
+          reStart: re.length,
+          open: plTypes[stateChar].open,
+          close: plTypes[stateChar].close
+        })
+        // negation is (?:(?!js)[^/]*)
+        re += stateChar === '!' ? '(?:(?!(?:' : '(?:'
+        this.debug('plType %j %j', stateChar, re)
+        stateChar = false
+      continue
+
+      case ')':
+        if (inClass || !patternListStack.length) {
+          re += '\\)'
+          continue
+        }
+
+        clearStateChar()
+        hasMagic = true
+        var pl = patternListStack.pop()
+        // negation is (?:(?!js)[^/]*)
+        // The others are (?:<pattern>)<type>
+        re += pl.close
+        if (pl.type === '!') {
+          negativeLists.push(pl)
+        }
+        pl.reEnd = re.length
+      continue
+
+      case '|':
+        if (inClass || !patternListStack.length || escaping) {
+          re += '\\|'
+          escaping = false
+          continue
+        }
+
+        clearStateChar()
+        re += '|'
+      continue
+
+      // these are mostly the same in regexp and glob
+      case '[':
+        // swallow any state-tracking char before the [
+        clearStateChar()
+
+        if (inClass) {
+          re += '\\' + c
+          continue
+        }
+
+        inClass = true
+        classStart = i
+        reClassStart = re.length
+        re += c
+      continue
+
+      case ']':
+        //  a right bracket shall lose its special
+        //  meaning and represent itself in
+        //  a bracket expression if it occurs
+        //  first in the list.  -- POSIX.2 2.8.3.2
+        if (i === classStart + 1 || !inClass) {
+          re += '\\' + c
+          escaping = false
+          continue
+        }
+
+        // handle the case where we left a class open.
+        // "[z-a]" is valid, equivalent to "\[z-a\]"
+        if (inClass) {
+          // split where the last [ was, make sure we don't have
+          // an invalid re. if so, re-walk the contents of the
+          // would-be class to re-translate any characters that
+          // were passed through as-is
+          // TODO: It would probably be faster to determine this
+          // without a try/catch and a new RegExp, but it's tricky
+          // to do safely.  For now, this is safe and works.
+          var cs = pattern.substring(classStart + 1, i)
+          try {
+            RegExp('[' + cs + ']')
+          } catch (er) {
+            // not a valid class!
+            var sp = this.parse(cs, SUBPARSE)
+            re = re.substr(0, reClassStart) + '\\[' + sp[0] + '\\]'
+            hasMagic = hasMagic || sp[1]
+            inClass = false
+            continue
+          }
+        }
+
+        // finish up the class.
+        hasMagic = true
+        inClass = false
+        re += c
+      continue
+
+      default:
+        // swallow any state char that wasn't consumed
+        clearStateChar()
+
+        if (escaping) {
+          // no need
+          escaping = false
+        } else if (reSpecials[c]
+          && !(c === '^' && inClass)) {
+          re += '\\'
+        }
+
+        re += c
+
+    } // switch
+  } // for
+
+  // handle the case where we left a class open.
+  // "[abc" is valid, equivalent to "\[abc"
+  if (inClass) {
+    // split where the last [ was, and escape it
+    // this is a huge pita.  We now have to re-walk
+    // the contents of the would-be class to re-translate
+    // any characters that were passed through as-is
+    cs = pattern.substr(classStart + 1)
+    sp = this.parse(cs, SUBPARSE)
+    re = re.substr(0, reClassStart) + '\\[' + sp[0]
+    hasMagic = hasMagic || sp[1]
+  }
+
+  // handle the case where we had a +( thing at the *end*
+  // of the pattern.
+  // each pattern list stack adds 3 chars, and we need to go through
+  // and escape any | chars that were passed through as-is for the regexp.
+  // Go through and escape them, taking care not to double-escape any
+  // | chars that were already escaped.
+  for (pl = patternListStack.pop(); pl; pl = patternListStack.pop()) {
+    var tail = re.slice(pl.reStart + pl.open.length)
+    this.debug('setting tail', re, pl)
+    // maybe some even number of \, then maybe 1 \, followed by a |
+    tail = tail.replace(/((?:\\{2}){0,64})(\\?)\|/g, function (_, $1, $2) {
+      if (!$2) {
+        // the | isn't already escaped, so escape it.
+        $2 = '\\'
+      }
+
+      // need to escape all those slashes *again*, without escaping the
+      // one that we need for escaping the | character.  As it works out,
+      // escaping an even number of slashes can be done by simply repeating
+      // it exactly after itself.  That's why this trick works.
+      //
+      // I am sorry that you have to see this.
+      return $1 + $1 + $2 + '|'
+    })
+
+    this.debug('tail=%j\n   %s', tail, tail, pl, re)
+    var t = pl.type === '*' ? star
+      : pl.type === '?' ? qmark
+      : '\\' + pl.type
+
+    hasMagic = true
+    re = re.slice(0, pl.reStart) + t + '\\(' + tail
+  }
+
+  // handle trailing things that only matter at the very end.
+  clearStateChar()
+  if (escaping) {
+    // trailing \\
+    re += '\\\\'
+  }
+
+  // only need to apply the nodot start if the re starts with
+  // something that could conceivably capture a dot
+  var addPatternStart = false
+  switch (re.charAt(0)) {
+    case '.':
+    case '[':
+    case '(': addPatternStart = true
+  }
+
+  // Hack to work around lack of negative lookbehind in JS
+  // A pattern like: *.!(x).!(y|z) needs to ensure that a name
+  // like 'a.xyz.yz' doesn't match.  So, the first negative
+  // lookahead, has to look ALL the way ahead, to the end of
+  // the pattern.
+  for (var n = negativeLists.length - 1; n > -1; n--) {
+    var nl = negativeLists[n]
+
+    var nlBefore = re.slice(0, nl.reStart)
+    var nlFirst = re.slice(nl.reStart, nl.reEnd - 8)
+    var nlLast = re.slice(nl.reEnd - 8, nl.reEnd)
+    var nlAfter = re.slice(nl.reEnd)
+
+    nlLast += nlAfter
+
+    // Handle nested stuff like *(*.js|!(*.json)), where open parens
+    // mean that we should *not* include the ) in the bit that is considered
+    // "after" the negated section.
+    var openParensBefore = nlBefore.split('(').length - 1
+    var cleanAfter = nlAfter
+    for (i = 0; i < openParensBefore; i++) {
+      cleanAfter = cleanAfter.replace(/\)[+*?]?/, '')
+    }
+    nlAfter = cleanAfter
+
+    var dollar = ''
+    if (nlAfter === '' && isSub !== SUBPARSE) {
+      dollar = '$'
+    }
+    var newRe = nlBefore + nlFirst + nlAfter + dollar + nlLast
+    re = newRe
+  }
+
+  // if the re is not "" at this point, then we need to make sure
+  // it doesn't match against an empty path part.
+  // Otherwise a/* will match a/, which it should not.
+  if (re !== '' && hasMagic) {
+    re = '(?=.)' + re
+  }
+
+  if (addPatternStart) {
+    re = patternStart + re
+  }
+
+  // parsing just a piece of a larger pattern.
+  if (isSub === SUBPARSE) {
+    return [re, hasMagic]
+  }
+
+  // skip the regexp for non-magical patterns
+  // unescape anything in it, though, so that it'll be
+  // an exact match against a file etc.
+  if (!hasMagic) {
+    return globUnescape(pattern)
+  }
+
+  var flags = options.nocase ? 'i' : ''
+  try {
+    var regExp = new RegExp('^' + re + '$', flags)
+  } catch (er) {
+    // If it was an invalid regular expression, then it can't match
+    // anything.  This trick looks for a character after the end of
+    // the string, which is of course impossible, except in multi-line
+    // mode, but it's not a /m regex.
+    return new RegExp('$.')
+  }
+
+  regExp._glob = pattern
+  regExp._src = re
+
+  return regExp
+}
+
+minimatch.makeRe = function (pattern, options) {
+  return new Minimatch(pattern, options || {}).makeRe()
+}
+
+Minimatch.prototype.makeRe = makeRe
+function makeRe () {
+  if (this.regexp || this.regexp === false) return this.regexp
+
+  // at this point, this.set is a 2d array of partial
+  // pattern strings, or "**".
+  //
+  // It's better to use .match().  This function shouldn't
+  // be used, really, but it's pretty convenient sometimes,
+  // when you just want to work with a regex.
+  var set = this.set
+
+  if (!set.length) {
+    this.regexp = false
+    return this.regexp
+  }
+  var options = this.options
+
+  var twoStar = options.noglobstar ? star
+    : options.dot ? twoStarDot
+    : twoStarNoDot
+  var flags = options.nocase ? 'i' : ''
+
+  var re = set.map(function (pattern) {
+    return pattern.map(function (p) {
+      return (p === GLOBSTAR) ? twoStar
+      : (typeof p === 'string') ? regExpEscape(p)
+      : p._src
+    }).join('\\\/')
+  }).join('|')
+
+  // must match entire pattern
+  // ending in a * or ** will make it less strict.
+  re = '^(?:' + re + ')$'
+
+  // can match anything, as long as it's not this.
+  if (this.negate) re = '^(?!' + re + ').*$'
+
+  try {
+    this.regexp = new RegExp(re, flags)
+  } catch (ex) {
+    this.regexp = false
+  }
+  return this.regexp
+}
+
+minimatch.match = function (list, pattern, options) {
+  options = options || {}
+  var mm = new Minimatch(pattern, options)
+  list = list.filter(function (f) {
+    return mm.match(f)
+  })
+  if (mm.options.nonull && !list.length) {
+    list.push(pattern)
+  }
+  return list
+}
+
+Minimatch.prototype.match = match
+function match (f, partial) {
+  this.debug('match', f, this.pattern)
+  // short-circuit in the case of busted things.
+  // comments, etc.
+  if (this.comment) return false
+  if (this.empty) return f === ''
+
+  if (f === '/' && partial) return true
+
+  var options = this.options
+
+  // windows: need to use /, not \
+  if (path.sep !== '/') {
+    f = f.split(path.sep).join('/')
+  }
+
+  // treat the test path as a set of pathparts.
+  f = f.split(slashSplit)
+  this.debug(this.pattern, 'split', f)
+
+  // just ONE of the pattern sets in this.set needs to match
+  // in order for it to be valid.  If negating, then just one
+  // match means that we have failed.
+  // Either way, return on the first hit.
+
+  var set = this.set
+  this.debug(this.pattern, 'set', set)
+
+  // Find the basename of the path by looking for the last non-empty segment
+  var filename
+  var i
+  for (i = f.length - 1; i >= 0; i--) {
+    filename = f[i]
+    if (filename) break
+  }
+
+  for (i = 0; i < set.length; i++) {
+    var pattern = set[i]
+    var file = f
+    if (options.matchBase && pattern.length === 1) {
+      file = [filename]
+    }
+    var hit = this.matchOne(file, pattern, partial)
+    if (hit) {
+      if (options.flipNegate) return true
+      return !this.negate
+    }
+  }
+
+  // didn't get any hits.  this is success if it's a negative
+  // pattern, failure otherwise.
+  if (options.flipNegate) return false
+  return this.negate
+}
+
+// set partial to true to test if, for example,
+// "/a/b" matches the start of "/*/b/*/d"
+// Partial means, if you run out of file before you run
+// out of pattern, then that's fine, as long as all
+// the parts match.
+Minimatch.prototype.matchOne = function (file, pattern, partial) {
+  var options = this.options
+
+  this.debug('matchOne',
+    { 'this': this, file: file, pattern: pattern })
+
+  this.debug('matchOne', file.length, pattern.length)
+
+  for (var fi = 0,
+      pi = 0,
+      fl = file.length,
+      pl = pattern.length
+      ; (fi < fl) && (pi < pl)
+      ; fi++, pi++) {
+    this.debug('matchOne loop')
+    var p = pattern[pi]
+    var f = file[fi]
+
+    this.debug(pattern, p, f)
+
+    // should be impossible.
+    // some invalid regexp stuff in the set.
+    if (p === false) return false
+
+    if (p === GLOBSTAR) {
+      this.debug('GLOBSTAR', [pattern, p, f])
+
+      // "**"
+      // a/**/b/**/c would match the following:
+      // a/b/x/y/z/c
+      // a/x/y/z/b/c
+      // a/b/x/b/x/c
+      // a/b/c
+      // To do this, take the rest of the pattern after
+      // the **, and see if it would match the file remainder.
+      // If so, return success.
+      // If not, the ** "swallows" a segment, and try again.
+      // This is recursively awful.
+      //
+      // a/**/b/**/c matching a/b/x/y/z/c
+      // - a matches a
+      // - doublestar
+      //   - matchOne(b/x/y/z/c, b/**/c)
+      //     - b matches b
+      //     - doublestar
+      //       - matchOne(x/y/z/c, c) -> no
+      //       - matchOne(y/z/c, c) -> no
+      //       - matchOne(z/c, c) -> no
+      //       - matchOne(c, c) yes, hit
+      var fr = fi
+      var pr = pi + 1
+      if (pr === pl) {
+        this.debug('** at the end')
+        // a ** at the end will just swallow the rest.
+        // We have found a match.
+        // however, it will not swallow /.x, unless
+        // options.dot is set.
+        // . and .. are *never* matched by **, for explosively
+        // exponential reasons.
+        for (; fi < fl; fi++) {
+          if (file[fi] === '.' || file[fi] === '..' ||
+            (!options.dot && file[fi].charAt(0) === '.')) return false
+        }
+        return true
+      }
+
+      // ok, let's see if we can swallow whatever we can.
+      while (fr < fl) {
+        var swallowee = file[fr]
+
+        this.debug('\nglobstar while', file, fr, pattern, pr, swallowee)
+
+        // XXX remove this slice.  Just pass the start index.
+        if (this.matchOne(file.slice(fr), pattern.slice(pr), partial)) {
+          this.debug('globstar found match!', fr, fl, swallowee)
+          // found a match.
+          return true
+        } else {
+          // can't swallow "." or ".." ever.
+          // can only swallow ".foo" when explicitly asked.
+          if (swallowee === '.' || swallowee === '..' ||
+            (!options.dot && swallowee.charAt(0) === '.')) {
+            this.debug('dot detected!', file, fr, pattern, pr)
+            break
+          }
+
+          // ** swallows a segment, and continue.
+          this.debug('globstar swallow a segment, and continue')
+          fr++
+        }
+      }
+
+      // no match was found.
+      // However, in partial mode, we can't say this is necessarily over.
+      // If there's more *pattern* left, then
+      if (partial) {
+        // ran out of file
+        this.debug('\n>>> no match, partial?', file, fr, pattern, pr)
+        if (fr === fl) return true
+      }
+      return false
+    }
+
+    // something other than **
+    // non-magic patterns just have to match exactly
+    // patterns with magic have been turned into regexps.
+    var hit
+    if (typeof p === 'string') {
+      if (options.nocase) {
+        hit = f.toLowerCase() === p.toLowerCase()
+      } else {
+        hit = f === p
+      }
+      this.debug('string match', p, f, hit)
+    } else {
+      hit = f.match(p)
+      this.debug('pattern match', p, f, hit)
+    }
+
+    if (!hit) return false
+  }
+
+  // Note: ending in / means that we'll get a final ""
+  // at the end of the pattern.  This can only match a
+  // corresponding "" at the end of the file.
+  // If the file ends in /, then it can only match a
+  // a pattern that ends in /, unless the pattern just
+  // doesn't have any more for it. But, a/b/ should *not*
+  // match "a/b/*", even though "" matches against the
+  // [^/]*? pattern, except in partial mode, where it might
+  // simply not be reached yet.
+  // However, a/b/ should still satisfy a/*
+
+  // now either we fell off the end of the pattern, or we're done.
+  if (fi === fl && pi === pl) {
+    // ran out of pattern and filename at the same time.
+    // an exact hit!
+    return true
+  } else if (fi === fl) {
+    // ran out of file, but still had pattern left.
+    // this is ok if we're doing the match as part of
+    // a glob fs traversal.
+    return partial
+  } else if (pi === pl) {
+    // ran out of pattern, still have file left.
+    // this is only acceptable if we're on the very last
+    // empty segment of a file with a trailing slash.
+    // a/* should match a/b/
+    var emptyFileEnd = (fi === fl - 1) && (file[fi] === '')
+    return emptyFileEnd
+  }
+
+  // should be unreachable.
+  throw new Error('wtf?')
+}
+
+// replace stuff like \* with *
+function globUnescape (s) {
+  return s.replace(/\\(.)/g, '$1')
+}
+
+function regExpEscape (s) {
+  return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/npm-run-path/index.js":
+/*!********************************************!*\
+  !*** ./node_modules/npm-run-path/index.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const path = __webpack_require__(/*! path */ "path");
+const pathKey = __webpack_require__(/*! path-key */ "./node_modules/path-key/index.js");
+
+module.exports = opts => {
+	opts = Object.assign({
+		cwd: process.cwd(),
+		path: process.env[pathKey()]
+	}, opts);
+
+	let prev;
+	let pth = path.resolve(opts.cwd);
+	const ret = [];
+
+	while (prev !== pth) {
+		ret.push(path.join(pth, 'node_modules/.bin'));
+		prev = pth;
+		pth = path.resolve(pth, '..');
+	}
+
+	// ensure the running `node` binary is used
+	ret.push(path.dirname(process.execPath));
+
+	return ret.concat(opts.path).join(path.delimiter);
+};
+
+module.exports.env = opts => {
+	opts = Object.assign({
+		env: process.env
+	}, opts);
+
+	const env = Object.assign({}, opts.env);
+	const path = pathKey({env});
+
+	opts.path = env[path];
+	env[path] = module.exports(opts);
+
+	return env;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/object-assign/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/object-assign/index.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /*
 object-assign
 (c) Sindre Sorhus
 @license MIT
-*/var n=Object.getOwnPropertySymbols,i=Object.prototype.hasOwnProperty,o=Object.prototype.propertyIsEnumerable;t.exports=function(){try{if(!Object.assign)return!1;var t=new String("abc");if(t[5]="de","5"===Object.getOwnPropertyNames(t)[0])return!1;for(var e={},r=0;r<10;r++)e["_"+String.fromCharCode(r)]=r;if("0123456789"!==Object.getOwnPropertyNames(e).map(function(t){return e[t]}).join(""))return!1;var n={};return"abcdefghijklmnopqrst".split("").forEach(function(t){n[t]=t}),"abcdefghijklmnopqrst"===Object.keys(Object.assign({},n)).join("")}catch(t){return!1}}()?Object.assign:function(t,e){for(var r,s,a=function(t){if(null==t)throw new TypeError("Object.assign cannot be called with null or undefined");return Object(t)}(t),c=1;c<arguments.length;c++){for(var u in r=Object(arguments[c]))i.call(r,u)&&(a[u]=r[u]);if(n){s=n(r);for(var l=0;l<s.length;l++)o.call(r,s[l])&&(a[s[l]]=r[s[l]])}}return a}},function(t,e){t.exports=require("events")},function(t,e,r){t.exports=b;var n=r(1),i=r(13),o=r(6),s=(o.Minimatch,r(59)),a=r(11).EventEmitter,c=r(0),u=r(4),l=r(7),h=r(61),f=r(14),p=(f.alphasort,f.alphasorti,f.setopts),d=f.ownProp,v=r(62),m=(r(3),f.childrenIgnored),y=f.isIgnored,g=r(16);function b(t,e,r){if("function"==typeof e&&(r=e,e={}),e||(e={}),e.sync){if(r)throw new TypeError("callback provided to sync glob");return h(t,e)}return new E(t,e,r)}b.sync=h;var w=b.GlobSync=h.GlobSync;function E(t,e,r){if("function"==typeof e&&(r=e,e=null),e&&e.sync){if(r)throw new TypeError("callback provided to sync glob");return new w(t,e)}if(!(this instanceof E))return new E(t,e,r);p(this,t,e),this._didRealPath=!1;var n=this.minimatch.set.length;this.matches=new Array(n),"function"==typeof r&&(r=g(r),this.on("error",r),this.on("end",function(t){r(null,t)}));var i=this;if(this._processing=0,this._emitQueue=[],this._processQueue=[],this.paused=!1,this.noprocess)return this;if(0===n)return a();for(var o=!0,s=0;s<n;s++)this._process(this.minimatch.set[s],s,!1,a);function a(){--i._processing,i._processing<=0&&(o?process.nextTick(function(){i._finish()}):i._finish())}o=!1}b.glob=b,b.hasMagic=function(t,e){var r=function(t,e){if(null===e||"object"!=typeof e)return t;for(var r=Object.keys(e),n=r.length;n--;)t[r[n]]=e[r[n]];return t}({},e);r.noprocess=!0;var n=new E(t,r).minimatch.set;if(!t)return!1;if(n.length>1)return!0;for(var i=0;i<n[0].length;i++)if("string"!=typeof n[0][i])return!0;return!1},b.Glob=E,s(E,a),E.prototype._finish=function(){if(u(this instanceof E),!this.aborted){if(this.realpath&&!this._didRealpath)return this._realpath();f.finish(this),this.emit("end",this.found)}},E.prototype._realpath=function(){if(!this._didRealpath){this._didRealpath=!0;var t=this.matches.length;if(0===t)return this._finish();for(var e=this,r=0;r<this.matches.length;r++)this._realpathSet(r,n)}function n(){0==--t&&e._finish()}},E.prototype._realpathSet=function(t,e){var r=this.matches[t];if(!r)return e();var n=Object.keys(r),o=this,s=n.length;if(0===s)return e();var a=this.matches[t]=Object.create(null);n.forEach(function(r,n){r=o._makeAbs(r),i.realpath(r,o.realpathCache,function(n,i){n?"stat"===n.syscall?a[r]=!0:o.emit("error",n):a[i]=!0,0==--s&&(o.matches[t]=a,e())})})},E.prototype._mark=function(t){return f.mark(this,t)},E.prototype._makeAbs=function(t){return f.makeAbs(this,t)},E.prototype.abort=function(){this.aborted=!0,this.emit("abort")},E.prototype.pause=function(){this.paused||(this.paused=!0,this.emit("pause"))},E.prototype.resume=function(){if(this.paused){if(this.emit("resume"),this.paused=!1,this._emitQueue.length){var t=this._emitQueue.slice(0);this._emitQueue.length=0;for(var e=0;e<t.length;e++){var r=t[e];this._emitMatch(r[0],r[1])}}if(this._processQueue.length){var n=this._processQueue.slice(0);this._processQueue.length=0;for(e=0;e<n.length;e++){var i=n[e];this._processing--,this._process(i[0],i[1],i[2],i[3])}}}},E.prototype._process=function(t,e,r,n){if(u(this instanceof E),u("function"==typeof n),!this.aborted)if(this._processing++,this.paused)this._processQueue.push([t,e,r,n]);else{for(var i,s=0;"string"==typeof t[s];)s++;switch(s){case t.length:return void this._processSimple(t.join("/"),e,n);case 0:i=null;break;default:i=t.slice(0,s).join("/")}var a,c=t.slice(s);null===i?a=".":l(i)||l(t.join("/"))?(i&&l(i)||(i="/"+i),a=i):a=i;var h=this._makeAbs(a);if(m(this,a))return n();c[0]===o.GLOBSTAR?this._processGlobStar(i,a,h,c,e,r,n):this._processReaddir(i,a,h,c,e,r,n)}},E.prototype._processReaddir=function(t,e,r,n,i,o,s){var a=this;this._readdir(r,o,function(c,u){return a._processReaddir2(t,e,r,n,i,o,u,s)})},E.prototype._processReaddir2=function(t,e,r,n,i,o,s,a){if(!s)return a();for(var u=n[0],l=!!this.minimatch.negate,h=u._glob,f=this.dot||"."===h.charAt(0),p=[],d=0;d<s.length;d++){if("."!==(m=s[d]).charAt(0)||f)(l&&!t?!m.match(u):m.match(u))&&p.push(m)}var v=p.length;if(0===v)return a();if(1===n.length&&!this.mark&&!this.stat){this.matches[i]||(this.matches[i]=Object.create(null));for(d=0;d<v;d++){var m=p[d];t&&(m="/"!==t?t+"/"+m:t+m),"/"!==m.charAt(0)||this.nomount||(m=c.join(this.root,m)),this._emitMatch(i,m)}return a()}n.shift();for(d=0;d<v;d++){m=p[d];t&&(m="/"!==t?t+"/"+m:t+m),this._process([m].concat(n),i,o,a)}a()},E.prototype._emitMatch=function(t,e){if(!this.aborted&&!y(this,e))if(this.paused)this._emitQueue.push([t,e]);else{var r=l(e)?e:this._makeAbs(e);if(this.mark&&(e=this._mark(e)),this.absolute&&(e=r),!this.matches[t][e]){if(this.nodir){var n=this.cache[r];if("DIR"===n||Array.isArray(n))return}this.matches[t][e]=!0;var i=this.statCache[r];i&&this.emit("stat",e,i),this.emit("match",e)}}},E.prototype._readdirInGlobStar=function(t,e){if(!this.aborted){if(this.follow)return this._readdir(t,!1,e);var r=this,i=v("lstat\0"+t,function(n,i){if(n&&"ENOENT"===n.code)return e();var o=i&&i.isSymbolicLink();r.symlinks[t]=o,o||!i||i.isDirectory()?r._readdir(t,!1,e):(r.cache[t]="FILE",e())});i&&n.lstat(t,i)}},E.prototype._readdir=function(t,e,r){if(!this.aborted&&(r=v("readdir\0"+t+"\0"+e,r))){if(e&&!d(this.symlinks,t))return this._readdirInGlobStar(t,r);if(d(this.cache,t)){var i=this.cache[t];if(!i||"FILE"===i)return r();if(Array.isArray(i))return r(null,i)}n.readdir(t,function(t,e,r){return function(n,i){n?t._readdirError(e,n,r):t._readdirEntries(e,i,r)}}(this,t,r))}},E.prototype._readdirEntries=function(t,e,r){if(!this.aborted){if(!this.mark&&!this.stat)for(var n=0;n<e.length;n++){var i=e[n];i="/"===t?t+i:t+"/"+i,this.cache[i]=!0}return this.cache[t]=e,r(null,e)}},E.prototype._readdirError=function(t,e,r){if(!this.aborted){switch(e.code){case"ENOTSUP":case"ENOTDIR":var n=this._makeAbs(t);if(this.cache[n]="FILE",n===this.cwdAbs){var i=new Error(e.code+" invalid cwd "+this.cwd);i.path=this.cwd,i.code=e.code,this.emit("error",i),this.abort()}break;case"ENOENT":case"ELOOP":case"ENAMETOOLONG":case"UNKNOWN":this.cache[this._makeAbs(t)]=!1;break;default:this.cache[this._makeAbs(t)]=!1,this.strict&&(this.emit("error",e),this.abort()),this.silent||console.error("glob error",e)}return r()}},E.prototype._processGlobStar=function(t,e,r,n,i,o,s){var a=this;this._readdir(r,o,function(c,u){a._processGlobStar2(t,e,r,n,i,o,u,s)})},E.prototype._processGlobStar2=function(t,e,r,n,i,o,s,a){if(!s)return a();var c=n.slice(1),u=t?[t]:[],l=u.concat(c);this._process(l,i,!1,a);var h=this.symlinks[r],f=s.length;if(h&&o)return a();for(var p=0;p<f;p++){if("."!==s[p].charAt(0)||this.dot){var d=u.concat(s[p],c);this._process(d,i,!0,a);var v=u.concat(s[p],n);this._process(v,i,!0,a)}}a()},E.prototype._processSimple=function(t,e,r){var n=this;this._stat(t,function(i,o){n._processSimple2(t,e,i,o,r)})},E.prototype._processSimple2=function(t,e,r,n,i){if(this.matches[e]||(this.matches[e]=Object.create(null)),!n)return i();if(t&&l(t)&&!this.nomount){var o=/[\/\\]$/.test(t);"/"===t.charAt(0)?t=c.join(this.root,t):(t=c.resolve(this.root,t),o&&(t+="/"))}"win32"===process.platform&&(t=t.replace(/\\/g,"/")),this._emitMatch(e,t),i()},E.prototype._stat=function(t,e){var r=this._makeAbs(t),i="/"===t.slice(-1);if(t.length>this.maxLength)return e();if(!this.stat&&d(this.cache,r)){var o=this.cache[r];if(Array.isArray(o)&&(o="DIR"),!i||"DIR"===o)return e(null,o);if(i&&"FILE"===o)return e()}var s=this.statCache[r];if(void 0!==s){if(!1===s)return e(null,s);var a=s.isDirectory()?"DIR":"FILE";return i&&"FILE"===a?e():e(null,a,s)}var c=this,u=v("stat\0"+r,function(i,o){if(o&&o.isSymbolicLink())return n.stat(r,function(n,i){n?c._stat2(t,r,null,o,e):c._stat2(t,r,n,i,e)});c._stat2(t,r,i,o,e)});u&&n.lstat(r,u)},E.prototype._stat2=function(t,e,r,n,i){if(r&&("ENOENT"===r.code||"ENOTDIR"===r.code))return this.statCache[e]=!1,i();var o="/"===t.slice(-1);if(this.statCache[e]=n,"/"===e.slice(-1)&&n&&!n.isDirectory())return i(null,!1,n);var s=!0;return n&&(s=n.isDirectory()?"DIR":"FILE"),this.cache[e]=this.cache[e]||s,o&&"FILE"===s?i():i(null,s,n)}},function(t,e,r){t.exports=l,l.realpath=l,l.sync=h,l.realpathSync=h,l.monkeypatch=function(){n.realpath=l,n.realpathSync=h},l.unmonkeypatch=function(){n.realpath=i,n.realpathSync=o};var n=r(1),i=n.realpath,o=n.realpathSync,s=process.version,a=/^v[0-5]\./.test(s),c=r(55);function u(t){return t&&"realpath"===t.syscall&&("ELOOP"===t.code||"ENOMEM"===t.code||"ENAMETOOLONG"===t.code)}function l(t,e,r){if(a)return i(t,e,r);"function"==typeof e&&(r=e,e=null),i(t,e,function(n,i){u(n)?c.realpath(t,e,r):r(n,i)})}function h(t,e){if(a)return o(t,e);try{return o(t,e)}catch(r){if(u(r))return c.realpathSync(t,e);throw r}}},function(t,e,r){function n(t,e){return Object.prototype.hasOwnProperty.call(t,e)}e.alphasort=u,e.alphasorti=c,e.setopts=function(t,e,r){r||(r={});if(r.matchBase&&-1===e.indexOf("/")){if(r.noglobstar)throw new Error("base matching requires globstar");e="**/"+e}t.silent=!!r.silent,t.pattern=e,t.strict=!1!==r.strict,t.realpath=!!r.realpath,t.realpathCache=r.realpathCache||Object.create(null),t.follow=!!r.follow,t.dot=!!r.dot,t.mark=!!r.mark,t.nodir=!!r.nodir,t.nodir&&(t.mark=!0);t.sync=!!r.sync,t.nounique=!!r.nounique,t.nonull=!!r.nonull,t.nosort=!!r.nosort,t.nocase=!!r.nocase,t.stat=!!r.stat,t.noprocess=!!r.noprocess,t.absolute=!!r.absolute,t.maxLength=r.maxLength||1/0,t.cache=r.cache||Object.create(null),t.statCache=r.statCache||Object.create(null),t.symlinks=r.symlinks||Object.create(null),function(t,e){t.ignore=e.ignore||[],Array.isArray(t.ignore)||(t.ignore=[t.ignore]);t.ignore.length&&(t.ignore=t.ignore.map(l))}(t,r),t.changedCwd=!1;var o=process.cwd();n(r,"cwd")?(t.cwd=i.resolve(r.cwd),t.changedCwd=t.cwd!==o):t.cwd=o;t.root=r.root||i.resolve(t.cwd,"/"),t.root=i.resolve(t.root),"win32"===process.platform&&(t.root=t.root.replace(/\\/g,"/"));t.cwdAbs=s(t.cwd)?t.cwd:h(t,t.cwd),"win32"===process.platform&&(t.cwdAbs=t.cwdAbs.replace(/\\/g,"/"));t.nomount=!!r.nomount,r.nonegate=!0,r.nocomment=!0,t.minimatch=new a(e,r),t.options=t.minimatch.options},e.ownProp=n,e.makeAbs=h,e.finish=function(t){for(var e=t.nounique,r=e?[]:Object.create(null),n=0,i=t.matches.length;n<i;n++){var o=t.matches[n];if(o&&0!==Object.keys(o).length){var s=Object.keys(o);e?r.push.apply(r,s):s.forEach(function(t){r[t]=!0})}else if(t.nonull){var a=t.minimatch.globSet[n];e?r.push(a):r[a]=!0}}e||(r=Object.keys(r));t.nosort||(r=r.sort(t.nocase?c:u));if(t.mark){for(var n=0;n<r.length;n++)r[n]=t._mark(r[n]);t.nodir&&(r=r.filter(function(e){var r=!/\/$/.test(e),n=t.cache[e]||t.cache[h(t,e)];return r&&n&&(r="DIR"!==n&&!Array.isArray(n)),r}))}t.ignore.length&&(r=r.filter(function(e){return!f(t,e)}));t.found=r},e.mark=function(t,e){var r=h(t,e),n=t.cache[r],i=e;if(n){var o="DIR"===n||Array.isArray(n),s="/"===e.slice(-1);if(o&&!s?i+="/":!o&&s&&(i=i.slice(0,-1)),i!==e){var a=h(t,i);t.statCache[a]=t.statCache[r],t.cache[a]=t.cache[r]}}return i},e.isIgnored=f,e.childrenIgnored=function(t,e){return!!t.ignore.length&&t.ignore.some(function(t){return!(!t.gmatcher||!t.gmatcher.match(e))})};var i=r(0),o=r(6),s=r(7),a=o.Minimatch;function c(t,e){return t.toLowerCase().localeCompare(e.toLowerCase())}function u(t,e){return t.localeCompare(e)}function l(t){var e=null;if("/**"===t.slice(-3)){var r=t.replace(/(\/\*\*)+$/,"");e=new a(r,{dot:!0})}return{matcher:new a(t,{dot:!0}),gmatcher:e}}function h(t,e){var r=e;return r="/"===e.charAt(0)?i.join(t.root,e):s(e)||""===e?e:t.changedCwd?i.resolve(t.cwd,e):i.resolve(e),"win32"===process.platform&&(r=r.replace(/\\/g,"/")),r}function f(t,e){return!!t.ignore.length&&t.ignore.some(function(t){return t.matcher.match(e)||!(!t.gmatcher||!t.gmatcher.match(e))})}},function(t,e){t.exports=function t(e,r){if(e&&r)return t(e)(r);if("function"!=typeof e)throw new TypeError("need wrapper function");Object.keys(e).forEach(function(t){n[t]=e[t]});return n;function n(){for(var t=new Array(arguments.length),r=0;r<t.length;r++)t[r]=arguments[r];var n=e.apply(this,t),i=t[t.length-1];return"function"==typeof n&&n!==i&&Object.keys(i).forEach(function(t){n[t]=i[t]}),n}}},function(t,e,r){var n=r(15);function i(t){var e=function(){return e.called?e.value:(e.called=!0,e.value=t.apply(this,arguments))};return e.called=!1,e}function o(t){var e=function(){if(e.called)throw new Error(e.onceError);return e.called=!0,e.value=t.apply(this,arguments)},r=t.name||"Function wrapped with `once`";return e.onceError=r+" shouldn't be called more than once",e.called=!1,e}t.exports=n(i),t.exports.strict=n(o),i.proto=i(function(){Object.defineProperty(Function.prototype,"once",{value:function(){return i(this)},configurable:!0}),Object.defineProperty(Function.prototype,"onceStrict",{value:function(){return o(this)},configurable:!0})})},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.changePermissions=e.downloadFile=e.getPath=void 0;var n=r(2),i=c(n),o=c(r(1)),s=c(r(0)),a=c(r(66));function c(t){return t&&t.__esModule?t:{default:t}}e.getPath=function(){var t=(n.remote||i.default).app.getPath("userData");return s.default.resolve(t+"/extensions")};var u=(n.remote||i.default).net,l=u?u.request:a.default.get;e.downloadFile=function t(e,r){return new Promise(function(n,i){var s=l(e);s.on("response",function(e){if(e.statusCode>=300&&e.statusCode<400&&e.headers.location)return t(e.headers.location,r).then(n).catch(i);e.pipe(o.default.createWriteStream(r)).on("close",n)}),s.on("error",i),s.end()})},e.changePermissions=function t(e,r){o.default.readdirSync(e).forEach(function(n){var i=s.default.join(e,n);o.default.chmodSync(i,parseInt(r,8)),o.default.statSync(i).isDirectory()&&t(i,r)})}},function(t,e){t.exports=require("url")},function(t,e,r){"use strict";const n=r(21);t.exports=()=>{"darwin"===process.platform&&(process.env.PATH=n.sync()||["./node_modules/.bin","/.nodebrew/current/bin","/usr/local/bin",process.env.PATH].join(":"))}},function(t,e,r){"use strict";r.r(e);var n=r(2),i=r(0),o=r(18),s=r(19);let a;r.n(s)()();const c=async()=>{(a=new n.BrowserWindow({width:800,height:600,title:"Ktl"})).loadURL(o.format({pathname:i.join(__dirname,"index.html"),protocol:"file:",slashes:!0})),a.on("closed",()=>{a=null})};n.app.on("ready",c),n.app.on("window-all-closed",()=>{"darwin"!==process.platform&&n.app.quit()}),n.app.on("activate",()=>{null===a&&c()})},function(t,e,r){"use strict";const n=r(22);t.exports=()=>n().then(t=>t.PATH),t.exports.sync=()=>n.sync().PATH},function(t,e,r){"use strict";const n=r(23),i=r(48),o=r(50),s=["-ilc","env; exit"];function a(t){const e={};return i(t).split("\n").forEach(t=>{const r=t.split("=");e[r.shift()]=r.join("=")}),e}t.exports=t=>"win32"===process.platform?Promise.resolve(process.env):n(t||o,s).then(t=>a(t.stdout)).catch(e=>{if(t)throw e;return process.env}),t.exports.sync=t=>{if("win32"===process.platform)return process.env;try{return a(n.sync(t||o,s).stdout)}catch(e){if(t)throw e;return process.env}}},function(t,e,r){"use strict";const n=r(5),i=r(3),o=r(24),s=r(35),a=r(36),c=r(38),u=r(39),l=r(44),h=r(45),f=r(47),p=1e7;function d(t,e,r){let n;return r&&!0===r.__winShell?(delete r.__winShell,n={command:t,args:e,options:r,file:t,original:t}):n=o._parse(t,e,r),(r=Object.assign({maxBuffer:p,stripEof:!0,preferLocal:!0,encoding:"utf8",reject:!0,cleanup:!0},n.options)).preferLocal&&(r.env=a.env(r)),{cmd:n.command,args:n.args,opts:r}}function v(t,e){return e&&t.stripEof&&(e=s(e)),e}function m(t,e,r){let n="/bin/sh",i=["-c",e];return r=Object.assign({},r),"win32"===process.platform&&(r.__winShell=!0,n=process.env.comspec||"cmd.exe",i=["/s","/c",`"${e}"`],r.windowsVerbatimArguments=!0),r.shell&&(n=r.shell,delete r.shell),t(n,i,r)}function y(t,e,r,n){if(!t[e])return null;let i;return(i=r?u(t[e],{encoding:r,maxBuffer:n}):u.buffer(t[e],{maxBuffer:n})).catch(t=>{throw t.stream=e,t.message=`${e} ${t.message}`,t})}t.exports=(t,e,r)=>{let i=t;Array.isArray(e)&&e.length>0&&(i+=" "+e.join(" "));const s=d(t,e,r),a=s.opts.encoding,u=s.opts.maxBuffer;let p,m;try{p=n.spawn(s.cmd,s.args,s.opts)}catch(t){return Promise.reject(t)}s.opts.cleanup&&(m=h(()=>{p.kill()}));let g=null,b=!1;const w=()=>{g&&(clearTimeout(g),g=null)};s.opts.timeout>0&&(g=setTimeout(()=>{g=null,b=!0,p.kill(s.killSignal)},s.opts.timeout));const E=new Promise(t=>{p.on("exit",(e,r)=>{w(),t({code:e,signal:r})}),p.on("error",e=>{w(),t({err:e})})});const x=l(Promise.all([E,y(p,"stdout",a,u),y(p,"stderr",a,u)]).then(t=>{const e=t[0],r=t[1],n=t[2];let o=e.err;const a=e.code,c=e.signal;if(m&&m(),o||0!==a||null!==c){if(o||((o=new Error(`Command failed: ${i}\n${n}${r}`)).code=a<0?f(a):a),o.killed=o.killed||p.killed,o.stdout=r,o.stderr=n,o.failed=!0,o.signal=c||null,o.cmd=i,o.timedOut=b,!s.opts.reject)return o;throw o}return{stdout:v(s.opts,r),stderr:v(s.opts,n),code:0,failed:!1,killed:!1,signal:null,cmd:i,timedOut:!1}}),function(){p.stdout&&p.stdout.destroy(),p.stderr&&p.stderr.destroy()});return o._enoent.hookChildProcess(p,s),function(t,e){const r=e.input;null!=r&&(c(r)?r.pipe(t.stdin):t.stdin.end(r))}(p,s.opts),p.then=x.then.bind(x),p.catch=x.catch.bind(x),p},t.exports.stdout=function(){return t.exports.apply(null,arguments).then(t=>t.stdout)},t.exports.stderr=function(){return t.exports.apply(null,arguments).then(t=>t.stderr)},t.exports.shell=(e,r)=>m(t.exports,e,r),t.exports.sync=(t,e,r)=>{const i=d(t,e,r);if(c(i.opts.input))throw new TypeError("The `input` option cannot be a stream in sync mode");const o=n.spawnSync(i.cmd,i.args,i.opts);return o.stdout=v(i.opts,o.stdout),o.stderr=v(i.opts,o.stderr),o},t.exports.shellSync=(e,r)=>m(t.exports.sync,e,r),t.exports.spawn=i.deprecate(t.exports,"execa.spawn() is deprecated. Use execa() instead.")},function(t,e,r){"use strict";var n=r(5),i=r(25),o=r(34),s=n.spawnSync;function a(t,e,r){var s,a;return s=i(t,e,r),a=n.spawn(s.command,s.args,s.options),o.hookChildProcess(a,s),a}t.exports=a,t.exports.spawn=a,t.exports.sync=function(t,e,n){var a,c;if(!s)try{s=r(!function(){var t=new Error("Cannot find module 'spawn-sync'");throw t.code="MODULE_NOT_FOUND",t}())}catch(t){throw new Error("In order to use spawnSync on node 0.10 or older, you must install spawn-sync:\n\n  npm install spawn-sync --save")}return a=i(t,e,n),(c=s(a.command,a.args,a.options)).error=c.error||o.verifyENOENTSync(c.status,a),c},t.exports._parse=i,t.exports._enoent=o},function(t,e,r){"use strict";var n=r(1),i=r(8),o=r(9),s=r(33),a="win32"===process.platform,c=new i({max:50,maxAge:3e4});function u(t,e){return t=""+t,t=e?'"'+(t=(t=t.replace(/(\\*)"/g,'$1$1\\"')).replace(/(\\*)$/,"$1$1"))+'"':t.replace(/([\(\)%!\^<>&|;,"'\s])/g,"^$1")}function l(t){return!/\.(?:com|exe)$/i.test(t)}t.exports=function(t,e,r){var i,h,f,p,d;return e&&!Array.isArray(e)&&(r=e,e=null),e=e?e.slice(0):[],r=r||{},p=t,a&&(i=(f=(f=o(t))||o(t,!0))&&function(t){var e,r,i,o;if(c.has(t))return c.get(t);e=new Buffer(150);try{r=n.openSync(t,"r"),n.readSync(r,e,0,150,0),n.closeSync(r)}catch(t){}return(i=e.toString().trim().match(/#!(.+)/i))&&(o=i[1].replace(/\/usr\/bin\/env\s+/i,"")),c.set(t,o),o}(f),d=r.shell||s,i?(e.unshift(f),t=i,d=d||l(o(i)||o(i,!0))):d=d||l(f),d&&(h="echo"!==t,e=["/s","/c",'"'+(t=function(t){return/^[a-z0-9_-]+$/i.test(t)?t:u(t,!0)}(t))+((e=e.map(function(t){return u(t,h)})).length?" "+e.join(" "):"")+'"'],t=process.env.comspec||"cmd.exe",r.windowsVerbatimArguments=!0)),{command:t,args:e,options:r,file:f,original:p}}},function(t,e,r){"pseudomap"===process.env.npm_package_name&&"test"===process.env.npm_lifecycle_script&&(process.env.TEST_PSEUDOMAP="true"),"function"!=typeof Map||process.env.TEST_PSEUDOMAP?t.exports=r(27):t.exports=Map},function(t,e){var r=Object.prototype.hasOwnProperty;function n(t){if(!(this instanceof n))throw new TypeError("Constructor PseudoMap requires 'new'");if(this.clear(),t)if(t instanceof n||"function"==typeof Map&&t instanceof Map)t.forEach(function(t,e){this.set(e,t)},this);else{if(!Array.isArray(t))throw new TypeError("invalid argument");t.forEach(function(t){this.set(t[0],t[1])},this)}}function i(t,e){return t===e||t!=t&&e!=e}function o(t,e,r){this.key=t,this.value=e,this._index=r}function s(t,e){for(var n=0,o="_"+e,s=o;r.call(t,s);s=o+n++)if(i(t[s].key,e))return t[s]}t.exports=n,n.prototype.forEach=function(t,e){e=e||this,Object.keys(this._data).forEach(function(r){"size"!==r&&t.call(e,this._data[r].value,this._data[r].key)},this)},n.prototype.has=function(t){return!!s(this._data,t)},n.prototype.get=function(t){var e=s(this._data,t);return e&&e.value},n.prototype.set=function(t,e){!function(t,e,n){for(var s=0,a="_"+e,c=a;r.call(t,c);c=a+s++)if(i(t[c].key,e))return void(t[c].value=n);t.size++,t[c]=new o(e,n,c)}(this._data,t,e)},n.prototype.delete=function(t){var e=s(this._data,t);e&&(delete this._data[e._index],this._data.size--)},n.prototype.clear=function(){var t=Object.create(null);t.size=0,Object.defineProperty(this,"_data",{value:t,enumerable:!1,configurable:!0,writable:!1})},Object.defineProperty(n.prototype,"size",{get:function(){return this._data.size},set:function(t){},enumerable:!0,configurable:!0}),n.prototype.values=n.prototype.keys=n.prototype.entries=function(){throw new Error("iterators are not implemented in this version")}},function(t,e){function r(t){var e=this;if(e instanceof r||(e=new r),e.tail=null,e.head=null,e.length=0,t&&"function"==typeof t.forEach)t.forEach(function(t){e.push(t)});else if(arguments.length>0)for(var n=0,i=arguments.length;n<i;n++)e.push(arguments[n]);return e}function n(t,e){t.tail=new o(e,t.tail,null,t),t.head||(t.head=t.tail),t.length++}function i(t,e){t.head=new o(e,null,t.head,t),t.tail||(t.tail=t.head),t.length++}function o(t,e,r,n){if(!(this instanceof o))return new o(t,e,r,n);this.list=n,this.value=t,e?(e.next=this,this.prev=e):this.prev=null,r?(r.prev=this,this.next=r):this.next=null}t.exports=r,r.Node=o,r.create=r,r.prototype.removeNode=function(t){if(t.list!==this)throw new Error("removing node which does not belong to this list");var e=t.next,r=t.prev;e&&(e.prev=r),r&&(r.next=e),t===this.head&&(this.head=e),t===this.tail&&(this.tail=r),t.list.length--,t.next=null,t.prev=null,t.list=null},r.prototype.unshiftNode=function(t){if(t!==this.head){t.list&&t.list.removeNode(t);var e=this.head;t.list=this,t.next=e,e&&(e.prev=t),this.head=t,this.tail||(this.tail=t),this.length++}},r.prototype.pushNode=function(t){if(t!==this.tail){t.list&&t.list.removeNode(t);var e=this.tail;t.list=this,t.prev=e,e&&(e.next=t),this.tail=t,this.head||(this.head=t),this.length++}},r.prototype.push=function(){for(var t=0,e=arguments.length;t<e;t++)n(this,arguments[t]);return this.length},r.prototype.unshift=function(){for(var t=0,e=arguments.length;t<e;t++)i(this,arguments[t]);return this.length},r.prototype.pop=function(){if(this.tail){var t=this.tail.value;return this.tail=this.tail.prev,this.tail?this.tail.next=null:this.head=null,this.length--,t}},r.prototype.shift=function(){if(this.head){var t=this.head.value;return this.head=this.head.next,this.head?this.head.prev=null:this.tail=null,this.length--,t}},r.prototype.forEach=function(t,e){e=e||this;for(var r=this.head,n=0;null!==r;n++)t.call(e,r.value,n,this),r=r.next},r.prototype.forEachReverse=function(t,e){e=e||this;for(var r=this.tail,n=this.length-1;null!==r;n--)t.call(e,r.value,n,this),r=r.prev},r.prototype.get=function(t){for(var e=0,r=this.head;null!==r&&e<t;e++)r=r.next;if(e===t&&null!==r)return r.value},r.prototype.getReverse=function(t){for(var e=0,r=this.tail;null!==r&&e<t;e++)r=r.prev;if(e===t&&null!==r)return r.value},r.prototype.map=function(t,e){e=e||this;for(var n=new r,i=this.head;null!==i;)n.push(t.call(e,i.value,this)),i=i.next;return n},r.prototype.mapReverse=function(t,e){e=e||this;for(var n=new r,i=this.tail;null!==i;)n.push(t.call(e,i.value,this)),i=i.prev;return n},r.prototype.reduce=function(t,e){var r,n=this.head;if(arguments.length>1)r=e;else{if(!this.head)throw new TypeError("Reduce of empty list with no initial value");n=this.head.next,r=this.head.value}for(var i=0;null!==n;i++)r=t(r,n.value,i),n=n.next;return r},r.prototype.reduceReverse=function(t,e){var r,n=this.tail;if(arguments.length>1)r=e;else{if(!this.tail)throw new TypeError("Reduce of empty list with no initial value");n=this.tail.prev,r=this.tail.value}for(var i=this.length-1;null!==n;i--)r=t(r,n.value,i),n=n.prev;return r},r.prototype.toArray=function(){for(var t=new Array(this.length),e=0,r=this.head;null!==r;e++)t[e]=r.value,r=r.next;return t},r.prototype.toArrayReverse=function(){for(var t=new Array(this.length),e=0,r=this.tail;null!==r;e++)t[e]=r.value,r=r.prev;return t},r.prototype.slice=function(t,e){(e=e||this.length)<0&&(e+=this.length),(t=t||0)<0&&(t+=this.length);var n=new r;if(e<t||e<0)return n;t<0&&(t=0),e>this.length&&(e=this.length);for(var i=0,o=this.head;null!==o&&i<t;i++)o=o.next;for(;null!==o&&i<e;i++,o=o.next)n.push(o.value);return n},r.prototype.sliceReverse=function(t,e){(e=e||this.length)<0&&(e+=this.length),(t=t||0)<0&&(t+=this.length);var n=new r;if(e<t||e<0)return n;t<0&&(t=0),e>this.length&&(e=this.length);for(var i=this.length,o=this.tail;null!==o&&i>e;i--)o=o.prev;for(;null!==o&&i>t;i--,o=o.prev)n.push(o.value);return n},r.prototype.reverse=function(){for(var t=this.head,e=this.tail,r=t;null!==r;r=r.prev){var n=r.prev;r.prev=r.next,r.next=n}return this.head=e,this.tail=t,this}},function(t,e,r){t.exports=u,u.sync=function(t,e){for(var r=c(t,e=e||{}),n=r.env,o=r.ext,u=r.extExe,l=[],h=0,f=n.length;h<f;h++){var p=n[h];'"'===p.charAt(0)&&'"'===p.slice(-1)&&(p=p.slice(1,-1));var d=i.join(p,t);!p&&/^\.[\\\/]/.test(t)&&(d=t.slice(0,2)+d);for(var v=0,m=o.length;v<m;v++){var y=d+o[v];try{if(s.sync(y,{pathExt:u})){if(!e.all)return y;l.push(y)}}catch(t){}}}if(e.all&&l.length)return l;if(e.nothrow)return null;throw a(t)};var n="win32"===process.platform||"cygwin"===process.env.OSTYPE||"msys"===process.env.OSTYPE,i=r(0),o=n?";":":",s=r(30);function a(t){var e=new Error("not found: "+t);return e.code="ENOENT",e}function c(t,e){var r=e.colon||o,i=e.path||process.env.PATH||"",s=[""];i=i.split(r);var a="";return n&&(i.unshift(process.cwd()),s=(a=e.pathExt||process.env.PATHEXT||".EXE;.CMD;.BAT;.COM").split(r),-1!==t.indexOf(".")&&""!==s[0]&&s.unshift("")),(t.match(/\//)||n&&t.match(/\\/))&&(i=[""]),{env:i,ext:s,extExe:a}}function u(t,e,r){"function"==typeof e&&(r=e,e={});var n=c(t,e),o=n.env,u=n.ext,l=n.extExe,h=[];!function n(c,f){if(c===f)return e.all&&h.length?r(null,h):r(a(t));var p=o[c];'"'===p.charAt(0)&&'"'===p.slice(-1)&&(p=p.slice(1,-1));var d=i.join(p,t);!p&&/^\.[\\\/]/.test(t)&&(d=t.slice(0,2)+d),function t(i,o){if(i===o)return n(c+1,f);var a=u[i];s(d+a,{pathExt:l},function(n,s){if(!n&&s){if(!e.all)return r(null,d+a);h.push(d+a)}return t(i+1,o)})}(0,u.length)}(0,o.length)}},function(t,e,r){var n;r(1);function i(t,e,r){if("function"==typeof e&&(r=e,e={}),!r){if("function"!=typeof Promise)throw new TypeError("callback not provided");return new Promise(function(r,n){i(t,e||{},function(t,e){t?n(t):r(e)})})}n(t,e||{},function(t,n){t&&("EACCES"===t.code||e&&e.ignoreErrors)&&(t=null,n=!1),r(t,n)})}n="win32"===process.platform||global.TESTING_WINDOWS?r(31):r(32),t.exports=i,i.sync=function(t,e){try{return n.sync(t,e||{})}catch(t){if(e&&e.ignoreErrors||"EACCES"===t.code)return!1;throw t}}},function(t,e,r){t.exports=o,o.sync=function(t,e){return i(n.statSync(t),t,e)};var n=r(1);function i(t,e,r){return!(!t.isSymbolicLink()&&!t.isFile())&&function(t,e){var r=void 0!==e.pathExt?e.pathExt:process.env.PATHEXT;if(!r)return!0;if(-1!==(r=r.split(";")).indexOf(""))return!0;for(var n=0;n<r.length;n++){var i=r[n].toLowerCase();if(i&&t.substr(-i.length).toLowerCase()===i)return!0}return!1}(e,r)}function o(t,e,r){n.stat(t,function(n,o){r(n,!n&&i(o,t,e))})}},function(t,e,r){t.exports=i,i.sync=function(t,e){return o(n.statSync(t),e)};var n=r(1);function i(t,e,r){n.stat(t,function(t,n){r(t,!t&&o(n,e))})}function o(t,e){return t.isFile()&&function(t,e){var r=t.mode,n=t.uid,i=t.gid,o=void 0!==e.uid?e.uid:process.getuid&&process.getuid(),s=void 0!==e.gid?e.gid:process.getgid&&process.getgid(),a=parseInt("100",8),c=parseInt("010",8),u=parseInt("001",8),l=a|c;return r&u||r&c&&i===s||r&a&&n===o||r&l&&0===o}(t,e)}},function(t,e,r){"use strict";t.exports=function(){if("win32"!==process.platform)return!1;var t=process.version.substr(1).split(".").map(function(t){return parseInt(t,10)});return 0===t[0]&&t[1]<12}()},function(t,e,r){"use strict";var n="win32"===process.platform,i=r(9),o=0===process.version.indexOf("v0.10.");function s(t,e){var r;return(r=new Error(e+" "+t+" ENOENT")).code=r.errno="ENOENT",r.syscall=e+" "+t,r}function a(t,e){return n&&1===t&&!e.file?s(e.original,"spawn"):null}t.exports.hookChildProcess=function(t,e){var r;n&&(r=t.emit,t.emit=function(n,i){var o;return"exit"===n&&(o=a(i,e))?r.call(t,"error",o):r.apply(t,arguments)})},t.exports.verifyENOENT=a,t.exports.verifyENOENTSync=function(t,e){return n&&1===t&&!e.file?s(e.original,"spawnSync"):o&&-1===t&&(e.file=n?e.file:i(e.original),!e.file)?s(e.original,"spawnSync"):null},t.exports.notFoundError=s},function(t,e,r){"use strict";t.exports=function(t){var e="string"==typeof t?"\n":"\n".charCodeAt(),r="string"==typeof t?"\r":"\r".charCodeAt();return t[t.length-1]===e&&(t=t.slice(0,t.length-1)),t[t.length-1]===r&&(t=t.slice(0,t.length-1)),t}},function(t,e,r){"use strict";const n=r(0),i=r(37);t.exports=t=>{let e;t=Object.assign({cwd:process.cwd(),path:process.env[i()]},t);let r=n.resolve(t.cwd);const o=[];for(;e!==r;)o.push(n.join(r,"node_modules/.bin")),e=r,r=n.resolve(r,"..");return o.push(n.dirname(process.execPath)),o.concat(t.path).join(n.delimiter)},t.exports.env=e=>{e=Object.assign({env:process.env},e);const r=Object.assign({},e.env),n=i({env:r});return e.path=r[n],r[n]=t.exports(e),r}},function(t,e,r){"use strict";t.exports=t=>{const e=(t=t||{}).env||process.env;return"win32"!==(t.platform||process.platform)?"PATH":Object.keys(e).find(t=>"PATH"===t.toUpperCase())||"Path"}},function(t,e,r){"use strict";var n=t.exports=function(t){return null!==t&&"object"==typeof t&&"function"==typeof t.pipe};n.writable=function(t){return n(t)&&!1!==t.writable&&"function"==typeof t._write&&"object"==typeof t._writableState},n.readable=function(t){return n(t)&&!1!==t.readable&&"function"==typeof t._read&&"object"==typeof t._readableState},n.duplex=function(t){return n.writable(t)&&n.readable(t)},n.transform=function(t){return n.duplex(t)&&"function"==typeof t._transform&&"object"==typeof t._transformState}},function(t,e,r){"use strict";var n=r(40),i=r(10),o=r(42);function s(t,e){if(!t)return n.reject(new Error("Expected a stream"));var r,s,a=(e=i({maxBuffer:1/0},e)).maxBuffer,c=new n(function(n,i){function c(t){t&&(t.bufferedData=r.getBufferedValue()),i(t)}r=o(e),t.once("error",c),t.pipe(r),r.on("data",function(){r.getBufferedLength()>a&&i(new Error("maxBuffer exceeded"))}),r.once("error",c),r.on("end",n),s=function(){t.unpipe&&t.unpipe(r)}});return c.then(s,s),c.then(function(){return r.getBufferedValue()})}t.exports=s,t.exports.buffer=function(t,e){return s(t,i({},e,{encoding:"buffer"}))},t.exports.array=function(t,e){return s(t,i({},e,{array:!0}))}},function(t,e,r){"use strict";t.exports="function"==typeof Promise?Promise:r(41)},function(t,e,r){"use strict";var n,i="pending",o="settled",s="fulfilled",a="rejected",c=function(){},u="undefined"!=typeof global&&void 0!==global.process&&"function"==typeof global.process.emit,l="undefined"==typeof setImmediate?setTimeout:setImmediate,h=[];function f(){for(var t=0;t<h.length;t++)h[t][0](h[t][1]);h=[],n=!1}function p(t,e){h.push([t,e]),n||(n=!0,l(f,0))}function d(t){var e=t.owner,r=e._state,n=e._data,i=t[r],o=t.then;if("function"==typeof i){r=s;try{n=i(n)}catch(t){g(o,t)}}v(o,n)||(r===s&&m(o,n),r===a&&g(o,n))}function v(t,e){var r;try{if(t===e)throw new TypeError("A promises callback cannot return that same promise.");if(e&&("function"==typeof e||"object"==typeof e)){var n=e.then;if("function"==typeof n)return n.call(e,function(n){r||(r=!0,e===n?y(t,n):m(t,n))},function(e){r||(r=!0,g(t,e))}),!0}}catch(e){return r||g(t,e),!0}return!1}function m(t,e){t!==e&&v(t,e)||y(t,e)}function y(t,e){t._state===i&&(t._state=o,t._data=e,p(w,t))}function g(t,e){t._state===i&&(t._state=o,t._data=e,p(E,t))}function b(t){t._then=t._then.forEach(d)}function w(t){t._state=s,b(t)}function E(t){t._state=a,b(t),!t._handled&&u&&global.process.emit("unhandledRejection",t._data,t)}function x(t){global.process.emit("rejectionHandled",t)}function _(t){if("function"!=typeof t)throw new TypeError("Promise resolver "+t+" is not a function");if(this instanceof _==!1)throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");this._then=[],function(t,e){function r(t){g(e,t)}try{t(function(t){m(e,t)},r)}catch(t){r(t)}}(t,this)}_.prototype={constructor:_,_state:i,_then:null,_data:void 0,_handled:!1,then:function(t,e){var r={owner:this,then:new this.constructor(c),fulfilled:t,rejected:e};return!e&&!t||this._handled||(this._handled=!0,this._state===a&&u&&p(x,this)),this._state===s||this._state===a?p(d,r):this._then.push(r),r.then},catch:function(t){return this.then(null,t)}},_.all=function(t){if(!Array.isArray(t))throw new TypeError("You must pass an array to Promise.all().");return new _(function(e,r){var n=[],i=0;function o(t){return i++,function(r){n[t]=r,--i||e(n)}}for(var s,a=0;a<t.length;a++)(s=t[a])&&"function"==typeof s.then?s.then(o(a),r):n[a]=s;i||e(n)})},_.race=function(t){if(!Array.isArray(t))throw new TypeError("You must pass an array to Promise.race().");return new _(function(e,r){for(var n,i=0;i<t.length;i++)(n=t[i])&&"function"==typeof n.then?n.then(e,r):e(n)})},_.resolve=function(t){return t&&"object"==typeof t&&t.constructor===_?t:new _(function(e){e(t)})},_.reject=function(t){return new _(function(e,r){r(t)})},t.exports=_},function(t,e,r){var n=r(43).PassThrough,i=r(10);t.exports=function(t){var e=(t=i({},t)).array,r=t.encoding,o="buffer"===r,s=!1;e?s=!(r||o):r=r||"utf8",o&&(r=null);var a=0,c=[],u=new n({objectMode:s});return r&&u.setEncoding(r),u.on("data",function(t){c.push(t),s?a=c.length:a+=t.length}),u.getBufferedValue=function(){return e?c:o?Buffer.concat(c,a):c.join("")},u.getBufferedLength=function(){return a},u}},function(t,e){t.exports=require("stream")},function(t,e,r){"use strict";t.exports=(t,e)=>(e=e||(()=>{}),t.then(t=>new Promise(t=>{t(e())}).then(()=>t),t=>new Promise(t=>{t(e())}).then(()=>{throw t})))},function(t,e,r){var n,i=r(4),o=r(46),s=r(11);function a(){l&&(l=!1,o.forEach(function(t){try{process.removeListener(t,u[t])}catch(t){}}),process.emit=d,process.reallyExit=f,n.count-=1)}function c(t,e,r){n.emitted[t]||(n.emitted[t]=!0,n.emit(t,e,r))}"function"!=typeof s&&(s=s.EventEmitter),process.__signal_exit_emitter__?n=process.__signal_exit_emitter__:((n=process.__signal_exit_emitter__=new s).count=0,n.emitted={}),n.infinite||(n.setMaxListeners(1/0),n.infinite=!0),t.exports=function(t,e){i.equal(typeof t,"function","a callback must be provided for exit handler"),!1===l&&h();var r="exit";e&&e.alwaysLast&&(r="afterexit");return n.on(r,t),function(){n.removeListener(r,t),0===n.listeners("exit").length&&0===n.listeners("afterexit").length&&a()}},t.exports.unload=a;var u={};o.forEach(function(t){u[t]=function(){process.listeners(t).length===n.count&&(a(),c("exit",null,t),c("afterexit",null,t),process.kill(process.pid,t))}}),t.exports.signals=function(){return o},t.exports.load=h;var l=!1;function h(){l||(l=!0,n.count+=1,o=o.filter(function(t){try{return process.on(t,u[t]),!0}catch(t){return!1}}),process.emit=v,process.reallyExit=p)}var f=process.reallyExit;function p(t){process.exitCode=t||0,c("exit",process.exitCode,null),c("afterexit",process.exitCode,null),f.call(process,process.exitCode)}var d=process.emit;function v(t,e){if("exit"===t){void 0!==e&&(process.exitCode=e);var r=d.apply(this,arguments);return c("exit",process.exitCode,null),c("afterexit",process.exitCode,null),r}return d.apply(this,arguments)}},function(t,e){t.exports=["SIGABRT","SIGALRM","SIGHUP","SIGINT","SIGTERM"],"win32"!==process.platform&&t.exports.push("SIGVTALRM","SIGXCPU","SIGXFSZ","SIGUSR2","SIGTRAP","SIGSYS","SIGQUIT","SIGIOT"),"linux"===process.platform&&t.exports.push("SIGIO","SIGPOLL","SIGPWR","SIGSTKFLT","SIGUNUSED")},function(t,e,r){"use strict";let n;try{if("function"!=typeof(n=process.binding("uv")).errname)throw new Error("uv.errname is not a function")}catch(t){console.error("execa/lib/errname: unable to establish process.binding('uv')",t),n=null}function i(t,e){if(t)return t.errname(e);if(!(e<0))throw new Error("err >= 0");return`Unknown system error ${e}`}t.exports=t=>i(n,t),t.exports.__test__=i},function(t,e,r){"use strict";var n=r(49)();t.exports=function(t){return"string"==typeof t?t.replace(n,""):t}},function(t,e,r){"use strict";t.exports=function(){return/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]/g}},function(t,e,r){"use strict";t.exports=(()=>{const t=process.env;return"darwin"===process.platform?t.SHELL||"/bin/bash":"win32"===process.platform?t.COMSPEC||"cmd.exe":t.SHELL||"/bin/sh"})()},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.MOBX_DEVTOOLS=e.APOLLO_DEVELOPER_TOOLS=e.CYCLEJS_DEVTOOL=e.REACT_PERF=e.REDUX_DEVTOOLS=e.VUEJS_DEVTOOLS=e.ANGULARJS_BATARANG=e.JQUERY_DEBUGGER=e.BACKBONE_DEBUGGER=e.REACT_DEVELOPER_TOOLS=e.EMBER_INSPECTOR=void 0;var n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},i=r(2),o=h(i),s=h(r(1)),a=h(r(0)),c=h(r(52)),u=h(r(53)),l=r(17);function h(t){return t&&t.__esModule?t:{default:t}}var f=(i.remote||o.default).BrowserWindow,p={},d=a.default.resolve((0,l.getPath)(),"IDMap.json");if(s.default.existsSync(d))try{p=JSON.parse(s.default.readFileSync(d,"utf8"))}catch(t){console.error("electron-devtools-installer: Invalid JSON present in the IDMap file")}e.default=function t(e){var r=arguments.length>1&&void 0!==arguments[1]&&arguments[1];if(Array.isArray(e))return Promise.all(e.map(function(e){return t(e,r)}));var i=void 0;if("object"===(void 0===e?"undefined":n(e))&&e.id){i=e.id;var o=process.versions.electron.split("-")[0];if(!c.default.satisfies(o,e.electron))return Promise.reject(new Error("Version of Electron: "+o+" does not match required range "+e.electron+" for extension "+i))}else{if("string"!=typeof e)return Promise.reject(new Error('Invalid extensionReference passed in: "'+e+'"'));i=e}var a=p[i],l=a&&f.getDevToolsExtensions&&f.getDevToolsExtensions()[a];return!r&&l?Promise.resolve(p[i]):(0,u.default)(i,r).then(function(t){l&&f.removeDevToolsExtension(a);var e,r,n,o=f.addDevToolsExtension(t);return s.default.writeFileSync(d,JSON.stringify(Object.assign(p,(n=o,(r=i)in(e={})?Object.defineProperty(e,r,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[r]=n,e)))),Promise.resolve(o)})};e.EMBER_INSPECTOR={id:"bmdblncegkenkacieihfhpjfppoconhi",electron:">=1.2.1"},e.REACT_DEVELOPER_TOOLS={id:"fmkadmapgofadopljbjfkapdkoienihi",electron:">=1.2.1"},e.BACKBONE_DEBUGGER={id:"bhljhndlimiafopmmhjlgfpnnchjjbhd",electron:">=1.2.1"},e.JQUERY_DEBUGGER={id:"dbhhnnnpaeobfddmlalhnehgclcmjimi",electron:">=1.2.1"},e.ANGULARJS_BATARANG={id:"ighdmehidhipcmcojjgiloacoafjmpfk",electron:">=1.2.1"},e.VUEJS_DEVTOOLS={id:"nhdogjmejiglipccpnnnanhbledajbpd",electron:">=1.2.1"},e.REDUX_DEVTOOLS={id:"lmhkpmbekcpmknklioeibfkpmmfibljd",electron:">=1.2.1"},e.REACT_PERF={id:"hacmcodfllhbnekmghgdlplbdnahmhmm",electron:">=1.2.6"},e.CYCLEJS_DEVTOOL={id:"dfgplfmhhmdekalbpejekgfegkonjpfp",electron:">=1.2.1"},e.APOLLO_DEVELOPER_TOOLS={id:"jdkknkkbebbapilgoeccciglkfbmbnfm",electron:">=1.2.1"},e.MOBX_DEVTOOLS={id:"pfgnfdagidkfgccljigdamigbcnndkod",electron:">=1.2.1"}},function(t,e){var r;e=t.exports=X,r="object"==typeof process&&process.env&&process.env.NODE_DEBUG&&/\bsemver\b/i.test(process.env.NODE_DEBUG)?function(){var t=Array.prototype.slice.call(arguments,0);t.unshift("SEMVER"),console.log.apply(console,t)}:function(){},e.SEMVER_SPEC_VERSION="2.0.0";var n=256,i=Number.MAX_SAFE_INTEGER||9007199254740991,o=e.re=[],s=e.src=[],a=0,c=a++;s[c]="0|[1-9]\\d*";var u=a++;s[u]="[0-9]+";var l=a++;s[l]="\\d*[a-zA-Z-][a-zA-Z0-9-]*";var h=a++;s[h]="("+s[c]+")\\.("+s[c]+")\\.("+s[c]+")";var f=a++;s[f]="("+s[u]+")\\.("+s[u]+")\\.("+s[u]+")";var p=a++;s[p]="(?:"+s[c]+"|"+s[l]+")";var d=a++;s[d]="(?:"+s[u]+"|"+s[l]+")";var v=a++;s[v]="(?:-("+s[p]+"(?:\\."+s[p]+")*))";var m=a++;s[m]="(?:-?("+s[d]+"(?:\\."+s[d]+")*))";var y=a++;s[y]="[0-9A-Za-z-]+";var g=a++;s[g]="(?:\\+("+s[y]+"(?:\\."+s[y]+")*))";var b=a++,w="v?"+s[h]+s[v]+"?"+s[g]+"?";s[b]="^"+w+"$";var E="[v=\\s]*"+s[f]+s[m]+"?"+s[g]+"?",x=a++;s[x]="^"+E+"$";var _=a++;s[_]="((?:<|>)?=?)";var O=a++;s[O]=s[u]+"|x|X|\\*";var S=a++;s[S]=s[c]+"|x|X|\\*";var j=a++;s[j]="[v=\\s]*("+s[S]+")(?:\\.("+s[S]+")(?:\\.("+s[S]+")(?:"+s[v]+")?"+s[g]+"?)?)?";var k=a++;s[k]="[v=\\s]*("+s[O]+")(?:\\.("+s[O]+")(?:\\.("+s[O]+")(?:"+s[m]+")?"+s[g]+"?)?)?";var A=a++;s[A]="^"+s[_]+"\\s*"+s[j]+"$";var T=a++;s[T]="^"+s[_]+"\\s*"+s[k]+"$";var P=a++;s[P]="(?:^|[^\\d])(\\d{1,16})(?:\\.(\\d{1,16}))?(?:\\.(\\d{1,16}))?(?:$|[^\\d])";var R=a++;s[R]="(?:~>?)";var N=a++;s[N]="(\\s*)"+s[R]+"\\s+",o[N]=new RegExp(s[N],"g");var I=a++;s[I]="^"+s[R]+s[j]+"$";var L=a++;s[L]="^"+s[R]+s[k]+"$";var C=a++;s[C]="(?:\\^)";var D=a++;s[D]="(\\s*)"+s[C]+"\\s+",o[D]=new RegExp(s[D],"g");var M=a++;s[M]="^"+s[C]+s[j]+"$";var G=a++;s[G]="^"+s[C]+s[k]+"$";var $=a++;s[$]="^"+s[_]+"\\s*("+E+")$|^$";var B=a++;s[B]="^"+s[_]+"\\s*("+w+")$|^$";var U=a++;s[U]="(\\s*)"+s[_]+"\\s*("+E+"|"+s[j]+")",o[U]=new RegExp(s[U],"g");var z=a++;s[z]="^\\s*("+s[j]+")\\s+-\\s+("+s[j]+")\\s*$";var q=a++;s[q]="^\\s*("+s[k]+")\\s+-\\s+("+s[k]+")\\s*$";var F=a++;s[F]="(<|>)?=?\\s*\\*";for(var V=0;V<35;V++)r(V,s[V]),o[V]||(o[V]=new RegExp(s[V]));function H(t,e){if(e&&"object"==typeof e||(e={loose:!!e,includePrerelease:!1}),t instanceof X)return t;if("string"!=typeof t)return null;if(t.length>n)return null;if(!(e.loose?o[x]:o[b]).test(t))return null;try{return new X(t,e)}catch(t){return null}}function X(t,e){if(e&&"object"==typeof e||(e={loose:!!e,includePrerelease:!1}),t instanceof X){if(t.loose===e.loose)return t;t=t.version}else if("string"!=typeof t)throw new TypeError("Invalid Version: "+t);if(t.length>n)throw new TypeError("version is longer than "+n+" characters");if(!(this instanceof X))return new X(t,e);r("SemVer",t,e),this.options=e,this.loose=!!e.loose;var s=t.trim().match(e.loose?o[x]:o[b]);if(!s)throw new TypeError("Invalid Version: "+t);if(this.raw=t,this.major=+s[1],this.minor=+s[2],this.patch=+s[3],this.major>i||this.major<0)throw new TypeError("Invalid major version");if(this.minor>i||this.minor<0)throw new TypeError("Invalid minor version");if(this.patch>i||this.patch<0)throw new TypeError("Invalid patch version");s[4]?this.prerelease=s[4].split(".").map(function(t){if(/^[0-9]+$/.test(t)){var e=+t;if(e>=0&&e<i)return e}return t}):this.prerelease=[],this.build=s[5]?s[5].split("."):[],this.format()}e.parse=H,e.valid=function(t,e){var r=H(t,e);return r?r.version:null},e.clean=function(t,e){var r=H(t.trim().replace(/^[=v]+/,""),e);return r?r.version:null},e.SemVer=X,X.prototype.format=function(){return this.version=this.major+"."+this.minor+"."+this.patch,this.prerelease.length&&(this.version+="-"+this.prerelease.join(".")),this.version},X.prototype.toString=function(){return this.version},X.prototype.compare=function(t){return r("SemVer.compare",this.version,this.options,t),t instanceof X||(t=new X(t,this.options)),this.compareMain(t)||this.comparePre(t)},X.prototype.compareMain=function(t){return t instanceof X||(t=new X(t,this.options)),Y(this.major,t.major)||Y(this.minor,t.minor)||Y(this.patch,t.patch)},X.prototype.comparePre=function(t){if(t instanceof X||(t=new X(t,this.options)),this.prerelease.length&&!t.prerelease.length)return-1;if(!this.prerelease.length&&t.prerelease.length)return 1;if(!this.prerelease.length&&!t.prerelease.length)return 0;var e=0;do{var n=this.prerelease[e],i=t.prerelease[e];if(r("prerelease compare",e,n,i),void 0===n&&void 0===i)return 0;if(void 0===i)return 1;if(void 0===n)return-1;if(n!==i)return Y(n,i)}while(++e)},X.prototype.inc=function(t,e){switch(t){case"premajor":this.prerelease.length=0,this.patch=0,this.minor=0,this.major++,this.inc("pre",e);break;case"preminor":this.prerelease.length=0,this.patch=0,this.minor++,this.inc("pre",e);break;case"prepatch":this.prerelease.length=0,this.inc("patch",e),this.inc("pre",e);break;case"prerelease":0===this.prerelease.length&&this.inc("patch",e),this.inc("pre",e);break;case"major":0===this.minor&&0===this.patch&&0!==this.prerelease.length||this.major++,this.minor=0,this.patch=0,this.prerelease=[];break;case"minor":0===this.patch&&0!==this.prerelease.length||this.minor++,this.patch=0,this.prerelease=[];break;case"patch":0===this.prerelease.length&&this.patch++,this.prerelease=[];break;case"pre":if(0===this.prerelease.length)this.prerelease=[0];else{for(var r=this.prerelease.length;--r>=0;)"number"==typeof this.prerelease[r]&&(this.prerelease[r]++,r=-2);-1===r&&this.prerelease.push(0)}e&&(this.prerelease[0]===e?isNaN(this.prerelease[1])&&(this.prerelease=[e,0]):this.prerelease=[e,0]);break;default:throw new Error("invalid increment argument: "+t)}return this.format(),this.raw=this.version,this},e.inc=function(t,e,r,n){"string"==typeof r&&(n=r,r=void 0);try{return new X(t,r).inc(e,n).version}catch(t){return null}},e.diff=function(t,e){if(K(t,e))return null;var r=H(t),n=H(e),i="";if(r.prerelease.length||n.prerelease.length){i="pre";var o="prerelease"}for(var s in r)if(("major"===s||"minor"===s||"patch"===s)&&r[s]!==n[s])return i+s;return o},e.compareIdentifiers=Y;var Q=/^[0-9]+$/;function Y(t,e){var r=Q.test(t),n=Q.test(e);return r&&n&&(t=+t,e=+e),t===e?0:r&&!n?-1:n&&!r?1:t<e?-1:1}function W(t,e,r){return new X(t,r).compare(new X(e,r))}function J(t,e,r){return W(t,e,r)>0}function Z(t,e,r){return W(t,e,r)<0}function K(t,e,r){return 0===W(t,e,r)}function tt(t,e,r){return 0!==W(t,e,r)}function et(t,e,r){return W(t,e,r)>=0}function rt(t,e,r){return W(t,e,r)<=0}function nt(t,e,r,n){switch(e){case"===":return"object"==typeof t&&(t=t.version),"object"==typeof r&&(r=r.version),t===r;case"!==":return"object"==typeof t&&(t=t.version),"object"==typeof r&&(r=r.version),t!==r;case"":case"=":case"==":return K(t,r,n);case"!=":return tt(t,r,n);case">":return J(t,r,n);case">=":return et(t,r,n);case"<":return Z(t,r,n);case"<=":return rt(t,r,n);default:throw new TypeError("Invalid operator: "+e)}}function it(t,e){if(e&&"object"==typeof e||(e={loose:!!e,includePrerelease:!1}),t instanceof it){if(t.loose===!!e.loose)return t;t=t.value}if(!(this instanceof it))return new it(t,e);r("comparator",t,e),this.options=e,this.loose=!!e.loose,this.parse(t),this.semver===ot?this.value="":this.value=this.operator+this.semver.version,r("comp",this)}e.rcompareIdentifiers=function(t,e){return Y(e,t)},e.major=function(t,e){return new X(t,e).major},e.minor=function(t,e){return new X(t,e).minor},e.patch=function(t,e){return new X(t,e).patch},e.compare=W,e.compareLoose=function(t,e){return W(t,e,!0)},e.rcompare=function(t,e,r){return W(e,t,r)},e.sort=function(t,r){return t.sort(function(t,n){return e.compare(t,n,r)})},e.rsort=function(t,r){return t.sort(function(t,n){return e.rcompare(t,n,r)})},e.gt=J,e.lt=Z,e.eq=K,e.neq=tt,e.gte=et,e.lte=rt,e.cmp=nt,e.Comparator=it;var ot={};function st(t,e){if(e&&"object"==typeof e||(e={loose:!!e,includePrerelease:!1}),t instanceof st)return t.loose===!!e.loose&&t.includePrerelease===!!e.includePrerelease?t:new st(t.raw,e);if(t instanceof it)return new st(t.value,e);if(!(this instanceof st))return new st(t,e);if(this.options=e,this.loose=!!e.loose,this.includePrerelease=!!e.includePrerelease,this.raw=t,this.set=t.split(/\s*\|\|\s*/).map(function(t){return this.parseRange(t.trim())},this).filter(function(t){return t.length}),!this.set.length)throw new TypeError("Invalid SemVer Range: "+t);this.format()}function at(t){return!t||"x"===t.toLowerCase()||"*"===t}function ct(t,e,r,n,i,o,s,a,c,u,l,h,f){return((e=at(r)?"":at(n)?">="+r+".0.0":at(i)?">="+r+"."+n+".0":">="+e)+" "+(a=at(c)?"":at(u)?"<"+(+c+1)+".0.0":at(l)?"<"+c+"."+(+u+1)+".0":h?"<="+c+"."+u+"."+l+"-"+h:"<="+a)).trim()}function ut(t,e,n){for(var i=0;i<t.length;i++)if(!t[i].test(e))return!1;if(e.prerelease.length&&!n.includePrerelease){for(i=0;i<t.length;i++)if(r(t[i].semver),t[i].semver!==ot&&t[i].semver.prerelease.length>0){var o=t[i].semver;if(o.major===e.major&&o.minor===e.minor&&o.patch===e.patch)return!0}return!1}return!0}function lt(t,e,r){try{e=new st(e,r)}catch(t){return!1}return e.test(t)}function ht(t,e,r,n){var i,o,s,a,c;switch(t=new X(t,n),e=new st(e,n),r){case">":i=J,o=rt,s=Z,a=">",c=">=";break;case"<":i=Z,o=et,s=J,a="<",c="<=";break;default:throw new TypeError('Must provide a hilo val of "<" or ">"')}if(lt(t,e,n))return!1;for(var u=0;u<e.set.length;++u){var l=e.set[u],h=null,f=null;if(l.forEach(function(t){t.semver===ot&&(t=new it(">=0.0.0")),h=h||t,f=f||t,i(t.semver,h.semver,n)?h=t:s(t.semver,f.semver,n)&&(f=t)}),h.operator===a||h.operator===c)return!1;if((!f.operator||f.operator===a)&&o(t,f.semver))return!1;if(f.operator===c&&s(t,f.semver))return!1}return!0}it.prototype.parse=function(t){var e=this.options.loose?o[$]:o[B],r=t.match(e);if(!r)throw new TypeError("Invalid comparator: "+t);this.operator=r[1],"="===this.operator&&(this.operator=""),r[2]?this.semver=new X(r[2],this.options.loose):this.semver=ot},it.prototype.toString=function(){return this.value},it.prototype.test=function(t){return r("Comparator.test",t,this.options.loose),this.semver===ot||("string"==typeof t&&(t=new X(t,this.options)),nt(t,this.operator,this.semver,this.options))},it.prototype.intersects=function(t,e){if(!(t instanceof it))throw new TypeError("a Comparator is required");var r;if(e&&"object"==typeof e||(e={loose:!!e,includePrerelease:!1}),""===this.operator)return r=new st(t.value,e),lt(this.value,r,e);if(""===t.operator)return r=new st(this.value,e),lt(t.semver,r,e);var n=!(">="!==this.operator&&">"!==this.operator||">="!==t.operator&&">"!==t.operator),i=!("<="!==this.operator&&"<"!==this.operator||"<="!==t.operator&&"<"!==t.operator),o=this.semver.version===t.semver.version,s=!(">="!==this.operator&&"<="!==this.operator||">="!==t.operator&&"<="!==t.operator),a=nt(this.semver,"<",t.semver,e)&&(">="===this.operator||">"===this.operator)&&("<="===t.operator||"<"===t.operator),c=nt(this.semver,">",t.semver,e)&&("<="===this.operator||"<"===this.operator)&&(">="===t.operator||">"===t.operator);return n||i||o&&s||a||c},e.Range=st,st.prototype.format=function(){return this.range=this.set.map(function(t){return t.join(" ").trim()}).join("||").trim(),this.range},st.prototype.toString=function(){return this.range},st.prototype.parseRange=function(t){var e=this.options.loose;t=t.trim();var n=e?o[q]:o[z];t=t.replace(n,ct),r("hyphen replace",t),t=t.replace(o[U],"$1$2$3"),r("comparator trim",t,o[U]),t=(t=(t=t.replace(o[N],"$1~")).replace(o[D],"$1^")).split(/\s+/).join(" ");var i=e?o[$]:o[B],s=t.split(" ").map(function(t){return function(t,e){return r("comp",t,e),t=function(t,e){return t.trim().split(/\s+/).map(function(t){return function(t,e){r("caret",t,e);var n=e.loose?o[G]:o[M];return t.replace(n,function(e,n,i,o,s){var a;return r("caret",t,e,n,i,o,s),at(n)?a="":at(i)?a=">="+n+".0.0 <"+(+n+1)+".0.0":at(o)?a="0"===n?">="+n+"."+i+".0 <"+n+"."+(+i+1)+".0":">="+n+"."+i+".0 <"+(+n+1)+".0.0":s?(r("replaceCaret pr",s),a="0"===n?"0"===i?">="+n+"."+i+"."+o+"-"+s+" <"+n+"."+i+"."+(+o+1):">="+n+"."+i+"."+o+"-"+s+" <"+n+"."+(+i+1)+".0":">="+n+"."+i+"."+o+"-"+s+" <"+(+n+1)+".0.0"):(r("no pr"),a="0"===n?"0"===i?">="+n+"."+i+"."+o+" <"+n+"."+i+"."+(+o+1):">="+n+"."+i+"."+o+" <"+n+"."+(+i+1)+".0":">="+n+"."+i+"."+o+" <"+(+n+1)+".0.0"),r("caret return",a),a})}(t,e)}).join(" ")}(t,e),r("caret",t),t=function(t,e){return t.trim().split(/\s+/).map(function(t){return function(t,e){var n=e.loose?o[L]:o[I];return t.replace(n,function(e,n,i,o,s){var a;return r("tilde",t,e,n,i,o,s),at(n)?a="":at(i)?a=">="+n+".0.0 <"+(+n+1)+".0.0":at(o)?a=">="+n+"."+i+".0 <"+n+"."+(+i+1)+".0":s?(r("replaceTilde pr",s),a=">="+n+"."+i+"."+o+"-"+s+" <"+n+"."+(+i+1)+".0"):a=">="+n+"."+i+"."+o+" <"+n+"."+(+i+1)+".0",r("tilde return",a),a})}(t,e)}).join(" ")}(t,e),r("tildes",t),t=function(t,e){return r("replaceXRanges",t,e),t.split(/\s+/).map(function(t){return function(t,e){t=t.trim();var n=e.loose?o[T]:o[A];return t.replace(n,function(e,n,i,o,s,a){r("xRange",t,e,n,i,o,s,a);var c=at(i),u=c||at(o),l=u||at(s),h=l;return"="===n&&h&&(n=""),c?e=">"===n||"<"===n?"<0.0.0":"*":n&&h?(u&&(o=0),s=0,">"===n?(n=">=",u?(i=+i+1,o=0,s=0):(o=+o+1,s=0)):"<="===n&&(n="<",u?i=+i+1:o=+o+1),e=n+i+"."+o+"."+s):u?e=">="+i+".0.0 <"+(+i+1)+".0.0":l&&(e=">="+i+"."+o+".0 <"+i+"."+(+o+1)+".0"),r("xRange return",e),e})}(t,e)}).join(" ")}(t,e),r("xrange",t),t=function(t,e){return r("replaceStars",t,e),t.trim().replace(o[F],"")}(t,e),r("stars",t),t}(t,this.options)},this).join(" ").split(/\s+/);return this.options.loose&&(s=s.filter(function(t){return!!t.match(i)})),s=s.map(function(t){return new it(t,this.options)},this)},st.prototype.intersects=function(t,e){if(!(t instanceof st))throw new TypeError("a Range is required");return this.set.some(function(r){return r.every(function(r){return t.set.some(function(t){return t.every(function(t){return r.intersects(t,e)})})})})},e.toComparators=function(t,e){return new st(t,e).set.map(function(t){return t.map(function(t){return t.value}).join(" ").trim().split(" ")})},st.prototype.test=function(t){if(!t)return!1;"string"==typeof t&&(t=new X(t,this.options));for(var e=0;e<this.set.length;e++)if(ut(this.set[e],t,this.options))return!0;return!1},e.satisfies=lt,e.maxSatisfying=function(t,e,r){var n=null,i=null;try{var o=new st(e,r)}catch(t){return null}return t.forEach(function(t){o.test(t)&&(n&&-1!==i.compare(t)||(i=new X(n=t,r)))}),n},e.minSatisfying=function(t,e,r){var n=null,i=null;try{var o=new st(e,r)}catch(t){return null}return t.forEach(function(t){o.test(t)&&(n&&1!==i.compare(t)||(i=new X(n=t,r)))}),n},e.minVersion=function(t,e){t=new st(t,e);var r=new X("0.0.0");if(t.test(r))return r;if(r=new X("0.0.0-0"),t.test(r))return r;r=null;for(var n=0;n<t.set.length;++n){var i=t.set[n];i.forEach(function(t){var e=new X(t.semver.version);switch(t.operator){case">":0===e.prerelease.length?e.patch++:e.prerelease.push(0),e.raw=e.format();case"":case">=":r&&!J(r,e)||(r=e);break;case"<":case"<=":break;default:throw new Error("Unexpected operation: "+t.operator)}})}if(r&&t.test(r))return r;return null},e.validRange=function(t,e){try{return new st(t,e).range||"*"}catch(t){return null}},e.ltr=function(t,e,r){return ht(t,e,"<",r)},e.gtr=function(t,e,r){return ht(t,e,">",r)},e.outside=ht,e.prerelease=function(t,e){var r=H(t,e);return r&&r.prerelease.length?r.prerelease:null},e.intersects=function(t,e,r){return t=new st(t,r),e=new st(e,r),t.intersects(e)},e.coerce=function(t){if(t instanceof X)return t;if("string"!=typeof t)return null;var e=t.match(o[P]);if(null==e)return null;return H(e[1]+"."+(e[2]||"0")+"."+(e[3]||"0"))}},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=c(r(1)),i=c(r(0)),o=c(r(54)),s=c(r(63)),a=r(17);function c(t){return t&&t.__esModule?t:{default:t}}e.default=function t(e,r){var c=arguments.length>2&&void 0!==arguments[2]?arguments[2]:5,u=(0,a.getPath)();n.default.existsSync(u)||n.default.mkdirSync(u);var l=i.default.resolve(u+"/"+e);return new Promise(function(u,h){if(!n.default.existsSync(l)||r){n.default.existsSync(l)&&o.default.sync(l);var f="https://clients2.google.com/service/update2/crx?response=redirect&x=id%3D"+e+"%26uc&prodversion=32",p=i.default.resolve(l+".crx");(0,a.downloadFile)(f,p).then(function(){(0,s.default)(p,l,function(t){if(t&&!n.default.existsSync(i.default.resolve(l,"manifest.json")))return h(t);(0,a.changePermissions)(l,755),u(l)})}).catch(function(n){if(console.log("Failed to fetch extension, trying "+(c-1)+" more times"),c<=1)return h(n);setTimeout(function(){t(e,r,c-1).then(u).catch(h)},200)})}else u(l)})}},function(t,e,r){t.exports=f,f.sync=y;var n=r(4),i=r(0),o=r(1),s=r(12),a=parseInt("666",8),c={nosort:!0,silent:!0},u=0,l="win32"===process.platform;function h(t){["unlink","chmod","stat","lstat","rmdir","readdir"].forEach(function(e){t[e]=t[e]||o[e],t[e+="Sync"]=t[e]||o[e]}),t.maxBusyTries=t.maxBusyTries||3,t.emfileWait=t.emfileWait||1e3,!1===t.glob&&(t.disableGlob=!0),t.disableGlob=t.disableGlob||!1,t.glob=t.glob||c}function f(t,e,r){"function"==typeof e&&(r=e,e={}),n(t,"rimraf: missing path"),n.equal(typeof t,"string","rimraf: path should be a string"),n.equal(typeof r,"function","rimraf: callback function required"),n(e,"rimraf: invalid options argument provided"),n.equal(typeof e,"object","rimraf: options should be object"),h(e);var i=0,o=null,a=0;if(e.disableGlob||!s.hasMagic(t))return c(null,[t]);function c(t,n){return t?r(t):0===(a=n.length)?r():void n.forEach(function(t){p(t,e,function n(s){if(s){if(("EBUSY"===s.code||"ENOTEMPTY"===s.code||"EPERM"===s.code)&&i<e.maxBusyTries)return i++,setTimeout(function(){p(t,e,n)},100*i);if("EMFILE"===s.code&&u<e.emfileWait)return setTimeout(function(){p(t,e,n)},u++);"ENOENT"===s.code&&(s=null)}u=0,function(t){o=o||t,0==--a&&r(o)}(s)})})}e.lstat(t,function(r,n){if(!r)return c(null,[t]);s(t,e.glob,c)})}function p(t,e,r){n(t),n(e),n("function"==typeof r),e.lstat(t,function(n,i){return n&&"ENOENT"===n.code?r(null):(n&&"EPERM"===n.code&&l&&d(t,e,n,r),i&&i.isDirectory()?m(t,e,n,r):void e.unlink(t,function(n){if(n){if("ENOENT"===n.code)return r(null);if("EPERM"===n.code)return l?d(t,e,n,r):m(t,e,n,r);if("EISDIR"===n.code)return m(t,e,n,r)}return r(n)}))})}function d(t,e,r,i){n(t),n(e),n("function"==typeof i),r&&n(r instanceof Error),e.chmod(t,a,function(n){n?i("ENOENT"===n.code?null:r):e.stat(t,function(n,o){n?i("ENOENT"===n.code?null:r):o.isDirectory()?m(t,e,r,i):e.unlink(t,i)})})}function v(t,e,r){n(t),n(e),r&&n(r instanceof Error);try{e.chmodSync(t,a)}catch(t){if("ENOENT"===t.code)return;throw r}try{var i=e.statSync(t)}catch(t){if("ENOENT"===t.code)return;throw r}i.isDirectory()?g(t,e,r):e.unlinkSync(t)}function m(t,e,r,o){n(t),n(e),r&&n(r instanceof Error),n("function"==typeof o),e.rmdir(t,function(s){!s||"ENOTEMPTY"!==s.code&&"EEXIST"!==s.code&&"EPERM"!==s.code?s&&"ENOTDIR"===s.code?o(r):o(s):function(t,e,r){n(t),n(e),n("function"==typeof r),e.readdir(t,function(n,o){if(n)return r(n);var s,a=o.length;if(0===a)return e.rmdir(t,r);o.forEach(function(n){f(i.join(t,n),e,function(n){if(!s)return n?r(s=n):void(0==--a&&e.rmdir(t,r))})})})}(t,e,o)})}function y(t,e){var r;if(h(e=e||{}),n(t,"rimraf: missing path"),n.equal(typeof t,"string","rimraf: path should be a string"),n(e,"rimraf: missing options"),n.equal(typeof e,"object","rimraf: options should be object"),e.disableGlob||!s.hasMagic(t))r=[t];else try{e.lstatSync(t),r=[t]}catch(n){r=s.sync(t,e.glob)}if(r.length)for(var i=0;i<r.length;i++){t=r[i];try{var o=e.lstatSync(t)}catch(r){if("ENOENT"===r.code)return;"EPERM"===r.code&&l&&v(t,e,r)}try{o&&o.isDirectory()?g(t,e,null):e.unlinkSync(t)}catch(r){if("ENOENT"===r.code)return;if("EPERM"===r.code)return l?v(t,e,r):g(t,e,r);if("EISDIR"!==r.code)throw r;g(t,e,r)}}}function g(t,e,r){n(t),n(e),r&&n(r instanceof Error);try{e.rmdirSync(t)}catch(o){if("ENOENT"===o.code)return;if("ENOTDIR"===o.code)throw r;"ENOTEMPTY"!==o.code&&"EEXIST"!==o.code&&"EPERM"!==o.code||function(t,e){n(t),n(e),e.readdirSync(t).forEach(function(r){y(i.join(t,r),e)});var r=l?100:1,o=0;for(;;){var s=!0;try{var a=e.rmdirSync(t,e);return s=!1,a}finally{if(++o<r&&s)continue}}}(t,e)}}},function(t,e,r){var n=r(0),i="win32"===process.platform,o=r(1),s=process.env.NODE_DEBUG&&/fs/.test(process.env.NODE_DEBUG);function a(t){return"function"==typeof t?t:function(){var t;if(s){var e=new Error;t=function(t){t&&(e.message=t.message,r(t=e))}}else t=r;return t;function r(t){if(t){if(process.throwDeprecation)throw t;if(!process.noDeprecation){var e="fs: missing callback "+(t.stack||t.message);process.traceDeprecation?console.trace(e):console.error(e)}}}}()}n.normalize;if(i)var c=/(.*?)(?:[\/\\]+|$)/g;else c=/(.*?)(?:[\/]+|$)/g;if(i)var u=/^(?:[a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/][^\\\/]+)?[\\\/]*/;else u=/^[\/]*/;e.realpathSync=function(t,e){if(t=n.resolve(t),e&&Object.prototype.hasOwnProperty.call(e,t))return e[t];var r,s,a,l,h=t,f={},p={};function d(){var e=u.exec(t);r=e[0].length,s=e[0],a=e[0],l="",i&&!p[a]&&(o.lstatSync(a),p[a]=!0)}for(d();r<t.length;){c.lastIndex=r;var v=c.exec(t);if(l=s,s+=v[0],a=l+v[1],r=c.lastIndex,!(p[a]||e&&e[a]===a)){var m;if(e&&Object.prototype.hasOwnProperty.call(e,a))m=e[a];else{var y=o.lstatSync(a);if(!y.isSymbolicLink()){p[a]=!0,e&&(e[a]=a);continue}var g=null;if(!i){var b=y.dev.toString(32)+":"+y.ino.toString(32);f.hasOwnProperty(b)&&(g=f[b])}null===g&&(o.statSync(a),g=o.readlinkSync(a)),m=n.resolve(l,g),e&&(e[a]=m),i||(f[b]=g)}t=n.resolve(m,t.slice(r)),d()}}return e&&(e[h]=t),t},e.realpath=function(t,e,r){if("function"!=typeof r&&(r=a(e),e=null),t=n.resolve(t),e&&Object.prototype.hasOwnProperty.call(e,t))return process.nextTick(r.bind(null,null,e[t]));var s,l,h,f,p=t,d={},v={};function m(){var e=u.exec(t);s=e[0].length,l=e[0],h=e[0],f="",i&&!v[h]?o.lstat(h,function(t){if(t)return r(t);v[h]=!0,y()}):process.nextTick(y)}function y(){if(s>=t.length)return e&&(e[p]=t),r(null,t);c.lastIndex=s;var n=c.exec(t);return f=l,l+=n[0],h=f+n[1],s=c.lastIndex,v[h]||e&&e[h]===h?process.nextTick(y):e&&Object.prototype.hasOwnProperty.call(e,h)?w(e[h]):o.lstat(h,g)}function g(t,n){if(t)return r(t);if(!n.isSymbolicLink())return v[h]=!0,e&&(e[h]=h),process.nextTick(y);if(!i){var s=n.dev.toString(32)+":"+n.ino.toString(32);if(d.hasOwnProperty(s))return b(null,d[s],h)}o.stat(h,function(t){if(t)return r(t);o.readlink(h,function(t,e){i||(d[s]=e),b(t,e)})})}function b(t,i,o){if(t)return r(t);var s=n.resolve(f,i);e&&(e[o]=s),w(s)}function w(e){t=n.resolve(e,t.slice(s)),m()}m()}},function(t,e,r){var n=r(57),i=r(58);t.exports=function(t){if(!t)return[];"{}"===t.substr(0,2)&&(t="\\{\\}"+t.substr(2));return function t(e,r){var o=[];var s=i("{","}",e);if(!s||/\$$/.test(s.pre))return[e];var c=/^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(s.body);var u=/^[a-zA-Z]\.\.[a-zA-Z](?:\.\.-?\d+)?$/.test(s.body);var h=c||u;var m=s.body.indexOf(",")>=0;if(!h&&!m)return s.post.match(/,.*\}/)?(e=s.pre+"{"+s.body+a+s.post,t(e)):[e];var y;if(h)y=s.body.split(/\.\./);else if(1===(y=function t(e){if(!e)return[""];var r=[];var n=i("{","}",e);if(!n)return e.split(",");var o=n.pre;var s=n.body;var a=n.post;var c=o.split(",");c[c.length-1]+="{"+s+"}";var u=t(a);a.length&&(c[c.length-1]+=u.shift(),c.push.apply(c,u));r.push.apply(r,c);return r}(s.body)).length&&1===(y=t(y[0],!1).map(f)).length){var g=s.post.length?t(s.post,!1):[""];return g.map(function(t){return s.pre+y[0]+t})}var b=s.pre;var g=s.post.length?t(s.post,!1):[""];var w;if(h){var E=l(y[0]),x=l(y[1]),_=Math.max(y[0].length,y[1].length),O=3==y.length?Math.abs(l(y[2])):1,S=d,j=x<E;j&&(O*=-1,S=v);var k=y.some(p);w=[];for(var A=E;S(A,x);A+=O){var T;if(u)"\\"===(T=String.fromCharCode(A))&&(T="");else if(T=String(A),k){var P=_-T.length;if(P>0){var R=new Array(P+1).join("0");T=A<0?"-"+R+T.slice(1):R+T}}w.push(T)}}else w=n(y,function(e){return t(e,!1)});for(var N=0;N<w.length;N++)for(var I=0;I<g.length;I++){var L=b+w[N]+g[I];(!r||h||L)&&o.push(L)}return o}(function(t){return t.split("\\\\").join(o).split("\\{").join(s).split("\\}").join(a).split("\\,").join(c).split("\\.").join(u)}(t),!0).map(h)};var o="\0SLASH"+Math.random()+"\0",s="\0OPEN"+Math.random()+"\0",a="\0CLOSE"+Math.random()+"\0",c="\0COMMA"+Math.random()+"\0",u="\0PERIOD"+Math.random()+"\0";function l(t){return parseInt(t,10)==t?parseInt(t,10):t.charCodeAt(0)}function h(t){return t.split(o).join("\\").split(s).join("{").split(a).join("}").split(c).join(",").split(u).join(".")}function f(t){return"{"+t+"}"}function p(t){return/^-?0\d/.test(t)}function d(t,e){return t<=e}function v(t,e){return t>=e}},function(t,e){t.exports=function(t,e){for(var n=[],i=0;i<t.length;i++){var o=e(t[i],i);r(o)?n.push.apply(n,o):n.push(o)}return n};var r=Array.isArray||function(t){return"[object Array]"===Object.prototype.toString.call(t)}},function(t,e,r){"use strict";function n(t,e,r){t instanceof RegExp&&(t=i(t,r)),e instanceof RegExp&&(e=i(e,r));var n=o(t,e,r);return n&&{start:n[0],end:n[1],pre:r.slice(0,n[0]),body:r.slice(n[0]+t.length,n[1]),post:r.slice(n[1]+e.length)}}function i(t,e){var r=e.match(t);return r?r[0]:null}function o(t,e,r){var n,i,o,s,a,c=r.indexOf(t),u=r.indexOf(e,c+1),l=c;if(c>=0&&u>0){for(n=[],o=r.length;l>=0&&!a;)l==c?(n.push(l),c=r.indexOf(t,l+1)):1==n.length?a=[n.pop(),u]:((i=n.pop())<o&&(o=i,s=u),u=r.indexOf(e,l+1)),l=c<u&&c>=0?c:u;n.length&&(a=[o,s])}return a}t.exports=n,n.range=o},function(t,e,r){try{var n=r(3);if("function"!=typeof n.inherits)throw"";t.exports=n.inherits}catch(e){t.exports=r(60)}},function(t,e){"function"==typeof Object.create?t.exports=function(t,e){t.super_=e,t.prototype=Object.create(e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}})}:t.exports=function(t,e){t.super_=e;var r=function(){};r.prototype=e.prototype,t.prototype=new r,t.prototype.constructor=t}},function(t,e,r){t.exports=d,d.GlobSync=v;var n=r(1),i=r(13),o=r(6),s=(o.Minimatch,r(12).Glob,r(3),r(0)),a=r(4),c=r(7),u=r(14),l=(u.alphasort,u.alphasorti,u.setopts),h=u.ownProp,f=u.childrenIgnored,p=u.isIgnored;function d(t,e){if("function"==typeof e||3===arguments.length)throw new TypeError("callback provided to sync glob\nSee: https://github.com/isaacs/node-glob/issues/167");return new v(t,e).found}function v(t,e){if(!t)throw new Error("must provide pattern");if("function"==typeof e||3===arguments.length)throw new TypeError("callback provided to sync glob\nSee: https://github.com/isaacs/node-glob/issues/167");if(!(this instanceof v))return new v(t,e);if(l(this,t,e),this.noprocess)return this;var r=this.minimatch.set.length;this.matches=new Array(r);for(var n=0;n<r;n++)this._process(this.minimatch.set[n],n,!1);this._finish()}v.prototype._finish=function(){if(a(this instanceof v),this.realpath){var t=this;this.matches.forEach(function(e,r){var n=t.matches[r]=Object.create(null);for(var o in e)try{o=t._makeAbs(o),n[i.realpathSync(o,t.realpathCache)]=!0}catch(e){if("stat"!==e.syscall)throw e;n[t._makeAbs(o)]=!0}})}u.finish(this)},v.prototype._process=function(t,e,r){a(this instanceof v);for(var n,i=0;"string"==typeof t[i];)i++;switch(i){case t.length:return void this._processSimple(t.join("/"),e);case 0:n=null;break;default:n=t.slice(0,i).join("/")}var s,u=t.slice(i);null===n?s=".":c(n)||c(t.join("/"))?(n&&c(n)||(n="/"+n),s=n):s=n;var l=this._makeAbs(s);f(this,s)||(u[0]===o.GLOBSTAR?this._processGlobStar(n,s,l,u,e,r):this._processReaddir(n,s,l,u,e,r))},v.prototype._processReaddir=function(t,e,r,n,i,o){var a=this._readdir(r,o);if(a){for(var c=n[0],u=!!this.minimatch.negate,l=c._glob,h=this.dot||"."===l.charAt(0),f=[],p=0;p<a.length;p++){if("."!==(m=a[p]).charAt(0)||h)(u&&!t?!m.match(c):m.match(c))&&f.push(m)}var d=f.length;if(0!==d)if(1!==n.length||this.mark||this.stat){n.shift();for(p=0;p<d;p++){var v;m=f[p];v=t?[t,m]:[m],this._process(v.concat(n),i,o)}}else{this.matches[i]||(this.matches[i]=Object.create(null));for(var p=0;p<d;p++){var m=f[p];t&&(m="/"!==t.slice(-1)?t+"/"+m:t+m),"/"!==m.charAt(0)||this.nomount||(m=s.join(this.root,m)),this._emitMatch(i,m)}}}},v.prototype._emitMatch=function(t,e){if(!p(this,e)){var r=this._makeAbs(e);if(this.mark&&(e=this._mark(e)),this.absolute&&(e=r),!this.matches[t][e]){if(this.nodir){var n=this.cache[r];if("DIR"===n||Array.isArray(n))return}this.matches[t][e]=!0,this.stat&&this._stat(e)}}},v.prototype._readdirInGlobStar=function(t){if(this.follow)return this._readdir(t,!1);var e,r;try{r=n.lstatSync(t)}catch(t){if("ENOENT"===t.code)return null}var i=r&&r.isSymbolicLink();return this.symlinks[t]=i,i||!r||r.isDirectory()?e=this._readdir(t,!1):this.cache[t]="FILE",e},v.prototype._readdir=function(t,e){if(e&&!h(this.symlinks,t))return this._readdirInGlobStar(t);if(h(this.cache,t)){var r=this.cache[t];if(!r||"FILE"===r)return null;if(Array.isArray(r))return r}try{return this._readdirEntries(t,n.readdirSync(t))}catch(e){return this._readdirError(t,e),null}},v.prototype._readdirEntries=function(t,e){if(!this.mark&&!this.stat)for(var r=0;r<e.length;r++){var n=e[r];n="/"===t?t+n:t+"/"+n,this.cache[n]=!0}return this.cache[t]=e,e},v.prototype._readdirError=function(t,e){switch(e.code){case"ENOTSUP":case"ENOTDIR":var r=this._makeAbs(t);if(this.cache[r]="FILE",r===this.cwdAbs){var n=new Error(e.code+" invalid cwd "+this.cwd);throw n.path=this.cwd,n.code=e.code,n}break;case"ENOENT":case"ELOOP":case"ENAMETOOLONG":case"UNKNOWN":this.cache[this._makeAbs(t)]=!1;break;default:if(this.cache[this._makeAbs(t)]=!1,this.strict)throw e;this.silent||console.error("glob error",e)}},v.prototype._processGlobStar=function(t,e,r,n,i,o){var s=this._readdir(r,o);if(s){var a=n.slice(1),c=t?[t]:[],u=c.concat(a);this._process(u,i,!1);var l=s.length;if(!this.symlinks[r]||!o)for(var h=0;h<l;h++){if("."!==s[h].charAt(0)||this.dot){var f=c.concat(s[h],a);this._process(f,i,!0);var p=c.concat(s[h],n);this._process(p,i,!0)}}}},v.prototype._processSimple=function(t,e){var r=this._stat(t);if(this.matches[e]||(this.matches[e]=Object.create(null)),r){if(t&&c(t)&&!this.nomount){var n=/[\/\\]$/.test(t);"/"===t.charAt(0)?t=s.join(this.root,t):(t=s.resolve(this.root,t),n&&(t+="/"))}"win32"===process.platform&&(t=t.replace(/\\/g,"/")),this._emitMatch(e,t)}},v.prototype._stat=function(t){var e=this._makeAbs(t),r="/"===t.slice(-1);if(t.length>this.maxLength)return!1;if(!this.stat&&h(this.cache,e)){var i=this.cache[e];if(Array.isArray(i)&&(i="DIR"),!r||"DIR"===i)return i;if(r&&"FILE"===i)return!1}var o=this.statCache[e];if(!o){var s;try{s=n.lstatSync(e)}catch(t){if(t&&("ENOENT"===t.code||"ENOTDIR"===t.code))return this.statCache[e]=!1,!1}if(s&&s.isSymbolicLink())try{o=n.statSync(e)}catch(t){o=s}else o=s}this.statCache[e]=o;i=!0;return o&&(i=o.isDirectory()?"DIR":"FILE"),this.cache[e]=this.cache[e]||i,(!r||"FILE"!==i)&&i},v.prototype._mark=function(t){return u.mark(this,t)},v.prototype._makeAbs=function(t){return u.makeAbs(this,t)}},function(t,e,r){var n=r(15),i=Object.create(null),o=r(16);t.exports=n(function(t,e){return i[t]?(i[t].push(e),null):(i[t]=[e],function(t){return o(function e(){var r=i[t],n=r.length,o=function(t){for(var e=t.length,r=[],n=0;n<e;n++)r[n]=t[n];return r}(arguments);try{for(var s=0;s<n;s++)r[s].apply(null,o)}finally{r.length>n?(r.splice(0,n),process.nextTick(function(){e.apply(null,o)})):delete i[t]}})}(t))})},function(t,e,r){"use strict";var n=r(5).spawn,i=Array.prototype.slice,o="win32"===process.platform?function(t,e,n){s(r(64)["7z"],["x",t,"-y","-o"+e],n)}:function(t,e,r){s("unzip",["-o",t,"-d",e],r)};function s(t,e,r){var o,s;o=r,s=!1,r=function(){s||(s=!0,o.apply(this,i.call(arguments)))};var a=n(t,e,{stdio:"ignore"});a.on("error",function(t){r(t)}),a.on("exit",function(t){r(t?new Error("Exited with code "+t):null)})}o.unzip=o,t.exports=o},function(t,e,r){var n,i,o=r(0).resolve,s=r(65).bin;t.exports=(n=s,i=function(t){return o(__dirname,t)},Object.keys(n).reduce(function(t,e){return t[e]=i(n[e]),t},{}))},function(t){t.exports={_args:[["7zip@0.0.6","/Users/kangcheng/Documents/GitHub/kube"]],_development:!0,_from:"7zip@0.0.6",_id:"7zip@0.0.6",_inBundle:!1,_integrity:"sha1-nK+xca+CMpSQNTtIFvAzR6oVCjA=",_location:"/7zip",_phantomChildren:{},_requested:{type:"version",registry:!0,raw:"7zip@0.0.6",name:"7zip",escapedName:"7zip",rawSpec:"0.0.6",saveSpec:null,fetchSpec:"0.0.6"},_requiredBy:["/electron-devtools-installer"],_resolved:"https://registry.npmjs.org/7zip/-/7zip-0.0.6.tgz",_spec:"0.0.6",_where:"/Users/kangcheng/Documents/GitHub/kube",bin:{"7z":"7zip-lite/7z.exe"},bugs:{url:"https://github.com/fritx/win-7zip/issues"},description:"7zip Windows Package via Node.js",homepage:"https://github.com/fritx/win-7zip#readme",keywords:["7z","7zip","7-zip","windows","install"],license:"GNU LGPL",main:"index.js",name:"7zip",repository:{type:"git",url:"git+ssh://git@github.com/fritx/win-7zip.git"},scripts:{test:"mocha"},version:"0.0.6"}},function(t,e){t.exports=require("https")}]);
+*/
+
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/once/once.js":
+/*!***********************************!*\
+  !*** ./node_modules/once/once.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var wrappy = __webpack_require__(/*! wrappy */ "./node_modules/wrappy/wrappy.js")
+module.exports = wrappy(once)
+module.exports.strict = wrappy(onceStrict)
+
+once.proto = once(function () {
+  Object.defineProperty(Function.prototype, 'once', {
+    value: function () {
+      return once(this)
+    },
+    configurable: true
+  })
+
+  Object.defineProperty(Function.prototype, 'onceStrict', {
+    value: function () {
+      return onceStrict(this)
+    },
+    configurable: true
+  })
+})
+
+function once (fn) {
+  var f = function () {
+    if (f.called) return f.value
+    f.called = true
+    return f.value = fn.apply(this, arguments)
+  }
+  f.called = false
+  return f
+}
+
+function onceStrict (fn) {
+  var f = function () {
+    if (f.called)
+      throw new Error(f.onceError)
+    f.called = true
+    return f.value = fn.apply(this, arguments)
+  }
+  var name = fn.name || 'Function wrapped with `once`'
+  f.onceError = name + " shouldn't be called more than once"
+  f.called = false
+  return f
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/p-finally/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/p-finally/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = (promise, onFinally) => {
+	onFinally = onFinally || (() => {});
+
+	return promise.then(
+		val => new Promise(resolve => {
+			resolve(onFinally());
+		}).then(() => val),
+		err => new Promise(resolve => {
+			resolve(onFinally());
+		}).then(() => {
+			throw err;
+		})
+	);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/path-is-absolute/index.js":
+/*!************************************************!*\
+  !*** ./node_modules/path-is-absolute/index.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function posix(path) {
+	return path.charAt(0) === '/';
+}
+
+function win32(path) {
+	// https://github.com/nodejs/node/blob/b3fcc245fb25539909ef1d5eaa01dbf92e168633/lib/path.js#L56
+	var splitDeviceRe = /^([a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/]+[^\\\/]+)?([\\\/])?([\s\S]*?)$/;
+	var result = splitDeviceRe.exec(path);
+	var device = result[1] || '';
+	var isUnc = Boolean(device && device.charAt(1) !== ':');
+
+	// UNC paths are always absolute
+	return Boolean(result[2] || isUnc);
+}
+
+module.exports = process.platform === 'win32' ? win32 : posix;
+module.exports.posix = posix;
+module.exports.win32 = win32;
+
+
+/***/ }),
+
+/***/ "./node_modules/path-key/index.js":
+/*!****************************************!*\
+  !*** ./node_modules/path-key/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = opts => {
+	opts = opts || {};
+
+	const env = opts.env || process.env;
+	const platform = opts.platform || process.platform;
+
+	if (platform !== 'win32') {
+		return 'PATH';
+	}
+
+	return Object.keys(env).find(x => x.toUpperCase() === 'PATH') || 'Path';
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/pinkie-promise/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/pinkie-promise/index.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = typeof Promise === 'function' ? Promise : __webpack_require__(/*! pinkie */ "./node_modules/pinkie/index.js");
+
+
+/***/ }),
+
+/***/ "./node_modules/pinkie/index.js":
+/*!**************************************!*\
+  !*** ./node_modules/pinkie/index.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var PENDING = 'pending';
+var SETTLED = 'settled';
+var FULFILLED = 'fulfilled';
+var REJECTED = 'rejected';
+var NOOP = function () {};
+var isNode = typeof global !== 'undefined' && typeof global.process !== 'undefined' && typeof global.process.emit === 'function';
+
+var asyncSetTimer = typeof setImmediate === 'undefined' ? setTimeout : setImmediate;
+var asyncQueue = [];
+var asyncTimer;
+
+function asyncFlush() {
+	// run promise callbacks
+	for (var i = 0; i < asyncQueue.length; i++) {
+		asyncQueue[i][0](asyncQueue[i][1]);
+	}
+
+	// reset async asyncQueue
+	asyncQueue = [];
+	asyncTimer = false;
+}
+
+function asyncCall(callback, arg) {
+	asyncQueue.push([callback, arg]);
+
+	if (!asyncTimer) {
+		asyncTimer = true;
+		asyncSetTimer(asyncFlush, 0);
+	}
+}
+
+function invokeResolver(resolver, promise) {
+	function resolvePromise(value) {
+		resolve(promise, value);
+	}
+
+	function rejectPromise(reason) {
+		reject(promise, reason);
+	}
+
+	try {
+		resolver(resolvePromise, rejectPromise);
+	} catch (e) {
+		rejectPromise(e);
+	}
+}
+
+function invokeCallback(subscriber) {
+	var owner = subscriber.owner;
+	var settled = owner._state;
+	var value = owner._data;
+	var callback = subscriber[settled];
+	var promise = subscriber.then;
+
+	if (typeof callback === 'function') {
+		settled = FULFILLED;
+		try {
+			value = callback(value);
+		} catch (e) {
+			reject(promise, e);
+		}
+	}
+
+	if (!handleThenable(promise, value)) {
+		if (settled === FULFILLED) {
+			resolve(promise, value);
+		}
+
+		if (settled === REJECTED) {
+			reject(promise, value);
+		}
+	}
+}
+
+function handleThenable(promise, value) {
+	var resolved;
+
+	try {
+		if (promise === value) {
+			throw new TypeError('A promises callback cannot return that same promise.');
+		}
+
+		if (value && (typeof value === 'function' || typeof value === 'object')) {
+			// then should be retrieved only once
+			var then = value.then;
+
+			if (typeof then === 'function') {
+				then.call(value, function (val) {
+					if (!resolved) {
+						resolved = true;
+
+						if (value === val) {
+							fulfill(promise, val);
+						} else {
+							resolve(promise, val);
+						}
+					}
+				}, function (reason) {
+					if (!resolved) {
+						resolved = true;
+
+						reject(promise, reason);
+					}
+				});
+
+				return true;
+			}
+		}
+	} catch (e) {
+		if (!resolved) {
+			reject(promise, e);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+function resolve(promise, value) {
+	if (promise === value || !handleThenable(promise, value)) {
+		fulfill(promise, value);
+	}
+}
+
+function fulfill(promise, value) {
+	if (promise._state === PENDING) {
+		promise._state = SETTLED;
+		promise._data = value;
+
+		asyncCall(publishFulfillment, promise);
+	}
+}
+
+function reject(promise, reason) {
+	if (promise._state === PENDING) {
+		promise._state = SETTLED;
+		promise._data = reason;
+
+		asyncCall(publishRejection, promise);
+	}
+}
+
+function publish(promise) {
+	promise._then = promise._then.forEach(invokeCallback);
+}
+
+function publishFulfillment(promise) {
+	promise._state = FULFILLED;
+	publish(promise);
+}
+
+function publishRejection(promise) {
+	promise._state = REJECTED;
+	publish(promise);
+	if (!promise._handled && isNode) {
+		global.process.emit('unhandledRejection', promise._data, promise);
+	}
+}
+
+function notifyRejectionHandled(promise) {
+	global.process.emit('rejectionHandled', promise);
+}
+
+/**
+ * @class
+ */
+function Promise(resolver) {
+	if (typeof resolver !== 'function') {
+		throw new TypeError('Promise resolver ' + resolver + ' is not a function');
+	}
+
+	if (this instanceof Promise === false) {
+		throw new TypeError('Failed to construct \'Promise\': Please use the \'new\' operator, this object constructor cannot be called as a function.');
+	}
+
+	this._then = [];
+
+	invokeResolver(resolver, this);
+}
+
+Promise.prototype = {
+	constructor: Promise,
+
+	_state: PENDING,
+	_then: null,
+	_data: undefined,
+	_handled: false,
+
+	then: function (onFulfillment, onRejection) {
+		var subscriber = {
+			owner: this,
+			then: new this.constructor(NOOP),
+			fulfilled: onFulfillment,
+			rejected: onRejection
+		};
+
+		if ((onRejection || onFulfillment) && !this._handled) {
+			this._handled = true;
+			if (this._state === REJECTED && isNode) {
+				asyncCall(notifyRejectionHandled, this);
+			}
+		}
+
+		if (this._state === FULFILLED || this._state === REJECTED) {
+			// already resolved, call callback async
+			asyncCall(invokeCallback, subscriber);
+		} else {
+			// subscribe
+			this._then.push(subscriber);
+		}
+
+		return subscriber.then;
+	},
+
+	catch: function (onRejection) {
+		return this.then(null, onRejection);
+	}
+};
+
+Promise.all = function (promises) {
+	if (!Array.isArray(promises)) {
+		throw new TypeError('You must pass an array to Promise.all().');
+	}
+
+	return new Promise(function (resolve, reject) {
+		var results = [];
+		var remaining = 0;
+
+		function resolver(index) {
+			remaining++;
+			return function (value) {
+				results[index] = value;
+				if (!--remaining) {
+					resolve(results);
+				}
+			};
+		}
+
+		for (var i = 0, promise; i < promises.length; i++) {
+			promise = promises[i];
+
+			if (promise && typeof promise.then === 'function') {
+				promise.then(resolver(i), reject);
+			} else {
+				results[i] = promise;
+			}
+		}
+
+		if (!remaining) {
+			resolve(results);
+		}
+	});
+};
+
+Promise.race = function (promises) {
+	if (!Array.isArray(promises)) {
+		throw new TypeError('You must pass an array to Promise.race().');
+	}
+
+	return new Promise(function (resolve, reject) {
+		for (var i = 0, promise; i < promises.length; i++) {
+			promise = promises[i];
+
+			if (promise && typeof promise.then === 'function') {
+				promise.then(resolve, reject);
+			} else {
+				resolve(promise);
+			}
+		}
+	});
+};
+
+Promise.resolve = function (value) {
+	if (value && typeof value === 'object' && value.constructor === Promise) {
+		return value;
+	}
+
+	return new Promise(function (resolve) {
+		resolve(value);
+	});
+};
+
+Promise.reject = function (reason) {
+	return new Promise(function (resolve, reject) {
+		reject(reason);
+	});
+};
+
+module.exports = Promise;
+
+
+/***/ }),
+
+/***/ "./node_modules/pseudomap/map.js":
+/*!***************************************!*\
+  !*** ./node_modules/pseudomap/map.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+if (process.env.npm_package_name === 'pseudomap' &&
+    process.env.npm_lifecycle_script === 'test')
+  process.env.TEST_PSEUDOMAP = 'true'
+
+if (typeof Map === 'function' && !process.env.TEST_PSEUDOMAP) {
+  module.exports = Map
+} else {
+  module.exports = __webpack_require__(/*! ./pseudomap */ "./node_modules/pseudomap/pseudomap.js")
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/pseudomap/pseudomap.js":
+/*!*********************************************!*\
+  !*** ./node_modules/pseudomap/pseudomap.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var hasOwnProperty = Object.prototype.hasOwnProperty
+
+module.exports = PseudoMap
+
+function PseudoMap (set) {
+  if (!(this instanceof PseudoMap)) // whyyyyyyy
+    throw new TypeError("Constructor PseudoMap requires 'new'")
+
+  this.clear()
+
+  if (set) {
+    if ((set instanceof PseudoMap) ||
+        (typeof Map === 'function' && set instanceof Map))
+      set.forEach(function (value, key) {
+        this.set(key, value)
+      }, this)
+    else if (Array.isArray(set))
+      set.forEach(function (kv) {
+        this.set(kv[0], kv[1])
+      }, this)
+    else
+      throw new TypeError('invalid argument')
+  }
+}
+
+PseudoMap.prototype.forEach = function (fn, thisp) {
+  thisp = thisp || this
+  Object.keys(this._data).forEach(function (k) {
+    if (k !== 'size')
+      fn.call(thisp, this._data[k].value, this._data[k].key)
+  }, this)
+}
+
+PseudoMap.prototype.has = function (k) {
+  return !!find(this._data, k)
+}
+
+PseudoMap.prototype.get = function (k) {
+  var res = find(this._data, k)
+  return res && res.value
+}
+
+PseudoMap.prototype.set = function (k, v) {
+  set(this._data, k, v)
+}
+
+PseudoMap.prototype.delete = function (k) {
+  var res = find(this._data, k)
+  if (res) {
+    delete this._data[res._index]
+    this._data.size--
+  }
+}
+
+PseudoMap.prototype.clear = function () {
+  var data = Object.create(null)
+  data.size = 0
+
+  Object.defineProperty(this, '_data', {
+    value: data,
+    enumerable: false,
+    configurable: true,
+    writable: false
+  })
+}
+
+Object.defineProperty(PseudoMap.prototype, 'size', {
+  get: function () {
+    return this._data.size
+  },
+  set: function (n) {},
+  enumerable: true,
+  configurable: true
+})
+
+PseudoMap.prototype.values =
+PseudoMap.prototype.keys =
+PseudoMap.prototype.entries = function () {
+  throw new Error('iterators are not implemented in this version')
+}
+
+// Either identical, or both NaN
+function same (a, b) {
+  return a === b || a !== a && b !== b
+}
+
+function Entry (k, v, i) {
+  this.key = k
+  this.value = v
+  this._index = i
+}
+
+function find (data, k) {
+  for (var i = 0, s = '_' + k, key = s;
+       hasOwnProperty.call(data, key);
+       key = s + i++) {
+    if (same(data[key].key, k))
+      return data[key]
+  }
+}
+
+function set (data, k, v) {
+  for (var i = 0, s = '_' + k, key = s;
+       hasOwnProperty.call(data, key);
+       key = s + i++) {
+    if (same(data[key].key, k)) {
+      data[key].value = v
+      return
+    }
+  }
+  data.size++
+  data[key] = new Entry(k, v, key)
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/rimraf/rimraf.js":
+/*!***************************************!*\
+  !*** ./node_modules/rimraf/rimraf.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = rimraf
+rimraf.sync = rimrafSync
+
+var assert = __webpack_require__(/*! assert */ "assert")
+var path = __webpack_require__(/*! path */ "path")
+var fs = __webpack_require__(/*! fs */ "fs")
+var glob = __webpack_require__(/*! glob */ "./node_modules/glob/glob.js")
+var _0666 = parseInt('666', 8)
+
+var defaultGlobOpts = {
+  nosort: true,
+  silent: true
+}
+
+// for EMFILE handling
+var timeout = 0
+
+var isWindows = (process.platform === "win32")
+
+function defaults (options) {
+  var methods = [
+    'unlink',
+    'chmod',
+    'stat',
+    'lstat',
+    'rmdir',
+    'readdir'
+  ]
+  methods.forEach(function(m) {
+    options[m] = options[m] || fs[m]
+    m = m + 'Sync'
+    options[m] = options[m] || fs[m]
+  })
+
+  options.maxBusyTries = options.maxBusyTries || 3
+  options.emfileWait = options.emfileWait || 1000
+  if (options.glob === false) {
+    options.disableGlob = true
+  }
+  options.disableGlob = options.disableGlob || false
+  options.glob = options.glob || defaultGlobOpts
+}
+
+function rimraf (p, options, cb) {
+  if (typeof options === 'function') {
+    cb = options
+    options = {}
+  }
+
+  assert(p, 'rimraf: missing path')
+  assert.equal(typeof p, 'string', 'rimraf: path should be a string')
+  assert.equal(typeof cb, 'function', 'rimraf: callback function required')
+  assert(options, 'rimraf: invalid options argument provided')
+  assert.equal(typeof options, 'object', 'rimraf: options should be object')
+
+  defaults(options)
+
+  var busyTries = 0
+  var errState = null
+  var n = 0
+
+  if (options.disableGlob || !glob.hasMagic(p))
+    return afterGlob(null, [p])
+
+  options.lstat(p, function (er, stat) {
+    if (!er)
+      return afterGlob(null, [p])
+
+    glob(p, options.glob, afterGlob)
+  })
+
+  function next (er) {
+    errState = errState || er
+    if (--n === 0)
+      cb(errState)
+  }
+
+  function afterGlob (er, results) {
+    if (er)
+      return cb(er)
+
+    n = results.length
+    if (n === 0)
+      return cb()
+
+    results.forEach(function (p) {
+      rimraf_(p, options, function CB (er) {
+        if (er) {
+          if ((er.code === "EBUSY" || er.code === "ENOTEMPTY" || er.code === "EPERM") &&
+              busyTries < options.maxBusyTries) {
+            busyTries ++
+            var time = busyTries * 100
+            // try again, with the same exact callback as this one.
+            return setTimeout(function () {
+              rimraf_(p, options, CB)
+            }, time)
+          }
+
+          // this one won't happen if graceful-fs is used.
+          if (er.code === "EMFILE" && timeout < options.emfileWait) {
+            return setTimeout(function () {
+              rimraf_(p, options, CB)
+            }, timeout ++)
+          }
+
+          // already gone
+          if (er.code === "ENOENT") er = null
+        }
+
+        timeout = 0
+        next(er)
+      })
+    })
+  }
+}
+
+// Two possible strategies.
+// 1. Assume it's a file.  unlink it, then do the dir stuff on EPERM or EISDIR
+// 2. Assume it's a directory.  readdir, then do the file stuff on ENOTDIR
+//
+// Both result in an extra syscall when you guess wrong.  However, there
+// are likely far more normal files in the world than directories.  This
+// is based on the assumption that a the average number of files per
+// directory is >= 1.
+//
+// If anyone ever complains about this, then I guess the strategy could
+// be made configurable somehow.  But until then, YAGNI.
+function rimraf_ (p, options, cb) {
+  assert(p)
+  assert(options)
+  assert(typeof cb === 'function')
+
+  // sunos lets the root user unlink directories, which is... weird.
+  // so we have to lstat here and make sure it's not a dir.
+  options.lstat(p, function (er, st) {
+    if (er && er.code === "ENOENT")
+      return cb(null)
+
+    // Windows can EPERM on stat.  Life is suffering.
+    if (er && er.code === "EPERM" && isWindows)
+      fixWinEPERM(p, options, er, cb)
+
+    if (st && st.isDirectory())
+      return rmdir(p, options, er, cb)
+
+    options.unlink(p, function (er) {
+      if (er) {
+        if (er.code === "ENOENT")
+          return cb(null)
+        if (er.code === "EPERM")
+          return (isWindows)
+            ? fixWinEPERM(p, options, er, cb)
+            : rmdir(p, options, er, cb)
+        if (er.code === "EISDIR")
+          return rmdir(p, options, er, cb)
+      }
+      return cb(er)
+    })
+  })
+}
+
+function fixWinEPERM (p, options, er, cb) {
+  assert(p)
+  assert(options)
+  assert(typeof cb === 'function')
+  if (er)
+    assert(er instanceof Error)
+
+  options.chmod(p, _0666, function (er2) {
+    if (er2)
+      cb(er2.code === "ENOENT" ? null : er)
+    else
+      options.stat(p, function(er3, stats) {
+        if (er3)
+          cb(er3.code === "ENOENT" ? null : er)
+        else if (stats.isDirectory())
+          rmdir(p, options, er, cb)
+        else
+          options.unlink(p, cb)
+      })
+  })
+}
+
+function fixWinEPERMSync (p, options, er) {
+  assert(p)
+  assert(options)
+  if (er)
+    assert(er instanceof Error)
+
+  try {
+    options.chmodSync(p, _0666)
+  } catch (er2) {
+    if (er2.code === "ENOENT")
+      return
+    else
+      throw er
+  }
+
+  try {
+    var stats = options.statSync(p)
+  } catch (er3) {
+    if (er3.code === "ENOENT")
+      return
+    else
+      throw er
+  }
+
+  if (stats.isDirectory())
+    rmdirSync(p, options, er)
+  else
+    options.unlinkSync(p)
+}
+
+function rmdir (p, options, originalEr, cb) {
+  assert(p)
+  assert(options)
+  if (originalEr)
+    assert(originalEr instanceof Error)
+  assert(typeof cb === 'function')
+
+  // try to rmdir first, and only readdir on ENOTEMPTY or EEXIST (SunOS)
+  // if we guessed wrong, and it's not a directory, then
+  // raise the original error.
+  options.rmdir(p, function (er) {
+    if (er && (er.code === "ENOTEMPTY" || er.code === "EEXIST" || er.code === "EPERM"))
+      rmkids(p, options, cb)
+    else if (er && er.code === "ENOTDIR")
+      cb(originalEr)
+    else
+      cb(er)
+  })
+}
+
+function rmkids(p, options, cb) {
+  assert(p)
+  assert(options)
+  assert(typeof cb === 'function')
+
+  options.readdir(p, function (er, files) {
+    if (er)
+      return cb(er)
+    var n = files.length
+    if (n === 0)
+      return options.rmdir(p, cb)
+    var errState
+    files.forEach(function (f) {
+      rimraf(path.join(p, f), options, function (er) {
+        if (errState)
+          return
+        if (er)
+          return cb(errState = er)
+        if (--n === 0)
+          options.rmdir(p, cb)
+      })
+    })
+  })
+}
+
+// this looks simpler, and is strictly *faster*, but will
+// tie up the JavaScript thread and fail on excessively
+// deep directory trees.
+function rimrafSync (p, options) {
+  options = options || {}
+  defaults(options)
+
+  assert(p, 'rimraf: missing path')
+  assert.equal(typeof p, 'string', 'rimraf: path should be a string')
+  assert(options, 'rimraf: missing options')
+  assert.equal(typeof options, 'object', 'rimraf: options should be object')
+
+  var results
+
+  if (options.disableGlob || !glob.hasMagic(p)) {
+    results = [p]
+  } else {
+    try {
+      options.lstatSync(p)
+      results = [p]
+    } catch (er) {
+      results = glob.sync(p, options.glob)
+    }
+  }
+
+  if (!results.length)
+    return
+
+  for (var i = 0; i < results.length; i++) {
+    var p = results[i]
+
+    try {
+      var st = options.lstatSync(p)
+    } catch (er) {
+      if (er.code === "ENOENT")
+        return
+
+      // Windows can EPERM on stat.  Life is suffering.
+      if (er.code === "EPERM" && isWindows)
+        fixWinEPERMSync(p, options, er)
+    }
+
+    try {
+      // sunos lets the root user unlink directories, which is... weird.
+      if (st && st.isDirectory())
+        rmdirSync(p, options, null)
+      else
+        options.unlinkSync(p)
+    } catch (er) {
+      if (er.code === "ENOENT")
+        return
+      if (er.code === "EPERM")
+        return isWindows ? fixWinEPERMSync(p, options, er) : rmdirSync(p, options, er)
+      if (er.code !== "EISDIR")
+        throw er
+
+      rmdirSync(p, options, er)
+    }
+  }
+}
+
+function rmdirSync (p, options, originalEr) {
+  assert(p)
+  assert(options)
+  if (originalEr)
+    assert(originalEr instanceof Error)
+
+  try {
+    options.rmdirSync(p)
+  } catch (er) {
+    if (er.code === "ENOENT")
+      return
+    if (er.code === "ENOTDIR")
+      throw originalEr
+    if (er.code === "ENOTEMPTY" || er.code === "EEXIST" || er.code === "EPERM")
+      rmkidsSync(p, options)
+  }
+}
+
+function rmkidsSync (p, options) {
+  assert(p)
+  assert(options)
+  options.readdirSync(p).forEach(function (f) {
+    rimrafSync(path.join(p, f), options)
+  })
+
+  // We only end up here once we got ENOTEMPTY at least once, and
+  // at this point, we are guaranteed to have removed all the kids.
+  // So, we know that it won't be ENOENT or ENOTDIR or anything else.
+  // try really hard to delete stuff on windows, because it has a
+  // PROFOUNDLY annoying habit of not closing handles promptly when
+  // files are deleted, resulting in spurious ENOTEMPTY errors.
+  var retries = isWindows ? 100 : 1
+  var i = 0
+  do {
+    var threw = true
+    try {
+      var ret = options.rmdirSync(p, options)
+      threw = false
+      return ret
+    } finally {
+      if (++i < retries && threw)
+        continue
+    }
+  } while (true)
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/semver/semver.js":
+/*!***************************************!*\
+  !*** ./node_modules/semver/semver.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+exports = module.exports = SemVer
+
+var debug
+/* istanbul ignore next */
+if (typeof process === 'object' &&
+    process.env &&
+    process.env.NODE_DEBUG &&
+    /\bsemver\b/i.test(process.env.NODE_DEBUG)) {
+  debug = function () {
+    var args = Array.prototype.slice.call(arguments, 0)
+    args.unshift('SEMVER')
+    console.log.apply(console, args)
+  }
+} else {
+  debug = function () {}
+}
+
+// Note: this is the semver.org version of the spec that it implements
+// Not necessarily the package version of this code.
+exports.SEMVER_SPEC_VERSION = '2.0.0'
+
+var MAX_LENGTH = 256
+var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER ||
+  /* istanbul ignore next */ 9007199254740991
+
+// Max safe segment length for coercion.
+var MAX_SAFE_COMPONENT_LENGTH = 16
+
+// The actual regexps go on exports.re
+var re = exports.re = []
+var src = exports.src = []
+var R = 0
+
+// The following Regular Expressions can be used for tokenizing,
+// validating, and parsing SemVer version strings.
+
+// ## Numeric Identifier
+// A single `0`, or a non-zero digit followed by zero or more digits.
+
+var NUMERICIDENTIFIER = R++
+src[NUMERICIDENTIFIER] = '0|[1-9]\\d*'
+var NUMERICIDENTIFIERLOOSE = R++
+src[NUMERICIDENTIFIERLOOSE] = '[0-9]+'
+
+// ## Non-numeric Identifier
+// Zero or more digits, followed by a letter or hyphen, and then zero or
+// more letters, digits, or hyphens.
+
+var NONNUMERICIDENTIFIER = R++
+src[NONNUMERICIDENTIFIER] = '\\d*[a-zA-Z-][a-zA-Z0-9-]*'
+
+// ## Main Version
+// Three dot-separated numeric identifiers.
+
+var MAINVERSION = R++
+src[MAINVERSION] = '(' + src[NUMERICIDENTIFIER] + ')\\.' +
+                   '(' + src[NUMERICIDENTIFIER] + ')\\.' +
+                   '(' + src[NUMERICIDENTIFIER] + ')'
+
+var MAINVERSIONLOOSE = R++
+src[MAINVERSIONLOOSE] = '(' + src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
+                        '(' + src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
+                        '(' + src[NUMERICIDENTIFIERLOOSE] + ')'
+
+// ## Pre-release Version Identifier
+// A numeric identifier, or a non-numeric identifier.
+
+var PRERELEASEIDENTIFIER = R++
+src[PRERELEASEIDENTIFIER] = '(?:' + src[NUMERICIDENTIFIER] +
+                            '|' + src[NONNUMERICIDENTIFIER] + ')'
+
+var PRERELEASEIDENTIFIERLOOSE = R++
+src[PRERELEASEIDENTIFIERLOOSE] = '(?:' + src[NUMERICIDENTIFIERLOOSE] +
+                                 '|' + src[NONNUMERICIDENTIFIER] + ')'
+
+// ## Pre-release Version
+// Hyphen, followed by one or more dot-separated pre-release version
+// identifiers.
+
+var PRERELEASE = R++
+src[PRERELEASE] = '(?:-(' + src[PRERELEASEIDENTIFIER] +
+                  '(?:\\.' + src[PRERELEASEIDENTIFIER] + ')*))'
+
+var PRERELEASELOOSE = R++
+src[PRERELEASELOOSE] = '(?:-?(' + src[PRERELEASEIDENTIFIERLOOSE] +
+                       '(?:\\.' + src[PRERELEASEIDENTIFIERLOOSE] + ')*))'
+
+// ## Build Metadata Identifier
+// Any combination of digits, letters, or hyphens.
+
+var BUILDIDENTIFIER = R++
+src[BUILDIDENTIFIER] = '[0-9A-Za-z-]+'
+
+// ## Build Metadata
+// Plus sign, followed by one or more period-separated build metadata
+// identifiers.
+
+var BUILD = R++
+src[BUILD] = '(?:\\+(' + src[BUILDIDENTIFIER] +
+             '(?:\\.' + src[BUILDIDENTIFIER] + ')*))'
+
+// ## Full Version String
+// A main version, followed optionally by a pre-release version and
+// build metadata.
+
+// Note that the only major, minor, patch, and pre-release sections of
+// the version string are capturing groups.  The build metadata is not a
+// capturing group, because it should not ever be used in version
+// comparison.
+
+var FULL = R++
+var FULLPLAIN = 'v?' + src[MAINVERSION] +
+                src[PRERELEASE] + '?' +
+                src[BUILD] + '?'
+
+src[FULL] = '^' + FULLPLAIN + '$'
+
+// like full, but allows v1.2.3 and =1.2.3, which people do sometimes.
+// also, 1.0.0alpha1 (prerelease without the hyphen) which is pretty
+// common in the npm registry.
+var LOOSEPLAIN = '[v=\\s]*' + src[MAINVERSIONLOOSE] +
+                 src[PRERELEASELOOSE] + '?' +
+                 src[BUILD] + '?'
+
+var LOOSE = R++
+src[LOOSE] = '^' + LOOSEPLAIN + '$'
+
+var GTLT = R++
+src[GTLT] = '((?:<|>)?=?)'
+
+// Something like "2.*" or "1.2.x".
+// Note that "x.x" is a valid xRange identifer, meaning "any version"
+// Only the first item is strictly required.
+var XRANGEIDENTIFIERLOOSE = R++
+src[XRANGEIDENTIFIERLOOSE] = src[NUMERICIDENTIFIERLOOSE] + '|x|X|\\*'
+var XRANGEIDENTIFIER = R++
+src[XRANGEIDENTIFIER] = src[NUMERICIDENTIFIER] + '|x|X|\\*'
+
+var XRANGEPLAIN = R++
+src[XRANGEPLAIN] = '[v=\\s]*(' + src[XRANGEIDENTIFIER] + ')' +
+                   '(?:\\.(' + src[XRANGEIDENTIFIER] + ')' +
+                   '(?:\\.(' + src[XRANGEIDENTIFIER] + ')' +
+                   '(?:' + src[PRERELEASE] + ')?' +
+                   src[BUILD] + '?' +
+                   ')?)?'
+
+var XRANGEPLAINLOOSE = R++
+src[XRANGEPLAINLOOSE] = '[v=\\s]*(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:\\.(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:\\.(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:' + src[PRERELEASELOOSE] + ')?' +
+                        src[BUILD] + '?' +
+                        ')?)?'
+
+var XRANGE = R++
+src[XRANGE] = '^' + src[GTLT] + '\\s*' + src[XRANGEPLAIN] + '$'
+var XRANGELOOSE = R++
+src[XRANGELOOSE] = '^' + src[GTLT] + '\\s*' + src[XRANGEPLAINLOOSE] + '$'
+
+// Coercion.
+// Extract anything that could conceivably be a part of a valid semver
+var COERCE = R++
+src[COERCE] = '(?:^|[^\\d])' +
+              '(\\d{1,' + MAX_SAFE_COMPONENT_LENGTH + '})' +
+              '(?:\\.(\\d{1,' + MAX_SAFE_COMPONENT_LENGTH + '}))?' +
+              '(?:\\.(\\d{1,' + MAX_SAFE_COMPONENT_LENGTH + '}))?' +
+              '(?:$|[^\\d])'
+
+// Tilde ranges.
+// Meaning is "reasonably at or greater than"
+var LONETILDE = R++
+src[LONETILDE] = '(?:~>?)'
+
+var TILDETRIM = R++
+src[TILDETRIM] = '(\\s*)' + src[LONETILDE] + '\\s+'
+re[TILDETRIM] = new RegExp(src[TILDETRIM], 'g')
+var tildeTrimReplace = '$1~'
+
+var TILDE = R++
+src[TILDE] = '^' + src[LONETILDE] + src[XRANGEPLAIN] + '$'
+var TILDELOOSE = R++
+src[TILDELOOSE] = '^' + src[LONETILDE] + src[XRANGEPLAINLOOSE] + '$'
+
+// Caret ranges.
+// Meaning is "at least and backwards compatible with"
+var LONECARET = R++
+src[LONECARET] = '(?:\\^)'
+
+var CARETTRIM = R++
+src[CARETTRIM] = '(\\s*)' + src[LONECARET] + '\\s+'
+re[CARETTRIM] = new RegExp(src[CARETTRIM], 'g')
+var caretTrimReplace = '$1^'
+
+var CARET = R++
+src[CARET] = '^' + src[LONECARET] + src[XRANGEPLAIN] + '$'
+var CARETLOOSE = R++
+src[CARETLOOSE] = '^' + src[LONECARET] + src[XRANGEPLAINLOOSE] + '$'
+
+// A simple gt/lt/eq thing, or just "" to indicate "any version"
+var COMPARATORLOOSE = R++
+src[COMPARATORLOOSE] = '^' + src[GTLT] + '\\s*(' + LOOSEPLAIN + ')$|^$'
+var COMPARATOR = R++
+src[COMPARATOR] = '^' + src[GTLT] + '\\s*(' + FULLPLAIN + ')$|^$'
+
+// An expression to strip any whitespace between the gtlt and the thing
+// it modifies, so that `> 1.2.3` ==> `>1.2.3`
+var COMPARATORTRIM = R++
+src[COMPARATORTRIM] = '(\\s*)' + src[GTLT] +
+                      '\\s*(' + LOOSEPLAIN + '|' + src[XRANGEPLAIN] + ')'
+
+// this one has to use the /g flag
+re[COMPARATORTRIM] = new RegExp(src[COMPARATORTRIM], 'g')
+var comparatorTrimReplace = '$1$2$3'
+
+// Something like `1.2.3 - 1.2.4`
+// Note that these all use the loose form, because they'll be
+// checked against either the strict or loose comparator form
+// later.
+var HYPHENRANGE = R++
+src[HYPHENRANGE] = '^\\s*(' + src[XRANGEPLAIN] + ')' +
+                   '\\s+-\\s+' +
+                   '(' + src[XRANGEPLAIN] + ')' +
+                   '\\s*$'
+
+var HYPHENRANGELOOSE = R++
+src[HYPHENRANGELOOSE] = '^\\s*(' + src[XRANGEPLAINLOOSE] + ')' +
+                        '\\s+-\\s+' +
+                        '(' + src[XRANGEPLAINLOOSE] + ')' +
+                        '\\s*$'
+
+// Star ranges basically just allow anything at all.
+var STAR = R++
+src[STAR] = '(<|>)?=?\\s*\\*'
+
+// Compile to actual regexp objects.
+// All are flag-free, unless they were created above with a flag.
+for (var i = 0; i < R; i++) {
+  debug(i, src[i])
+  if (!re[i]) {
+    re[i] = new RegExp(src[i])
+  }
+}
+
+exports.parse = parse
+function parse (version, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (version instanceof SemVer) {
+    return version
+  }
+
+  if (typeof version !== 'string') {
+    return null
+  }
+
+  if (version.length > MAX_LENGTH) {
+    return null
+  }
+
+  var r = options.loose ? re[LOOSE] : re[FULL]
+  if (!r.test(version)) {
+    return null
+  }
+
+  try {
+    return new SemVer(version, options)
+  } catch (er) {
+    return null
+  }
+}
+
+exports.valid = valid
+function valid (version, options) {
+  var v = parse(version, options)
+  return v ? v.version : null
+}
+
+exports.clean = clean
+function clean (version, options) {
+  var s = parse(version.trim().replace(/^[=v]+/, ''), options)
+  return s ? s.version : null
+}
+
+exports.SemVer = SemVer
+
+function SemVer (version, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+  if (version instanceof SemVer) {
+    if (version.loose === options.loose) {
+      return version
+    } else {
+      version = version.version
+    }
+  } else if (typeof version !== 'string') {
+    throw new TypeError('Invalid Version: ' + version)
+  }
+
+  if (version.length > MAX_LENGTH) {
+    throw new TypeError('version is longer than ' + MAX_LENGTH + ' characters')
+  }
+
+  if (!(this instanceof SemVer)) {
+    return new SemVer(version, options)
+  }
+
+  debug('SemVer', version, options)
+  this.options = options
+  this.loose = !!options.loose
+
+  var m = version.trim().match(options.loose ? re[LOOSE] : re[FULL])
+
+  if (!m) {
+    throw new TypeError('Invalid Version: ' + version)
+  }
+
+  this.raw = version
+
+  // these are actually numbers
+  this.major = +m[1]
+  this.minor = +m[2]
+  this.patch = +m[3]
+
+  if (this.major > MAX_SAFE_INTEGER || this.major < 0) {
+    throw new TypeError('Invalid major version')
+  }
+
+  if (this.minor > MAX_SAFE_INTEGER || this.minor < 0) {
+    throw new TypeError('Invalid minor version')
+  }
+
+  if (this.patch > MAX_SAFE_INTEGER || this.patch < 0) {
+    throw new TypeError('Invalid patch version')
+  }
+
+  // numberify any prerelease numeric ids
+  if (!m[4]) {
+    this.prerelease = []
+  } else {
+    this.prerelease = m[4].split('.').map(function (id) {
+      if (/^[0-9]+$/.test(id)) {
+        var num = +id
+        if (num >= 0 && num < MAX_SAFE_INTEGER) {
+          return num
+        }
+      }
+      return id
+    })
+  }
+
+  this.build = m[5] ? m[5].split('.') : []
+  this.format()
+}
+
+SemVer.prototype.format = function () {
+  this.version = this.major + '.' + this.minor + '.' + this.patch
+  if (this.prerelease.length) {
+    this.version += '-' + this.prerelease.join('.')
+  }
+  return this.version
+}
+
+SemVer.prototype.toString = function () {
+  return this.version
+}
+
+SemVer.prototype.compare = function (other) {
+  debug('SemVer.compare', this.version, this.options, other)
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  return this.compareMain(other) || this.comparePre(other)
+}
+
+SemVer.prototype.compareMain = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  return compareIdentifiers(this.major, other.major) ||
+         compareIdentifiers(this.minor, other.minor) ||
+         compareIdentifiers(this.patch, other.patch)
+}
+
+SemVer.prototype.comparePre = function (other) {
+  if (!(other instanceof SemVer)) {
+    other = new SemVer(other, this.options)
+  }
+
+  // NOT having a prerelease is > having one
+  if (this.prerelease.length && !other.prerelease.length) {
+    return -1
+  } else if (!this.prerelease.length && other.prerelease.length) {
+    return 1
+  } else if (!this.prerelease.length && !other.prerelease.length) {
+    return 0
+  }
+
+  var i = 0
+  do {
+    var a = this.prerelease[i]
+    var b = other.prerelease[i]
+    debug('prerelease compare', i, a, b)
+    if (a === undefined && b === undefined) {
+      return 0
+    } else if (b === undefined) {
+      return 1
+    } else if (a === undefined) {
+      return -1
+    } else if (a === b) {
+      continue
+    } else {
+      return compareIdentifiers(a, b)
+    }
+  } while (++i)
+}
+
+// preminor will bump the version up to the next minor release, and immediately
+// down to pre-release. premajor and prepatch work the same way.
+SemVer.prototype.inc = function (release, identifier) {
+  switch (release) {
+    case 'premajor':
+      this.prerelease.length = 0
+      this.patch = 0
+      this.minor = 0
+      this.major++
+      this.inc('pre', identifier)
+      break
+    case 'preminor':
+      this.prerelease.length = 0
+      this.patch = 0
+      this.minor++
+      this.inc('pre', identifier)
+      break
+    case 'prepatch':
+      // If this is already a prerelease, it will bump to the next version
+      // drop any prereleases that might already exist, since they are not
+      // relevant at this point.
+      this.prerelease.length = 0
+      this.inc('patch', identifier)
+      this.inc('pre', identifier)
+      break
+    // If the input is a non-prerelease version, this acts the same as
+    // prepatch.
+    case 'prerelease':
+      if (this.prerelease.length === 0) {
+        this.inc('patch', identifier)
+      }
+      this.inc('pre', identifier)
+      break
+
+    case 'major':
+      // If this is a pre-major version, bump up to the same major version.
+      // Otherwise increment major.
+      // 1.0.0-5 bumps to 1.0.0
+      // 1.1.0 bumps to 2.0.0
+      if (this.minor !== 0 ||
+          this.patch !== 0 ||
+          this.prerelease.length === 0) {
+        this.major++
+      }
+      this.minor = 0
+      this.patch = 0
+      this.prerelease = []
+      break
+    case 'minor':
+      // If this is a pre-minor version, bump up to the same minor version.
+      // Otherwise increment minor.
+      // 1.2.0-5 bumps to 1.2.0
+      // 1.2.1 bumps to 1.3.0
+      if (this.patch !== 0 || this.prerelease.length === 0) {
+        this.minor++
+      }
+      this.patch = 0
+      this.prerelease = []
+      break
+    case 'patch':
+      // If this is not a pre-release version, it will increment the patch.
+      // If it is a pre-release it will bump up to the same patch version.
+      // 1.2.0-5 patches to 1.2.0
+      // 1.2.0 patches to 1.2.1
+      if (this.prerelease.length === 0) {
+        this.patch++
+      }
+      this.prerelease = []
+      break
+    // This probably shouldn't be used publicly.
+    // 1.0.0 "pre" would become 1.0.0-0 which is the wrong direction.
+    case 'pre':
+      if (this.prerelease.length === 0) {
+        this.prerelease = [0]
+      } else {
+        var i = this.prerelease.length
+        while (--i >= 0) {
+          if (typeof this.prerelease[i] === 'number') {
+            this.prerelease[i]++
+            i = -2
+          }
+        }
+        if (i === -1) {
+          // didn't increment anything
+          this.prerelease.push(0)
+        }
+      }
+      if (identifier) {
+        // 1.2.0-beta.1 bumps to 1.2.0-beta.2,
+        // 1.2.0-beta.fooblz or 1.2.0-beta bumps to 1.2.0-beta.0
+        if (this.prerelease[0] === identifier) {
+          if (isNaN(this.prerelease[1])) {
+            this.prerelease = [identifier, 0]
+          }
+        } else {
+          this.prerelease = [identifier, 0]
+        }
+      }
+      break
+
+    default:
+      throw new Error('invalid increment argument: ' + release)
+  }
+  this.format()
+  this.raw = this.version
+  return this
+}
+
+exports.inc = inc
+function inc (version, release, loose, identifier) {
+  if (typeof (loose) === 'string') {
+    identifier = loose
+    loose = undefined
+  }
+
+  try {
+    return new SemVer(version, loose).inc(release, identifier).version
+  } catch (er) {
+    return null
+  }
+}
+
+exports.diff = diff
+function diff (version1, version2) {
+  if (eq(version1, version2)) {
+    return null
+  } else {
+    var v1 = parse(version1)
+    var v2 = parse(version2)
+    var prefix = ''
+    if (v1.prerelease.length || v2.prerelease.length) {
+      prefix = 'pre'
+      var defaultResult = 'prerelease'
+    }
+    for (var key in v1) {
+      if (key === 'major' || key === 'minor' || key === 'patch') {
+        if (v1[key] !== v2[key]) {
+          return prefix + key
+        }
+      }
+    }
+    return defaultResult // may be undefined
+  }
+}
+
+exports.compareIdentifiers = compareIdentifiers
+
+var numeric = /^[0-9]+$/
+function compareIdentifiers (a, b) {
+  var anum = numeric.test(a)
+  var bnum = numeric.test(b)
+
+  if (anum && bnum) {
+    a = +a
+    b = +b
+  }
+
+  return a === b ? 0
+    : (anum && !bnum) ? -1
+    : (bnum && !anum) ? 1
+    : a < b ? -1
+    : 1
+}
+
+exports.rcompareIdentifiers = rcompareIdentifiers
+function rcompareIdentifiers (a, b) {
+  return compareIdentifiers(b, a)
+}
+
+exports.major = major
+function major (a, loose) {
+  return new SemVer(a, loose).major
+}
+
+exports.minor = minor
+function minor (a, loose) {
+  return new SemVer(a, loose).minor
+}
+
+exports.patch = patch
+function patch (a, loose) {
+  return new SemVer(a, loose).patch
+}
+
+exports.compare = compare
+function compare (a, b, loose) {
+  return new SemVer(a, loose).compare(new SemVer(b, loose))
+}
+
+exports.compareLoose = compareLoose
+function compareLoose (a, b) {
+  return compare(a, b, true)
+}
+
+exports.rcompare = rcompare
+function rcompare (a, b, loose) {
+  return compare(b, a, loose)
+}
+
+exports.sort = sort
+function sort (list, loose) {
+  return list.sort(function (a, b) {
+    return exports.compare(a, b, loose)
+  })
+}
+
+exports.rsort = rsort
+function rsort (list, loose) {
+  return list.sort(function (a, b) {
+    return exports.rcompare(a, b, loose)
+  })
+}
+
+exports.gt = gt
+function gt (a, b, loose) {
+  return compare(a, b, loose) > 0
+}
+
+exports.lt = lt
+function lt (a, b, loose) {
+  return compare(a, b, loose) < 0
+}
+
+exports.eq = eq
+function eq (a, b, loose) {
+  return compare(a, b, loose) === 0
+}
+
+exports.neq = neq
+function neq (a, b, loose) {
+  return compare(a, b, loose) !== 0
+}
+
+exports.gte = gte
+function gte (a, b, loose) {
+  return compare(a, b, loose) >= 0
+}
+
+exports.lte = lte
+function lte (a, b, loose) {
+  return compare(a, b, loose) <= 0
+}
+
+exports.cmp = cmp
+function cmp (a, op, b, loose) {
+  switch (op) {
+    case '===':
+      if (typeof a === 'object')
+        a = a.version
+      if (typeof b === 'object')
+        b = b.version
+      return a === b
+
+    case '!==':
+      if (typeof a === 'object')
+        a = a.version
+      if (typeof b === 'object')
+        b = b.version
+      return a !== b
+
+    case '':
+    case '=':
+    case '==':
+      return eq(a, b, loose)
+
+    case '!=':
+      return neq(a, b, loose)
+
+    case '>':
+      return gt(a, b, loose)
+
+    case '>=':
+      return gte(a, b, loose)
+
+    case '<':
+      return lt(a, b, loose)
+
+    case '<=':
+      return lte(a, b, loose)
+
+    default:
+      throw new TypeError('Invalid operator: ' + op)
+  }
+}
+
+exports.Comparator = Comparator
+function Comparator (comp, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (comp instanceof Comparator) {
+    if (comp.loose === !!options.loose) {
+      return comp
+    } else {
+      comp = comp.value
+    }
+  }
+
+  if (!(this instanceof Comparator)) {
+    return new Comparator(comp, options)
+  }
+
+  debug('comparator', comp, options)
+  this.options = options
+  this.loose = !!options.loose
+  this.parse(comp)
+
+  if (this.semver === ANY) {
+    this.value = ''
+  } else {
+    this.value = this.operator + this.semver.version
+  }
+
+  debug('comp', this)
+}
+
+var ANY = {}
+Comparator.prototype.parse = function (comp) {
+  var r = this.options.loose ? re[COMPARATORLOOSE] : re[COMPARATOR]
+  var m = comp.match(r)
+
+  if (!m) {
+    throw new TypeError('Invalid comparator: ' + comp)
+  }
+
+  this.operator = m[1]
+  if (this.operator === '=') {
+    this.operator = ''
+  }
+
+  // if it literally is just '>' or '' then allow anything.
+  if (!m[2]) {
+    this.semver = ANY
+  } else {
+    this.semver = new SemVer(m[2], this.options.loose)
+  }
+}
+
+Comparator.prototype.toString = function () {
+  return this.value
+}
+
+Comparator.prototype.test = function (version) {
+  debug('Comparator.test', version, this.options.loose)
+
+  if (this.semver === ANY) {
+    return true
+  }
+
+  if (typeof version === 'string') {
+    version = new SemVer(version, this.options)
+  }
+
+  return cmp(version, this.operator, this.semver, this.options)
+}
+
+Comparator.prototype.intersects = function (comp, options) {
+  if (!(comp instanceof Comparator)) {
+    throw new TypeError('a Comparator is required')
+  }
+
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  var rangeTmp
+
+  if (this.operator === '') {
+    rangeTmp = new Range(comp.value, options)
+    return satisfies(this.value, rangeTmp, options)
+  } else if (comp.operator === '') {
+    rangeTmp = new Range(this.value, options)
+    return satisfies(comp.semver, rangeTmp, options)
+  }
+
+  var sameDirectionIncreasing =
+    (this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '>=' || comp.operator === '>')
+  var sameDirectionDecreasing =
+    (this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '<=' || comp.operator === '<')
+  var sameSemVer = this.semver.version === comp.semver.version
+  var differentDirectionsInclusive =
+    (this.operator === '>=' || this.operator === '<=') &&
+    (comp.operator === '>=' || comp.operator === '<=')
+  var oppositeDirectionsLessThan =
+    cmp(this.semver, '<', comp.semver, options) &&
+    ((this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '<=' || comp.operator === '<'))
+  var oppositeDirectionsGreaterThan =
+    cmp(this.semver, '>', comp.semver, options) &&
+    ((this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '>=' || comp.operator === '>'))
+
+  return sameDirectionIncreasing || sameDirectionDecreasing ||
+    (sameSemVer && differentDirectionsInclusive) ||
+    oppositeDirectionsLessThan || oppositeDirectionsGreaterThan
+}
+
+exports.Range = Range
+function Range (range, options) {
+  if (!options || typeof options !== 'object') {
+    options = {
+      loose: !!options,
+      includePrerelease: false
+    }
+  }
+
+  if (range instanceof Range) {
+    if (range.loose === !!options.loose &&
+        range.includePrerelease === !!options.includePrerelease) {
+      return range
+    } else {
+      return new Range(range.raw, options)
+    }
+  }
+
+  if (range instanceof Comparator) {
+    return new Range(range.value, options)
+  }
+
+  if (!(this instanceof Range)) {
+    return new Range(range, options)
+  }
+
+  this.options = options
+  this.loose = !!options.loose
+  this.includePrerelease = !!options.includePrerelease
+
+  // First, split based on boolean or ||
+  this.raw = range
+  this.set = range.split(/\s*\|\|\s*/).map(function (range) {
+    return this.parseRange(range.trim())
+  }, this).filter(function (c) {
+    // throw out any that are not relevant for whatever reason
+    return c.length
+  })
+
+  if (!this.set.length) {
+    throw new TypeError('Invalid SemVer Range: ' + range)
+  }
+
+  this.format()
+}
+
+Range.prototype.format = function () {
+  this.range = this.set.map(function (comps) {
+    return comps.join(' ').trim()
+  }).join('||').trim()
+  return this.range
+}
+
+Range.prototype.toString = function () {
+  return this.range
+}
+
+Range.prototype.parseRange = function (range) {
+  var loose = this.options.loose
+  range = range.trim()
+  // `1.2.3 - 1.2.4` => `>=1.2.3 <=1.2.4`
+  var hr = loose ? re[HYPHENRANGELOOSE] : re[HYPHENRANGE]
+  range = range.replace(hr, hyphenReplace)
+  debug('hyphen replace', range)
+  // `> 1.2.3 < 1.2.5` => `>1.2.3 <1.2.5`
+  range = range.replace(re[COMPARATORTRIM], comparatorTrimReplace)
+  debug('comparator trim', range, re[COMPARATORTRIM])
+
+  // `~ 1.2.3` => `~1.2.3`
+  range = range.replace(re[TILDETRIM], tildeTrimReplace)
+
+  // `^ 1.2.3` => `^1.2.3`
+  range = range.replace(re[CARETTRIM], caretTrimReplace)
+
+  // normalize spaces
+  range = range.split(/\s+/).join(' ')
+
+  // At this point, the range is completely trimmed and
+  // ready to be split into comparators.
+
+  var compRe = loose ? re[COMPARATORLOOSE] : re[COMPARATOR]
+  var set = range.split(' ').map(function (comp) {
+    return parseComparator(comp, this.options)
+  }, this).join(' ').split(/\s+/)
+  if (this.options.loose) {
+    // in loose mode, throw out any that are not valid comparators
+    set = set.filter(function (comp) {
+      return !!comp.match(compRe)
+    })
+  }
+  set = set.map(function (comp) {
+    return new Comparator(comp, this.options)
+  }, this)
+
+  return set
+}
+
+Range.prototype.intersects = function (range, options) {
+  if (!(range instanceof Range)) {
+    throw new TypeError('a Range is required')
+  }
+
+  return this.set.some(function (thisComparators) {
+    return thisComparators.every(function (thisComparator) {
+      return range.set.some(function (rangeComparators) {
+        return rangeComparators.every(function (rangeComparator) {
+          return thisComparator.intersects(rangeComparator, options)
+        })
+      })
+    })
+  })
+}
+
+// Mostly just for testing and legacy API reasons
+exports.toComparators = toComparators
+function toComparators (range, options) {
+  return new Range(range, options).set.map(function (comp) {
+    return comp.map(function (c) {
+      return c.value
+    }).join(' ').trim().split(' ')
+  })
+}
+
+// comprised of xranges, tildes, stars, and gtlt's at this point.
+// already replaced the hyphen ranges
+// turn into a set of JUST comparators.
+function parseComparator (comp, options) {
+  debug('comp', comp, options)
+  comp = replaceCarets(comp, options)
+  debug('caret', comp)
+  comp = replaceTildes(comp, options)
+  debug('tildes', comp)
+  comp = replaceXRanges(comp, options)
+  debug('xrange', comp)
+  comp = replaceStars(comp, options)
+  debug('stars', comp)
+  return comp
+}
+
+function isX (id) {
+  return !id || id.toLowerCase() === 'x' || id === '*'
+}
+
+// ~, ~> --> * (any, kinda silly)
+// ~2, ~2.x, ~2.x.x, ~>2, ~>2.x ~>2.x.x --> >=2.0.0 <3.0.0
+// ~2.0, ~2.0.x, ~>2.0, ~>2.0.x --> >=2.0.0 <2.1.0
+// ~1.2, ~1.2.x, ~>1.2, ~>1.2.x --> >=1.2.0 <1.3.0
+// ~1.2.3, ~>1.2.3 --> >=1.2.3 <1.3.0
+// ~1.2.0, ~>1.2.0 --> >=1.2.0 <1.3.0
+function replaceTildes (comp, options) {
+  return comp.trim().split(/\s+/).map(function (comp) {
+    return replaceTilde(comp, options)
+  }).join(' ')
+}
+
+function replaceTilde (comp, options) {
+  var r = options.loose ? re[TILDELOOSE] : re[TILDE]
+  return comp.replace(r, function (_, M, m, p, pr) {
+    debug('tilde', comp, _, M, m, p, pr)
+    var ret
+
+    if (isX(M)) {
+      ret = ''
+    } else if (isX(m)) {
+      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0'
+    } else if (isX(p)) {
+      // ~1.2 == >=1.2.0 <1.3.0
+      ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0'
+    } else if (pr) {
+      debug('replaceTilde pr', pr)
+      ret = '>=' + M + '.' + m + '.' + p + '-' + pr +
+            ' <' + M + '.' + (+m + 1) + '.0'
+    } else {
+      // ~1.2.3 == >=1.2.3 <1.3.0
+      ret = '>=' + M + '.' + m + '.' + p +
+            ' <' + M + '.' + (+m + 1) + '.0'
+    }
+
+    debug('tilde return', ret)
+    return ret
+  })
+}
+
+// ^ --> * (any, kinda silly)
+// ^2, ^2.x, ^2.x.x --> >=2.0.0 <3.0.0
+// ^2.0, ^2.0.x --> >=2.0.0 <3.0.0
+// ^1.2, ^1.2.x --> >=1.2.0 <2.0.0
+// ^1.2.3 --> >=1.2.3 <2.0.0
+// ^1.2.0 --> >=1.2.0 <2.0.0
+function replaceCarets (comp, options) {
+  return comp.trim().split(/\s+/).map(function (comp) {
+    return replaceCaret(comp, options)
+  }).join(' ')
+}
+
+function replaceCaret (comp, options) {
+  debug('caret', comp, options)
+  var r = options.loose ? re[CARETLOOSE] : re[CARET]
+  return comp.replace(r, function (_, M, m, p, pr) {
+    debug('caret', comp, _, M, m, p, pr)
+    var ret
+
+    if (isX(M)) {
+      ret = ''
+    } else if (isX(m)) {
+      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0'
+    } else if (isX(p)) {
+      if (M === '0') {
+        ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0'
+      } else {
+        ret = '>=' + M + '.' + m + '.0 <' + (+M + 1) + '.0.0'
+      }
+    } else if (pr) {
+      debug('replaceCaret pr', pr)
+      if (M === '0') {
+        if (m === '0') {
+          ret = '>=' + M + '.' + m + '.' + p + '-' + pr +
+                ' <' + M + '.' + m + '.' + (+p + 1)
+        } else {
+          ret = '>=' + M + '.' + m + '.' + p + '-' + pr +
+                ' <' + M + '.' + (+m + 1) + '.0'
+        }
+      } else {
+        ret = '>=' + M + '.' + m + '.' + p + '-' + pr +
+              ' <' + (+M + 1) + '.0.0'
+      }
+    } else {
+      debug('no pr')
+      if (M === '0') {
+        if (m === '0') {
+          ret = '>=' + M + '.' + m + '.' + p +
+                ' <' + M + '.' + m + '.' + (+p + 1)
+        } else {
+          ret = '>=' + M + '.' + m + '.' + p +
+                ' <' + M + '.' + (+m + 1) + '.0'
+        }
+      } else {
+        ret = '>=' + M + '.' + m + '.' + p +
+              ' <' + (+M + 1) + '.0.0'
+      }
+    }
+
+    debug('caret return', ret)
+    return ret
+  })
+}
+
+function replaceXRanges (comp, options) {
+  debug('replaceXRanges', comp, options)
+  return comp.split(/\s+/).map(function (comp) {
+    return replaceXRange(comp, options)
+  }).join(' ')
+}
+
+function replaceXRange (comp, options) {
+  comp = comp.trim()
+  var r = options.loose ? re[XRANGELOOSE] : re[XRANGE]
+  return comp.replace(r, function (ret, gtlt, M, m, p, pr) {
+    debug('xRange', comp, ret, gtlt, M, m, p, pr)
+    var xM = isX(M)
+    var xm = xM || isX(m)
+    var xp = xm || isX(p)
+    var anyX = xp
+
+    if (gtlt === '=' && anyX) {
+      gtlt = ''
+    }
+
+    if (xM) {
+      if (gtlt === '>' || gtlt === '<') {
+        // nothing is allowed
+        ret = '<0.0.0'
+      } else {
+        // nothing is forbidden
+        ret = '*'
+      }
+    } else if (gtlt && anyX) {
+      // we know patch is an x, because we have any x at all.
+      // replace X with 0
+      if (xm) {
+        m = 0
+      }
+      p = 0
+
+      if (gtlt === '>') {
+        // >1 => >=2.0.0
+        // >1.2 => >=1.3.0
+        // >1.2.3 => >= 1.2.4
+        gtlt = '>='
+        if (xm) {
+          M = +M + 1
+          m = 0
+          p = 0
+        } else {
+          m = +m + 1
+          p = 0
+        }
+      } else if (gtlt === '<=') {
+        // <=0.7.x is actually <0.8.0, since any 0.7.x should
+        // pass.  Similarly, <=7.x is actually <8.0.0, etc.
+        gtlt = '<'
+        if (xm) {
+          M = +M + 1
+        } else {
+          m = +m + 1
+        }
+      }
+
+      ret = gtlt + M + '.' + m + '.' + p
+    } else if (xm) {
+      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0'
+    } else if (xp) {
+      ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0'
+    }
+
+    debug('xRange return', ret)
+
+    return ret
+  })
+}
+
+// Because * is AND-ed with everything else in the comparator,
+// and '' means "any version", just remove the *s entirely.
+function replaceStars (comp, options) {
+  debug('replaceStars', comp, options)
+  // Looseness is ignored here.  star is always as loose as it gets!
+  return comp.trim().replace(re[STAR], '')
+}
+
+// This function is passed to string.replace(re[HYPHENRANGE])
+// M, m, patch, prerelease, build
+// 1.2 - 3.4.5 => >=1.2.0 <=3.4.5
+// 1.2.3 - 3.4 => >=1.2.0 <3.5.0 Any 3.4.x will do
+// 1.2 - 3.4 => >=1.2.0 <3.5.0
+function hyphenReplace ($0,
+  from, fM, fm, fp, fpr, fb,
+  to, tM, tm, tp, tpr, tb) {
+  if (isX(fM)) {
+    from = ''
+  } else if (isX(fm)) {
+    from = '>=' + fM + '.0.0'
+  } else if (isX(fp)) {
+    from = '>=' + fM + '.' + fm + '.0'
+  } else {
+    from = '>=' + from
+  }
+
+  if (isX(tM)) {
+    to = ''
+  } else if (isX(tm)) {
+    to = '<' + (+tM + 1) + '.0.0'
+  } else if (isX(tp)) {
+    to = '<' + tM + '.' + (+tm + 1) + '.0'
+  } else if (tpr) {
+    to = '<=' + tM + '.' + tm + '.' + tp + '-' + tpr
+  } else {
+    to = '<=' + to
+  }
+
+  return (from + ' ' + to).trim()
+}
+
+// if ANY of the sets match ALL of its comparators, then pass
+Range.prototype.test = function (version) {
+  if (!version) {
+    return false
+  }
+
+  if (typeof version === 'string') {
+    version = new SemVer(version, this.options)
+  }
+
+  for (var i = 0; i < this.set.length; i++) {
+    if (testSet(this.set[i], version, this.options)) {
+      return true
+    }
+  }
+  return false
+}
+
+function testSet (set, version, options) {
+  for (var i = 0; i < set.length; i++) {
+    if (!set[i].test(version)) {
+      return false
+    }
+  }
+
+  if (version.prerelease.length && !options.includePrerelease) {
+    // Find the set of versions that are allowed to have prereleases
+    // For example, ^1.2.3-pr.1 desugars to >=1.2.3-pr.1 <2.0.0
+    // That should allow `1.2.3-pr.2` to pass.
+    // However, `1.2.4-alpha.notready` should NOT be allowed,
+    // even though it's within the range set by the comparators.
+    for (i = 0; i < set.length; i++) {
+      debug(set[i].semver)
+      if (set[i].semver === ANY) {
+        continue
+      }
+
+      if (set[i].semver.prerelease.length > 0) {
+        var allowed = set[i].semver
+        if (allowed.major === version.major &&
+            allowed.minor === version.minor &&
+            allowed.patch === version.patch) {
+          return true
+        }
+      }
+    }
+
+    // Version has a -pre, but it's not one of the ones we like.
+    return false
+  }
+
+  return true
+}
+
+exports.satisfies = satisfies
+function satisfies (version, range, options) {
+  try {
+    range = new Range(range, options)
+  } catch (er) {
+    return false
+  }
+  return range.test(version)
+}
+
+exports.maxSatisfying = maxSatisfying
+function maxSatisfying (versions, range, options) {
+  var max = null
+  var maxSV = null
+  try {
+    var rangeObj = new Range(range, options)
+  } catch (er) {
+    return null
+  }
+  versions.forEach(function (v) {
+    if (rangeObj.test(v)) {
+      // satisfies(v, range, options)
+      if (!max || maxSV.compare(v) === -1) {
+        // compare(max, v, true)
+        max = v
+        maxSV = new SemVer(max, options)
+      }
+    }
+  })
+  return max
+}
+
+exports.minSatisfying = minSatisfying
+function minSatisfying (versions, range, options) {
+  var min = null
+  var minSV = null
+  try {
+    var rangeObj = new Range(range, options)
+  } catch (er) {
+    return null
+  }
+  versions.forEach(function (v) {
+    if (rangeObj.test(v)) {
+      // satisfies(v, range, options)
+      if (!min || minSV.compare(v) === 1) {
+        // compare(min, v, true)
+        min = v
+        minSV = new SemVer(min, options)
+      }
+    }
+  })
+  return min
+}
+
+exports.minVersion = minVersion
+function minVersion (range, loose) {
+  range = new Range(range, loose)
+
+  var minver = new SemVer('0.0.0')
+  if (range.test(minver)) {
+    return minver
+  }
+
+  minver = new SemVer('0.0.0-0')
+  if (range.test(minver)) {
+    return minver
+  }
+
+  minver = null
+  for (var i = 0; i < range.set.length; ++i) {
+    var comparators = range.set[i]
+
+    comparators.forEach(function (comparator) {
+      // Clone to avoid manipulating the comparator's semver object.
+      var compver = new SemVer(comparator.semver.version)
+      switch (comparator.operator) {
+        case '>':
+          if (compver.prerelease.length === 0) {
+            compver.patch++
+          } else {
+            compver.prerelease.push(0)
+          }
+          compver.raw = compver.format()
+          /* fallthrough */
+        case '':
+        case '>=':
+          if (!minver || gt(minver, compver)) {
+            minver = compver
+          }
+          break
+        case '<':
+        case '<=':
+          /* Ignore maximum versions */
+          break
+        /* istanbul ignore next */
+        default:
+          throw new Error('Unexpected operation: ' + comparator.operator)
+      }
+    })
+  }
+
+  if (minver && range.test(minver)) {
+    return minver
+  }
+
+  return null
+}
+
+exports.validRange = validRange
+function validRange (range, options) {
+  try {
+    // Return '*' instead of '' so that truthiness works.
+    // This will throw if it's invalid anyway
+    return new Range(range, options).range || '*'
+  } catch (er) {
+    return null
+  }
+}
+
+// Determine if version is less than all the versions possible in the range
+exports.ltr = ltr
+function ltr (version, range, options) {
+  return outside(version, range, '<', options)
+}
+
+// Determine if version is greater than all the versions possible in the range.
+exports.gtr = gtr
+function gtr (version, range, options) {
+  return outside(version, range, '>', options)
+}
+
+exports.outside = outside
+function outside (version, range, hilo, options) {
+  version = new SemVer(version, options)
+  range = new Range(range, options)
+
+  var gtfn, ltefn, ltfn, comp, ecomp
+  switch (hilo) {
+    case '>':
+      gtfn = gt
+      ltefn = lte
+      ltfn = lt
+      comp = '>'
+      ecomp = '>='
+      break
+    case '<':
+      gtfn = lt
+      ltefn = gte
+      ltfn = gt
+      comp = '<'
+      ecomp = '<='
+      break
+    default:
+      throw new TypeError('Must provide a hilo val of "<" or ">"')
+  }
+
+  // If it satisifes the range it is not outside
+  if (satisfies(version, range, options)) {
+    return false
+  }
+
+  // From now on, variable terms are as if we're in "gtr" mode.
+  // but note that everything is flipped for the "ltr" function.
+
+  for (var i = 0; i < range.set.length; ++i) {
+    var comparators = range.set[i]
+
+    var high = null
+    var low = null
+
+    comparators.forEach(function (comparator) {
+      if (comparator.semver === ANY) {
+        comparator = new Comparator('>=0.0.0')
+      }
+      high = high || comparator
+      low = low || comparator
+      if (gtfn(comparator.semver, high.semver, options)) {
+        high = comparator
+      } else if (ltfn(comparator.semver, low.semver, options)) {
+        low = comparator
+      }
+    })
+
+    // If the edge version comparator has a operator then our version
+    // isn't outside it
+    if (high.operator === comp || high.operator === ecomp) {
+      return false
+    }
+
+    // If the lowest version comparator has an operator and our version
+    // is less than it then it isn't higher than the range
+    if ((!low.operator || low.operator === comp) &&
+        ltefn(version, low.semver)) {
+      return false
+    } else if (low.operator === ecomp && ltfn(version, low.semver)) {
+      return false
+    }
+  }
+  return true
+}
+
+exports.prerelease = prerelease
+function prerelease (version, options) {
+  var parsed = parse(version, options)
+  return (parsed && parsed.prerelease.length) ? parsed.prerelease : null
+}
+
+exports.intersects = intersects
+function intersects (r1, r2, options) {
+  r1 = new Range(r1, options)
+  r2 = new Range(r2, options)
+  return r1.intersects(r2)
+}
+
+exports.coerce = coerce
+function coerce (version) {
+  if (version instanceof SemVer) {
+    return version
+  }
+
+  if (typeof version !== 'string') {
+    return null
+  }
+
+  var match = version.match(re[COERCE])
+
+  if (match == null) {
+    return null
+  }
+
+  return parse(match[1] +
+    '.' + (match[2] || '0') +
+    '.' + (match[3] || '0'))
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/shell-env/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const execa = __webpack_require__(/*! execa */ "./node_modules/shell-env/node_modules/execa/index.js");
+const stripAnsi = __webpack_require__(/*! strip-ansi */ "./node_modules/strip-ansi/index.js");
+const defaultShell = __webpack_require__(/*! default-shell */ "./node_modules/default-shell/index.js");
+
+const args = ['-ilc', 'env; exit'];
+
+function parseEnv(env) {
+	const ret = {};
+
+	stripAnsi(env).split('\n').forEach(x => {
+		const parts = x.split('=');
+		ret[parts.shift()] = parts.join('=');
+	});
+
+	return ret;
+}
+
+module.exports = shell => {
+	if (process.platform === 'win32') {
+		return Promise.resolve(process.env);
+	}
+
+	return execa(shell || defaultShell, args)
+		.then(x => parseEnv(x.stdout))
+		.catch(err => {
+			if (shell) {
+				throw err;
+			} else {
+				return process.env;
+			}
+		});
+};
+
+module.exports.sync = shell => {
+	if (process.platform === 'win32') {
+		return process.env;
+	}
+
+	try {
+		const stdout = execa.sync(shell || defaultShell, args).stdout;
+		return parseEnv(stdout);
+	} catch (err) {
+		if (shell) {
+			throw err;
+		} else {
+			return process.env;
+		}
+	}
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/node_modules/cross-spawn/index.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/shell-env/node_modules/cross-spawn/index.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var cp = __webpack_require__(/*! child_process */ "child_process");
+var parse = __webpack_require__(/*! ./lib/parse */ "./node_modules/shell-env/node_modules/cross-spawn/lib/parse.js");
+var enoent = __webpack_require__(/*! ./lib/enoent */ "./node_modules/shell-env/node_modules/cross-spawn/lib/enoent.js");
+
+var cpSpawnSync = cp.spawnSync;
+
+function spawn(command, args, options) {
+    var parsed;
+    var spawned;
+
+    // Parse the arguments
+    parsed = parse(command, args, options);
+
+    // Spawn the child process
+    spawned = cp.spawn(parsed.command, parsed.args, parsed.options);
+
+    // Hook into child process "exit" event to emit an error if the command
+    // does not exists, see: https://github.com/IndigoUnited/node-cross-spawn/issues/16
+    enoent.hookChildProcess(spawned, parsed);
+
+    return spawned;
+}
+
+function spawnSync(command, args, options) {
+    var parsed;
+    var result;
+
+    if (!cpSpawnSync) {
+        try {
+            cpSpawnSync = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module 'spawn-sync'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));  // eslint-disable-line global-require
+        } catch (ex) {
+            throw new Error(
+                'In order to use spawnSync on node 0.10 or older, you must ' +
+                'install spawn-sync:\n\n' +
+                '  npm install spawn-sync --save'
+            );
+        }
+    }
+
+    // Parse the arguments
+    parsed = parse(command, args, options);
+
+    // Spawn the child process
+    result = cpSpawnSync(parsed.command, parsed.args, parsed.options);
+
+    // Analyze if the command does not exists, see: https://github.com/IndigoUnited/node-cross-spawn/issues/16
+    result.error = result.error || enoent.verifyENOENTSync(result.status, parsed);
+
+    return result;
+}
+
+module.exports = spawn;
+module.exports.spawn = spawn;
+module.exports.sync = spawnSync;
+
+module.exports._parse = parse;
+module.exports._enoent = enoent;
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/node_modules/cross-spawn/lib/enoent.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/shell-env/node_modules/cross-spawn/lib/enoent.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isWin = process.platform === 'win32';
+var resolveCommand = __webpack_require__(/*! ./resolveCommand */ "./node_modules/shell-env/node_modules/cross-spawn/lib/resolveCommand.js");
+
+var isNode10 = process.version.indexOf('v0.10.') === 0;
+
+function notFoundError(command, syscall) {
+    var err;
+
+    err = new Error(syscall + ' ' + command + ' ENOENT');
+    err.code = err.errno = 'ENOENT';
+    err.syscall = syscall + ' ' + command;
+
+    return err;
+}
+
+function hookChildProcess(cp, parsed) {
+    var originalEmit;
+
+    if (!isWin) {
+        return;
+    }
+
+    originalEmit = cp.emit;
+    cp.emit = function (name, arg1) {
+        var err;
+
+        // If emitting "exit" event and exit code is 1, we need to check if
+        // the command exists and emit an "error" instead
+        // See: https://github.com/IndigoUnited/node-cross-spawn/issues/16
+        if (name === 'exit') {
+            err = verifyENOENT(arg1, parsed, 'spawn');
+
+            if (err) {
+                return originalEmit.call(cp, 'error', err);
+            }
+        }
+
+        return originalEmit.apply(cp, arguments);
+    };
+}
+
+function verifyENOENT(status, parsed) {
+    if (isWin && status === 1 && !parsed.file) {
+        return notFoundError(parsed.original, 'spawn');
+    }
+
+    return null;
+}
+
+function verifyENOENTSync(status, parsed) {
+    if (isWin && status === 1 && !parsed.file) {
+        return notFoundError(parsed.original, 'spawnSync');
+    }
+
+    // If we are in node 10, then we are using spawn-sync; if it exited
+    // with -1 it probably means that the command does not exist
+    if (isNode10 && status === -1) {
+        parsed.file = isWin ? parsed.file : resolveCommand(parsed.original);
+
+        if (!parsed.file) {
+            return notFoundError(parsed.original, 'spawnSync');
+        }
+    }
+
+    return null;
+}
+
+module.exports.hookChildProcess = hookChildProcess;
+module.exports.verifyENOENT = verifyENOENT;
+module.exports.verifyENOENTSync = verifyENOENTSync;
+module.exports.notFoundError = notFoundError;
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/node_modules/cross-spawn/lib/hasBrokenSpawn.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/shell-env/node_modules/cross-spawn/lib/hasBrokenSpawn.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = (function () {
+    if (process.platform !== 'win32') {
+        return false;
+    }
+    var nodeVer = process.version.substr(1).split('.').map(function (num) {
+        return parseInt(num, 10);
+    });
+    return (nodeVer[0] === 0 && nodeVer[1] < 12);
+})();
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/node_modules/cross-spawn/lib/parse.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/shell-env/node_modules/cross-spawn/lib/parse.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var fs = __webpack_require__(/*! fs */ "fs");
+var LRU = __webpack_require__(/*! lru-cache */ "./node_modules/lru-cache/index.js");
+var resolveCommand = __webpack_require__(/*! ./resolveCommand */ "./node_modules/shell-env/node_modules/cross-spawn/lib/resolveCommand.js");
+var hasBrokenSpawn = __webpack_require__(/*! ./hasBrokenSpawn */ "./node_modules/shell-env/node_modules/cross-spawn/lib/hasBrokenSpawn.js");
+
+var isWin = process.platform === 'win32';
+var shebangCache = new LRU({ max: 50, maxAge: 30 * 1000 });  // Cache just for 30sec
+
+function readShebang(command) {
+    var buffer;
+    var fd;
+    var match;
+    var shebang;
+
+    // Check if it is in the cache first
+    if (shebangCache.has(command)) {
+        return shebangCache.get(command);
+    }
+
+    // Read the first 150 bytes from the file
+    buffer = new Buffer(150);
+
+    try {
+        fd = fs.openSync(command, 'r');
+        fs.readSync(fd, buffer, 0, 150, 0);
+        fs.closeSync(fd);
+    } catch (e) { /* empty */ }
+
+    // Check if it is a shebang
+    match = buffer.toString().trim().match(/#!(.+)/i);
+
+    if (match) {
+        shebang = match[1].replace(/\/usr\/bin\/env\s+/i, '');   // Remove /usr/bin/env
+    }
+
+    // Store the shebang in the cache
+    shebangCache.set(command, shebang);
+
+    return shebang;
+}
+
+function escapeArg(arg, quote) {
+    // Convert to string
+    arg = '' + arg;
+
+    // If we are not going to quote the argument,
+    // escape shell metacharacters, including double and single quotes:
+    if (!quote) {
+        arg = arg.replace(/([\(\)%!\^<>&|;,"'\s])/g, '^$1');
+    } else {
+        // Sequence of backslashes followed by a double quote:
+        // double up all the backslashes and escape the double quote
+        arg = arg.replace(/(\\*)"/g, '$1$1\\"');
+
+        // Sequence of backslashes followed by the end of the string
+        // (which will become a double quote later):
+        // double up all the backslashes
+        arg = arg.replace(/(\\*)$/, '$1$1');
+
+        // All other backslashes occur literally
+
+        // Quote the whole thing:
+        arg = '"' + arg + '"';
+    }
+
+    return arg;
+}
+
+function escapeCommand(command) {
+    // Do not escape if this command is not dangerous..
+    // We do this so that commands like "echo" or "ifconfig" work
+    // Quoting them, will make them unaccessible
+    return /^[a-z0-9_-]+$/i.test(command) ? command : escapeArg(command, true);
+}
+
+function requiresShell(command) {
+    return !/\.(?:com|exe)$/i.test(command);
+}
+
+function parse(command, args, options) {
+    var shebang;
+    var applyQuotes;
+    var file;
+    var original;
+    var shell;
+
+    // Normalize arguments, similar to nodejs
+    if (args && !Array.isArray(args)) {
+        options = args;
+        args = null;
+    }
+
+    args = args ? args.slice(0) : [];  // Clone array to avoid changing the original
+    options = options || {};
+    original = command;
+
+    if (isWin) {
+        // Detect & add support for shebangs
+        file = resolveCommand(command);
+        file = file || resolveCommand(command, true);
+        shebang = file && readShebang(file);
+        shell = options.shell || hasBrokenSpawn;
+
+        if (shebang) {
+            args.unshift(file);
+            command = shebang;
+            shell = shell || requiresShell(resolveCommand(shebang) || resolveCommand(shebang, true));
+        } else {
+            shell = shell || requiresShell(file);
+        }
+
+        if (shell) {
+            // Escape command & arguments
+            applyQuotes = (command !== 'echo');  // Do not quote arguments for the special "echo" command
+            command = escapeCommand(command);
+            args = args.map(function (arg) {
+                return escapeArg(arg, applyQuotes);
+            });
+
+            // Use cmd.exe
+            args = ['/s', '/c', '"' + command + (args.length ? ' ' + args.join(' ') : '') + '"'];
+            command = process.env.comspec || 'cmd.exe';
+
+            // Tell node's spawn that the arguments are already escaped
+            options.windowsVerbatimArguments = true;
+        }
+    }
+
+    return {
+        command: command,
+        args: args,
+        options: options,
+        file: file,
+        original: original,
+    };
+}
+
+module.exports = parse;
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/node_modules/cross-spawn/lib/resolveCommand.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/shell-env/node_modules/cross-spawn/lib/resolveCommand.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var path = __webpack_require__(/*! path */ "path");
+var which = __webpack_require__(/*! which */ "./node_modules/which/which.js");
+var LRU = __webpack_require__(/*! lru-cache */ "./node_modules/lru-cache/index.js");
+
+var commandCache = new LRU({ max: 50, maxAge: 30 * 1000 });  // Cache just for 30sec
+
+function resolveCommand(command, noExtension) {
+    var resolved;
+
+    noExtension = !!noExtension;
+    resolved = commandCache.get(command + '!' + noExtension);
+
+    // Check if its resolved in the cache
+    if (commandCache.has(command)) {
+        return commandCache.get(command);
+    }
+
+    try {
+        resolved = !noExtension ?
+            which.sync(command) :
+            which.sync(command, { pathExt: path.delimiter + (process.env.PATHEXT || '') });
+    } catch (e) { /* empty */ }
+
+    commandCache.set(command + '!' + noExtension, resolved);
+
+    return resolved;
+}
+
+module.exports = resolveCommand;
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/node_modules/execa/index.js":
+/*!************************************************************!*\
+  !*** ./node_modules/shell-env/node_modules/execa/index.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const childProcess = __webpack_require__(/*! child_process */ "child_process");
+const util = __webpack_require__(/*! util */ "util");
+const crossSpawn = __webpack_require__(/*! cross-spawn */ "./node_modules/shell-env/node_modules/cross-spawn/index.js");
+const stripEof = __webpack_require__(/*! strip-eof */ "./node_modules/strip-eof/index.js");
+const npmRunPath = __webpack_require__(/*! npm-run-path */ "./node_modules/npm-run-path/index.js");
+const isStream = __webpack_require__(/*! is-stream */ "./node_modules/is-stream/index.js");
+const _getStream = __webpack_require__(/*! get-stream */ "./node_modules/shell-env/node_modules/get-stream/index.js");
+const pFinally = __webpack_require__(/*! p-finally */ "./node_modules/p-finally/index.js");
+const onExit = __webpack_require__(/*! signal-exit */ "./node_modules/signal-exit/index.js");
+const errname = __webpack_require__(/*! ./lib/errname */ "./node_modules/shell-env/node_modules/execa/lib/errname.js");
+
+const TEN_MEGABYTES = 1000 * 1000 * 10;
+
+function handleArgs(cmd, args, opts) {
+	let parsed;
+
+	if (opts && opts.__winShell === true) {
+		delete opts.__winShell;
+		parsed = {
+			command: cmd,
+			args,
+			options: opts,
+			file: cmd,
+			original: cmd
+		};
+	} else {
+		parsed = crossSpawn._parse(cmd, args, opts);
+	}
+
+	opts = Object.assign({
+		maxBuffer: TEN_MEGABYTES,
+		stripEof: true,
+		preferLocal: true,
+		encoding: 'utf8',
+		reject: true,
+		cleanup: true
+	}, parsed.options);
+
+	if (opts.preferLocal) {
+		opts.env = npmRunPath.env(opts);
+	}
+
+	return {
+		cmd: parsed.command,
+		args: parsed.args,
+		opts
+	};
+}
+
+function handleInput(spawned, opts) {
+	const input = opts.input;
+
+	if (input === null || input === undefined) {
+		return;
+	}
+
+	if (isStream(input)) {
+		input.pipe(spawned.stdin);
+	} else {
+		spawned.stdin.end(input);
+	}
+}
+
+function handleOutput(opts, val) {
+	if (val && opts.stripEof) {
+		val = stripEof(val);
+	}
+
+	return val;
+}
+
+function handleShell(fn, cmd, opts) {
+	let file = '/bin/sh';
+	let args = ['-c', cmd];
+
+	opts = Object.assign({}, opts);
+
+	if (process.platform === 'win32') {
+		opts.__winShell = true;
+		file = process.env.comspec || 'cmd.exe';
+		args = ['/s', '/c', `"${cmd}"`];
+		opts.windowsVerbatimArguments = true;
+	}
+
+	if (opts.shell) {
+		file = opts.shell;
+		delete opts.shell;
+	}
+
+	return fn(file, args, opts);
+}
+
+function getStream(process, stream, encoding, maxBuffer) {
+	if (!process[stream]) {
+		return null;
+	}
+
+	let ret;
+
+	if (encoding) {
+		ret = _getStream(process[stream], {
+			encoding,
+			maxBuffer
+		});
+	} else {
+		ret = _getStream.buffer(process[stream], {maxBuffer});
+	}
+
+	return ret.catch(err => {
+		err.stream = stream;
+		err.message = `${stream} ${err.message}`;
+		throw err;
+	});
+}
+
+module.exports = (cmd, args, opts) => {
+	let joinedCmd = cmd;
+
+	if (Array.isArray(args) && args.length > 0) {
+		joinedCmd += ' ' + args.join(' ');
+	}
+
+	const parsed = handleArgs(cmd, args, opts);
+	const encoding = parsed.opts.encoding;
+	const maxBuffer = parsed.opts.maxBuffer;
+
+	let spawned;
+	try {
+		spawned = childProcess.spawn(parsed.cmd, parsed.args, parsed.opts);
+	} catch (err) {
+		return Promise.reject(err);
+	}
+
+	let removeExitHandler;
+	if (parsed.opts.cleanup) {
+		removeExitHandler = onExit(() => {
+			spawned.kill();
+		});
+	}
+
+	let timeoutId = null;
+	let timedOut = false;
+
+	const cleanupTimeout = () => {
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+			timeoutId = null;
+		}
+	};
+
+	if (parsed.opts.timeout > 0) {
+		timeoutId = setTimeout(() => {
+			timeoutId = null;
+			timedOut = true;
+			spawned.kill(parsed.killSignal);
+		}, parsed.opts.timeout);
+	}
+
+	const processDone = new Promise(resolve => {
+		spawned.on('exit', (code, signal) => {
+			cleanupTimeout();
+			resolve({code, signal});
+		});
+
+		spawned.on('error', err => {
+			cleanupTimeout();
+			resolve({err});
+		});
+	});
+
+	function destroy() {
+		if (spawned.stdout) {
+			spawned.stdout.destroy();
+		}
+
+		if (spawned.stderr) {
+			spawned.stderr.destroy();
+		}
+	}
+
+	const promise = pFinally(Promise.all([
+		processDone,
+		getStream(spawned, 'stdout', encoding, maxBuffer),
+		getStream(spawned, 'stderr', encoding, maxBuffer)
+	]).then(arr => {
+		const result = arr[0];
+		const stdout = arr[1];
+		const stderr = arr[2];
+
+		let err = result.err;
+		const code = result.code;
+		const signal = result.signal;
+
+		if (removeExitHandler) {
+			removeExitHandler();
+		}
+
+		if (err || code !== 0 || signal !== null) {
+			if (!err) {
+				err = new Error(`Command failed: ${joinedCmd}\n${stderr}${stdout}`);
+				err.code = code < 0 ? errname(code) : code;
+			}
+
+			// TODO: missing some timeout logic for killed
+			// https://github.com/nodejs/node/blob/master/lib/child_process.js#L203
+			// err.killed = spawned.killed || killed;
+			err.killed = err.killed || spawned.killed;
+
+			err.stdout = stdout;
+			err.stderr = stderr;
+			err.failed = true;
+			err.signal = signal || null;
+			err.cmd = joinedCmd;
+			err.timedOut = timedOut;
+
+			if (!parsed.opts.reject) {
+				return err;
+			}
+
+			throw err;
+		}
+
+		return {
+			stdout: handleOutput(parsed.opts, stdout),
+			stderr: handleOutput(parsed.opts, stderr),
+			code: 0,
+			failed: false,
+			killed: false,
+			signal: null,
+			cmd: joinedCmd,
+			timedOut: false
+		};
+	}), destroy);
+
+	crossSpawn._enoent.hookChildProcess(spawned, parsed);
+
+	handleInput(spawned, parsed.opts);
+
+	spawned.then = promise.then.bind(promise);
+	spawned.catch = promise.catch.bind(promise);
+
+	return spawned;
+};
+
+module.exports.stdout = function () {
+	// TODO: set `stderr: 'ignore'` when that option is implemented
+	return module.exports.apply(null, arguments).then(x => x.stdout);
+};
+
+module.exports.stderr = function () {
+	// TODO: set `stdout: 'ignore'` when that option is implemented
+	return module.exports.apply(null, arguments).then(x => x.stderr);
+};
+
+module.exports.shell = (cmd, opts) => handleShell(module.exports, cmd, opts);
+
+module.exports.sync = (cmd, args, opts) => {
+	const parsed = handleArgs(cmd, args, opts);
+
+	if (isStream(parsed.opts.input)) {
+		throw new TypeError('The `input` option cannot be a stream in sync mode');
+	}
+
+	const result = childProcess.spawnSync(parsed.cmd, parsed.args, parsed.opts);
+
+	result.stdout = handleOutput(parsed.opts, result.stdout);
+	result.stderr = handleOutput(parsed.opts, result.stderr);
+
+	return result;
+};
+
+module.exports.shellSync = (cmd, opts) => handleShell(module.exports.sync, cmd, opts);
+
+module.exports.spawn = util.deprecate(module.exports, 'execa.spawn() is deprecated. Use execa() instead.');
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/node_modules/execa/lib/errname.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/shell-env/node_modules/execa/lib/errname.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// The Node team wants to deprecate `process.bind(...)`.
+//   https://github.com/nodejs/node/pull/2768
+//
+// However, we need the 'uv' binding for errname support.
+// This is a defensive wrapper around it so `execa` will not fail entirely if it stops working someday.
+//
+// If this ever stops working. See: https://github.com/sindresorhus/execa/issues/31#issuecomment-215939939 for another possible solution.
+let uv;
+
+try {
+	uv = process.binding('uv');
+
+	if (typeof uv.errname !== 'function') {
+		throw new Error('uv.errname is not a function');
+	}
+} catch (err) {
+	console.error('execa/lib/errname: unable to establish process.binding(\'uv\')', err);
+	uv = null;
+}
+
+function errname(uv, code) {
+	if (uv) {
+		return uv.errname(code);
+	}
+
+	if (!(code < 0)) {
+		throw new Error('err >= 0');
+	}
+
+	return `Unknown system error ${code}`;
+}
+
+module.exports = code => errname(uv, code);
+
+// used for testing the fallback behavior
+module.exports.__test__ = errname;
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/node_modules/get-stream/buffer-stream.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/shell-env/node_modules/get-stream/buffer-stream.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var PassThrough = __webpack_require__(/*! stream */ "stream").PassThrough;
+var objectAssign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
+
+module.exports = function (opts) {
+	opts = objectAssign({}, opts);
+
+	var array = opts.array;
+	var encoding = opts.encoding;
+
+	var buffer = encoding === 'buffer';
+	var objectMode = false;
+
+	if (array) {
+		objectMode = !(encoding || buffer);
+	} else {
+		encoding = encoding || 'utf8';
+	}
+
+	if (buffer) {
+		encoding = null;
+	}
+
+	var len = 0;
+	var ret = [];
+
+	var stream = new PassThrough({objectMode: objectMode});
+
+	if (encoding) {
+		stream.setEncoding(encoding);
+	}
+
+	stream.on('data', function (chunk) {
+		ret.push(chunk);
+
+		if (objectMode) {
+			len = ret.length;
+		} else {
+			len += chunk.length;
+		}
+	});
+
+	stream.getBufferedValue = function () {
+		if (array) {
+			return ret;
+		}
+		return buffer ? Buffer.concat(ret, len) : ret.join('');
+	};
+
+	stream.getBufferedLength = function () {
+		return len;
+	};
+
+	return stream;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-env/node_modules/get-stream/index.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/shell-env/node_modules/get-stream/index.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var Promise = __webpack_require__(/*! pinkie-promise */ "./node_modules/pinkie-promise/index.js");
+var objectAssign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
+var bufferStream = __webpack_require__(/*! ./buffer-stream */ "./node_modules/shell-env/node_modules/get-stream/buffer-stream.js");
+
+function getStream(inputStream, opts) {
+	if (!inputStream) {
+		return Promise.reject(new Error('Expected a stream'));
+	}
+
+	opts = objectAssign({maxBuffer: Infinity}, opts);
+	var maxBuffer = opts.maxBuffer;
+	var stream;
+	var clean;
+
+	var p = new Promise(function (resolve, reject) {
+		stream = bufferStream(opts);
+		inputStream.once('error', error);
+		inputStream.pipe(stream);
+
+		stream.on('data', function () {
+			if (stream.getBufferedLength() > maxBuffer) {
+				reject(new Error('maxBuffer exceeded'));
+			}
+		});
+		stream.once('error', error);
+		stream.on('end', resolve);
+
+		clean = function () {
+			// some streams doesn't implement the stream.Readable interface correctly
+			if (inputStream.unpipe) {
+				inputStream.unpipe(stream);
+			}
+		};
+
+		function error(err) {
+			if (err) { // null check
+				err.bufferedData = stream.getBufferedValue();
+			}
+			reject(err);
+		}
+	});
+
+	p.then(clean, clean);
+
+	return p.then(function () {
+		return stream.getBufferedValue();
+	});
+}
+
+module.exports = getStream;
+
+module.exports.buffer = function (stream, opts) {
+	return getStream(stream, objectAssign({}, opts, {encoding: 'buffer'}));
+};
+
+module.exports.array = function (stream, opts) {
+	return getStream(stream, objectAssign({}, opts, {array: true}));
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/shell-path/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/shell-path/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+const shellEnv = __webpack_require__(/*! shell-env */ "./node_modules/shell-env/index.js");
+
+module.exports = () => shellEnv().then(x => x.PATH);
+module.exports.sync = () => shellEnv.sync().PATH;
+
+
+/***/ }),
+
+/***/ "./node_modules/signal-exit/index.js":
+/*!*******************************************!*\
+  !*** ./node_modules/signal-exit/index.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Note: since nyc uses this module to output coverage, any lines
+// that are in the direct sync flow of nyc's outputCoverage are
+// ignored, since we can never get coverage for them.
+var assert = __webpack_require__(/*! assert */ "assert")
+var signals = __webpack_require__(/*! ./signals.js */ "./node_modules/signal-exit/signals.js")
+
+var EE = __webpack_require__(/*! events */ "events")
+/* istanbul ignore if */
+if (typeof EE !== 'function') {
+  EE = EE.EventEmitter
+}
+
+var emitter
+if (process.__signal_exit_emitter__) {
+  emitter = process.__signal_exit_emitter__
+} else {
+  emitter = process.__signal_exit_emitter__ = new EE()
+  emitter.count = 0
+  emitter.emitted = {}
+}
+
+// Because this emitter is a global, we have to check to see if a
+// previous version of this library failed to enable infinite listeners.
+// I know what you're about to say.  But literally everything about
+// signal-exit is a compromise with evil.  Get used to it.
+if (!emitter.infinite) {
+  emitter.setMaxListeners(Infinity)
+  emitter.infinite = true
+}
+
+module.exports = function (cb, opts) {
+  assert.equal(typeof cb, 'function', 'a callback must be provided for exit handler')
+
+  if (loaded === false) {
+    load()
+  }
+
+  var ev = 'exit'
+  if (opts && opts.alwaysLast) {
+    ev = 'afterexit'
+  }
+
+  var remove = function () {
+    emitter.removeListener(ev, cb)
+    if (emitter.listeners('exit').length === 0 &&
+        emitter.listeners('afterexit').length === 0) {
+      unload()
+    }
+  }
+  emitter.on(ev, cb)
+
+  return remove
+}
+
+module.exports.unload = unload
+function unload () {
+  if (!loaded) {
+    return
+  }
+  loaded = false
+
+  signals.forEach(function (sig) {
+    try {
+      process.removeListener(sig, sigListeners[sig])
+    } catch (er) {}
+  })
+  process.emit = originalProcessEmit
+  process.reallyExit = originalProcessReallyExit
+  emitter.count -= 1
+}
+
+function emit (event, code, signal) {
+  if (emitter.emitted[event]) {
+    return
+  }
+  emitter.emitted[event] = true
+  emitter.emit(event, code, signal)
+}
+
+// { <signal>: <listener fn>, ... }
+var sigListeners = {}
+signals.forEach(function (sig) {
+  sigListeners[sig] = function listener () {
+    // If there are no other listeners, an exit is coming!
+    // Simplest way: remove us and then re-send the signal.
+    // We know that this will kill the process, so we can
+    // safely emit now.
+    var listeners = process.listeners(sig)
+    if (listeners.length === emitter.count) {
+      unload()
+      emit('exit', null, sig)
+      /* istanbul ignore next */
+      emit('afterexit', null, sig)
+      /* istanbul ignore next */
+      process.kill(process.pid, sig)
+    }
+  }
+})
+
+module.exports.signals = function () {
+  return signals
+}
+
+module.exports.load = load
+
+var loaded = false
+
+function load () {
+  if (loaded) {
+    return
+  }
+  loaded = true
+
+  // This is the number of onSignalExit's that are in play.
+  // It's important so that we can count the correct number of
+  // listeners on signals, and don't wait for the other one to
+  // handle it instead of us.
+  emitter.count += 1
+
+  signals = signals.filter(function (sig) {
+    try {
+      process.on(sig, sigListeners[sig])
+      return true
+    } catch (er) {
+      return false
+    }
+  })
+
+  process.emit = processEmit
+  process.reallyExit = processReallyExit
+}
+
+var originalProcessReallyExit = process.reallyExit
+function processReallyExit (code) {
+  process.exitCode = code || 0
+  emit('exit', process.exitCode, null)
+  /* istanbul ignore next */
+  emit('afterexit', process.exitCode, null)
+  /* istanbul ignore next */
+  originalProcessReallyExit.call(process, process.exitCode)
+}
+
+var originalProcessEmit = process.emit
+function processEmit (ev, arg) {
+  if (ev === 'exit') {
+    if (arg !== undefined) {
+      process.exitCode = arg
+    }
+    var ret = originalProcessEmit.apply(this, arguments)
+    emit('exit', process.exitCode, null)
+    /* istanbul ignore next */
+    emit('afterexit', process.exitCode, null)
+    return ret
+  } else {
+    return originalProcessEmit.apply(this, arguments)
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/signal-exit/signals.js":
+/*!*********************************************!*\
+  !*** ./node_modules/signal-exit/signals.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// This is not the set of all possible signals.
+//
+// It IS, however, the set of all signals that trigger
+// an exit on either Linux or BSD systems.  Linux is a
+// superset of the signal names supported on BSD, and
+// the unknown signals just fail to register, so we can
+// catch that easily enough.
+//
+// Don't bother with SIGKILL.  It's uncatchable, which
+// means that we can't fire any callbacks anyway.
+//
+// If a user does happen to register a handler on a non-
+// fatal signal like SIGWINCH or something, and then
+// exit, it'll end up firing `process.emit('exit')`, so
+// the handler will be fired anyway.
+//
+// SIGBUS, SIGFPE, SIGSEGV and SIGILL, when not raised
+// artificially, inherently leave the process in a
+// state from which it is not safe to try and enter JS
+// listeners.
+module.exports = [
+  'SIGABRT',
+  'SIGALRM',
+  'SIGHUP',
+  'SIGINT',
+  'SIGTERM'
+]
+
+if (process.platform !== 'win32') {
+  module.exports.push(
+    'SIGVTALRM',
+    'SIGXCPU',
+    'SIGXFSZ',
+    'SIGUSR2',
+    'SIGTRAP',
+    'SIGSYS',
+    'SIGQUIT',
+    'SIGIOT'
+    // should detect profiler and enable/disable accordingly.
+    // see #21
+    // 'SIGPROF'
+  )
+}
+
+if (process.platform === 'linux') {
+  module.exports.push(
+    'SIGIO',
+    'SIGPOLL',
+    'SIGPWR',
+    'SIGSTKFLT',
+    'SIGUNUSED'
+  )
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/strip-ansi/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/strip-ansi/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var ansiRegex = __webpack_require__(/*! ansi-regex */ "./node_modules/ansi-regex/index.js")();
+
+module.exports = function (str) {
+	return typeof str === 'string' ? str.replace(ansiRegex, '') : str;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/strip-eof/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/strip-eof/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+module.exports = function (x) {
+	var lf = typeof x === 'string' ? '\n' : '\n'.charCodeAt();
+	var cr = typeof x === 'string' ? '\r' : '\r'.charCodeAt();
+
+	if (x[x.length - 1] === lf) {
+		x = x.slice(0, x.length - 1);
+	}
+
+	if (x[x.length - 1] === cr) {
+		x = x.slice(0, x.length - 1);
+	}
+
+	return x;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/which/which.js":
+/*!*************************************!*\
+  !*** ./node_modules/which/which.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = which
+which.sync = whichSync
+
+var isWindows = process.platform === 'win32' ||
+    process.env.OSTYPE === 'cygwin' ||
+    process.env.OSTYPE === 'msys'
+
+var path = __webpack_require__(/*! path */ "path")
+var COLON = isWindows ? ';' : ':'
+var isexe = __webpack_require__(/*! isexe */ "./node_modules/isexe/index.js")
+
+function getNotFoundError (cmd) {
+  var er = new Error('not found: ' + cmd)
+  er.code = 'ENOENT'
+
+  return er
+}
+
+function getPathInfo (cmd, opt) {
+  var colon = opt.colon || COLON
+  var pathEnv = opt.path || process.env.PATH || ''
+  var pathExt = ['']
+
+  pathEnv = pathEnv.split(colon)
+
+  var pathExtExe = ''
+  if (isWindows) {
+    pathEnv.unshift(process.cwd())
+    pathExtExe = (opt.pathExt || process.env.PATHEXT || '.EXE;.CMD;.BAT;.COM')
+    pathExt = pathExtExe.split(colon)
+
+
+    // Always test the cmd itself first.  isexe will check to make sure
+    // it's found in the pathExt set.
+    if (cmd.indexOf('.') !== -1 && pathExt[0] !== '')
+      pathExt.unshift('')
+  }
+
+  // If it has a slash, then we don't bother searching the pathenv.
+  // just check the file itself, and that's it.
+  if (cmd.match(/\//) || isWindows && cmd.match(/\\/))
+    pathEnv = ['']
+
+  return {
+    env: pathEnv,
+    ext: pathExt,
+    extExe: pathExtExe
+  }
+}
+
+function which (cmd, opt, cb) {
+  if (typeof opt === 'function') {
+    cb = opt
+    opt = {}
+  }
+
+  var info = getPathInfo(cmd, opt)
+  var pathEnv = info.env
+  var pathExt = info.ext
+  var pathExtExe = info.extExe
+  var found = []
+
+  ;(function F (i, l) {
+    if (i === l) {
+      if (opt.all && found.length)
+        return cb(null, found)
+      else
+        return cb(getNotFoundError(cmd))
+    }
+
+    var pathPart = pathEnv[i]
+    if (pathPart.charAt(0) === '"' && pathPart.slice(-1) === '"')
+      pathPart = pathPart.slice(1, -1)
+
+    var p = path.join(pathPart, cmd)
+    if (!pathPart && (/^\.[\\\/]/).test(cmd)) {
+      p = cmd.slice(0, 2) + p
+    }
+    ;(function E (ii, ll) {
+      if (ii === ll) return F(i + 1, l)
+      var ext = pathExt[ii]
+      isexe(p + ext, { pathExt: pathExtExe }, function (er, is) {
+        if (!er && is) {
+          if (opt.all)
+            found.push(p + ext)
+          else
+            return cb(null, p + ext)
+        }
+        return E(ii + 1, ll)
+      })
+    })(0, pathExt.length)
+  })(0, pathEnv.length)
+}
+
+function whichSync (cmd, opt) {
+  opt = opt || {}
+
+  var info = getPathInfo(cmd, opt)
+  var pathEnv = info.env
+  var pathExt = info.ext
+  var pathExtExe = info.extExe
+  var found = []
+
+  for (var i = 0, l = pathEnv.length; i < l; i ++) {
+    var pathPart = pathEnv[i]
+    if (pathPart.charAt(0) === '"' && pathPart.slice(-1) === '"')
+      pathPart = pathPart.slice(1, -1)
+
+    var p = path.join(pathPart, cmd)
+    if (!pathPart && /^\.[\\\/]/.test(cmd)) {
+      p = cmd.slice(0, 2) + p
+    }
+    for (var j = 0, ll = pathExt.length; j < ll; j ++) {
+      var cur = p + pathExt[j]
+      var is
+      try {
+        is = isexe.sync(cur, { pathExt: pathExtExe })
+        if (is) {
+          if (opt.all)
+            found.push(cur)
+          else
+            return cur
+        }
+      } catch (ex) {}
+    }
+  }
+
+  if (opt.all && found.length)
+    return found
+
+  if (opt.nothrow)
+    return null
+
+  throw getNotFoundError(cmd)
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/wrappy/wrappy.js":
+/*!***************************************!*\
+  !*** ./node_modules/wrappy/wrappy.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// Returns a wrapper function that returns a wrapped callback
+// The wrapper function should do some stuff, and return a
+// presumably different callback function.
+// This makes sure that own properties are retained, so that
+// decorations and such are not lost along the way.
+module.exports = wrappy
+function wrappy (fn, cb) {
+  if (fn && cb) return wrappy(fn)(cb)
+
+  if (typeof fn !== 'function')
+    throw new TypeError('need wrapper function')
+
+  Object.keys(fn).forEach(function (k) {
+    wrapper[k] = fn[k]
+  })
+
+  return wrapper
+
+  function wrapper() {
+    var args = new Array(arguments.length)
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i]
+    }
+    var ret = fn.apply(this, args)
+    var cb = args[args.length-1]
+    if (typeof ret === 'function' && ret !== cb) {
+      Object.keys(cb).forEach(function (k) {
+        ret[k] = cb[k]
+      })
+    }
+    return ret
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/yallist/yallist.js":
+/*!*****************************************!*\
+  !*** ./node_modules/yallist/yallist.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = Yallist
+
+Yallist.Node = Node
+Yallist.create = Yallist
+
+function Yallist (list) {
+  var self = this
+  if (!(self instanceof Yallist)) {
+    self = new Yallist()
+  }
+
+  self.tail = null
+  self.head = null
+  self.length = 0
+
+  if (list && typeof list.forEach === 'function') {
+    list.forEach(function (item) {
+      self.push(item)
+    })
+  } else if (arguments.length > 0) {
+    for (var i = 0, l = arguments.length; i < l; i++) {
+      self.push(arguments[i])
+    }
+  }
+
+  return self
+}
+
+Yallist.prototype.removeNode = function (node) {
+  if (node.list !== this) {
+    throw new Error('removing node which does not belong to this list')
+  }
+
+  var next = node.next
+  var prev = node.prev
+
+  if (next) {
+    next.prev = prev
+  }
+
+  if (prev) {
+    prev.next = next
+  }
+
+  if (node === this.head) {
+    this.head = next
+  }
+  if (node === this.tail) {
+    this.tail = prev
+  }
+
+  node.list.length--
+  node.next = null
+  node.prev = null
+  node.list = null
+}
+
+Yallist.prototype.unshiftNode = function (node) {
+  if (node === this.head) {
+    return
+  }
+
+  if (node.list) {
+    node.list.removeNode(node)
+  }
+
+  var head = this.head
+  node.list = this
+  node.next = head
+  if (head) {
+    head.prev = node
+  }
+
+  this.head = node
+  if (!this.tail) {
+    this.tail = node
+  }
+  this.length++
+}
+
+Yallist.prototype.pushNode = function (node) {
+  if (node === this.tail) {
+    return
+  }
+
+  if (node.list) {
+    node.list.removeNode(node)
+  }
+
+  var tail = this.tail
+  node.list = this
+  node.prev = tail
+  if (tail) {
+    tail.next = node
+  }
+
+  this.tail = node
+  if (!this.head) {
+    this.head = node
+  }
+  this.length++
+}
+
+Yallist.prototype.push = function () {
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    push(this, arguments[i])
+  }
+  return this.length
+}
+
+Yallist.prototype.unshift = function () {
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    unshift(this, arguments[i])
+  }
+  return this.length
+}
+
+Yallist.prototype.pop = function () {
+  if (!this.tail) {
+    return undefined
+  }
+
+  var res = this.tail.value
+  this.tail = this.tail.prev
+  if (this.tail) {
+    this.tail.next = null
+  } else {
+    this.head = null
+  }
+  this.length--
+  return res
+}
+
+Yallist.prototype.shift = function () {
+  if (!this.head) {
+    return undefined
+  }
+
+  var res = this.head.value
+  this.head = this.head.next
+  if (this.head) {
+    this.head.prev = null
+  } else {
+    this.tail = null
+  }
+  this.length--
+  return res
+}
+
+Yallist.prototype.forEach = function (fn, thisp) {
+  thisp = thisp || this
+  for (var walker = this.head, i = 0; walker !== null; i++) {
+    fn.call(thisp, walker.value, i, this)
+    walker = walker.next
+  }
+}
+
+Yallist.prototype.forEachReverse = function (fn, thisp) {
+  thisp = thisp || this
+  for (var walker = this.tail, i = this.length - 1; walker !== null; i--) {
+    fn.call(thisp, walker.value, i, this)
+    walker = walker.prev
+  }
+}
+
+Yallist.prototype.get = function (n) {
+  for (var i = 0, walker = this.head; walker !== null && i < n; i++) {
+    // abort out of the list early if we hit a cycle
+    walker = walker.next
+  }
+  if (i === n && walker !== null) {
+    return walker.value
+  }
+}
+
+Yallist.prototype.getReverse = function (n) {
+  for (var i = 0, walker = this.tail; walker !== null && i < n; i++) {
+    // abort out of the list early if we hit a cycle
+    walker = walker.prev
+  }
+  if (i === n && walker !== null) {
+    return walker.value
+  }
+}
+
+Yallist.prototype.map = function (fn, thisp) {
+  thisp = thisp || this
+  var res = new Yallist()
+  for (var walker = this.head; walker !== null;) {
+    res.push(fn.call(thisp, walker.value, this))
+    walker = walker.next
+  }
+  return res
+}
+
+Yallist.prototype.mapReverse = function (fn, thisp) {
+  thisp = thisp || this
+  var res = new Yallist()
+  for (var walker = this.tail; walker !== null;) {
+    res.push(fn.call(thisp, walker.value, this))
+    walker = walker.prev
+  }
+  return res
+}
+
+Yallist.prototype.reduce = function (fn, initial) {
+  var acc
+  var walker = this.head
+  if (arguments.length > 1) {
+    acc = initial
+  } else if (this.head) {
+    walker = this.head.next
+    acc = this.head.value
+  } else {
+    throw new TypeError('Reduce of empty list with no initial value')
+  }
+
+  for (var i = 0; walker !== null; i++) {
+    acc = fn(acc, walker.value, i)
+    walker = walker.next
+  }
+
+  return acc
+}
+
+Yallist.prototype.reduceReverse = function (fn, initial) {
+  var acc
+  var walker = this.tail
+  if (arguments.length > 1) {
+    acc = initial
+  } else if (this.tail) {
+    walker = this.tail.prev
+    acc = this.tail.value
+  } else {
+    throw new TypeError('Reduce of empty list with no initial value')
+  }
+
+  for (var i = this.length - 1; walker !== null; i--) {
+    acc = fn(acc, walker.value, i)
+    walker = walker.prev
+  }
+
+  return acc
+}
+
+Yallist.prototype.toArray = function () {
+  var arr = new Array(this.length)
+  for (var i = 0, walker = this.head; walker !== null; i++) {
+    arr[i] = walker.value
+    walker = walker.next
+  }
+  return arr
+}
+
+Yallist.prototype.toArrayReverse = function () {
+  var arr = new Array(this.length)
+  for (var i = 0, walker = this.tail; walker !== null; i++) {
+    arr[i] = walker.value
+    walker = walker.prev
+  }
+  return arr
+}
+
+Yallist.prototype.slice = function (from, to) {
+  to = to || this.length
+  if (to < 0) {
+    to += this.length
+  }
+  from = from || 0
+  if (from < 0) {
+    from += this.length
+  }
+  var ret = new Yallist()
+  if (to < from || to < 0) {
+    return ret
+  }
+  if (from < 0) {
+    from = 0
+  }
+  if (to > this.length) {
+    to = this.length
+  }
+  for (var i = 0, walker = this.head; walker !== null && i < from; i++) {
+    walker = walker.next
+  }
+  for (; walker !== null && i < to; i++, walker = walker.next) {
+    ret.push(walker.value)
+  }
+  return ret
+}
+
+Yallist.prototype.sliceReverse = function (from, to) {
+  to = to || this.length
+  if (to < 0) {
+    to += this.length
+  }
+  from = from || 0
+  if (from < 0) {
+    from += this.length
+  }
+  var ret = new Yallist()
+  if (to < from || to < 0) {
+    return ret
+  }
+  if (from < 0) {
+    from = 0
+  }
+  if (to > this.length) {
+    to = this.length
+  }
+  for (var i = this.length, walker = this.tail; walker !== null && i > to; i--) {
+    walker = walker.prev
+  }
+  for (; walker !== null && i > from; i--, walker = walker.prev) {
+    ret.push(walker.value)
+  }
+  return ret
+}
+
+Yallist.prototype.reverse = function () {
+  var head = this.head
+  var tail = this.tail
+  for (var walker = head; walker !== null; walker = walker.prev) {
+    var p = walker.prev
+    walker.prev = walker.next
+    walker.next = p
+  }
+  this.head = tail
+  this.tail = head
+  return this
+}
+
+function push (self, item) {
+  self.tail = new Node(item, self.tail, null, self)
+  if (!self.head) {
+    self.head = self.tail
+  }
+  self.length++
+}
+
+function unshift (self, item) {
+  self.head = new Node(item, null, self.head, self)
+  if (!self.tail) {
+    self.tail = self.head
+  }
+  self.length++
+}
+
+function Node (value, prev, next, list) {
+  if (!(this instanceof Node)) {
+    return new Node(value, prev, next, list)
+  }
+
+  this.list = list
+  this.value = value
+
+  if (prev) {
+    prev.next = this
+    this.prev = prev
+  } else {
+    this.prev = null
+  }
+
+  if (next) {
+    next.prev = this
+    this.next = next
+  } else {
+    this.next = null
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/main/main.ts":
+/*!**************************!*\
+  !*** ./src/main/main.ts ***!
+  \**************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var electron__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! electron */ "electron");
+/* harmony import */ var electron__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(electron__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! path */ "path");
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! url */ "url");
+/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(url__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var fix_path__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! fix-path */ "./node_modules/fix-path/index.js");
+/* harmony import */ var fix_path__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(fix_path__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+fix_path__WEBPACK_IMPORTED_MODULE_3___default()();
+let win;
+
+const installExtensions = async () => {
+  const installer = __webpack_require__(/*! electron-devtools-installer */ "./node_modules/electron-devtools-installer/dist/index.js");
+
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+  return Promise.all(extensions.map(name => installer.default(installer[name], forceDownload))).catch(console.log);
+};
+
+const createWindow = async () => {
+  if (true) {
+    await installExtensions();
+  }
+
+  win = new electron__WEBPACK_IMPORTED_MODULE_0__["BrowserWindow"]({
+    width: 800,
+    height: 600,
+    title: 'Ktl'
+  });
+
+  if (true) {
+    process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
+    win.loadURL(`http://localhost:2003`);
+  } else {}
+
+  if (true) {
+    // Open DevTools, see https://github.com/electron/electron/issues/12438 for why we wait for dom-ready
+    win.webContents.once('dom-ready', () => {
+      win.webContents.openDevTools();
+    });
+  } // win!.webContents.openDevTools();
+
+
+  win.on('closed', () => {
+    win = null;
+  });
+};
+
+electron__WEBPACK_IMPORTED_MODULE_0__["app"].on('ready', createWindow);
+electron__WEBPACK_IMPORTED_MODULE_0__["app"].on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    electron__WEBPACK_IMPORTED_MODULE_0__["app"].quit();
+  }
+});
+electron__WEBPACK_IMPORTED_MODULE_0__["app"].on('activate', () => {
+  if (win === null) {
+    createWindow();
+  }
+});
+
+/***/ }),
+
+/***/ "assert":
+/*!*************************!*\
+  !*** external "assert" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("assert");
+
+/***/ }),
+
+/***/ "child_process":
+/*!********************************!*\
+  !*** external "child_process" ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("child_process");
+
+/***/ }),
+
+/***/ "electron":
+/*!***************************!*\
+  !*** external "electron" ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("electron");
+
+/***/ }),
+
+/***/ "events":
+/*!*************************!*\
+  !*** external "events" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("events");
+
+/***/ }),
+
+/***/ "fs":
+/*!*********************!*\
+  !*** external "fs" ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
+
+/***/ }),
+
+/***/ "https":
+/*!************************!*\
+  !*** external "https" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("https");
+
+/***/ }),
+
+/***/ "path":
+/*!***********************!*\
+  !*** external "path" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
+
+/***/ }),
+
+/***/ "stream":
+/*!*************************!*\
+  !*** external "stream" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("stream");
+
+/***/ }),
+
+/***/ "url":
+/*!**********************!*\
+  !*** external "url" ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("url");
+
+/***/ }),
+
+/***/ "util":
+/*!***********************!*\
+  !*** external "util" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("util");
+
+/***/ })
+
+/******/ });
 //# sourceMappingURL=main.js.map

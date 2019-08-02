@@ -1,14 +1,13 @@
 import * as React from 'react';
 
 import SidePanel from './SidePanel';
-import PodsTable from './PodsTable';
+import ServiceBoard from './ServiceBoard';
 
 function Profile({ id }: { id: string }) {
-  console.log(id);
   return (
-    <div style={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
+    <div style={{ display: 'flex', flex: 1, flexDirection: 'row', backgroundColor: 'rgb(240, 242, 245)' }}>
       <SidePanel id={id} />
-      <PodsTable id={id} />
+      <ServiceBoard id={id} />
     </div>
   );
 }

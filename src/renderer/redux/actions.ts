@@ -6,10 +6,10 @@ import {
   UpdateProfileNameAction,
   UpdateProfileContextAction,
   UpdateProfileNamespaceAction,
-  AddProfilePodAction,
-  UpdateProfilePodAction,
-  RemoveProfilePodAction,
-} from './*';
+  AddProfileServiceAction,
+  UpdateProfileServiceAction,
+  RemoveProfileServiceAction,
+} from './redux';
 import * as shortid from 'shortid';
 
 export const ADD_PROFILE = 'ADD_PROFILE';
@@ -56,17 +56,17 @@ export const updateProfileNamespace: ActionCreator<UpdateProfileNamespaceAction>
   payload: context,
 });
 
-export const addProfilePod: ActionCreator<AddProfilePodAction> = pod => ({
+export const addProfileService: ActionCreator<AddProfileServiceAction> = service => ({
   type: Add_PROFILE_POD,
-  payload: pod,
+  payload: service,
 });
 
-export const updateProfilePod: ActionCreator<UpdateProfilePodAction> = pod => ({
+export const updateProfileService: ActionCreator<UpdateProfileServiceAction> = service => ({
   type: UPDATE_PROFILE_POD,
-  payload: pod,
+  payload: service,
 });
 
-export const removeProfilePod: ActionCreator<RemoveProfilePodAction> = pod => ({
+export const removeProfileService: ActionCreator<RemoveProfileServiceAction> = service => ({
   type: REMOVE_PROFILE_POD,
-  payload: pod,
+  payload: service,
 });

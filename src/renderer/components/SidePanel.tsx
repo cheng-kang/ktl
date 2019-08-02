@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Select, Form, Typography, Button, Tooltip } from 'antd';
+import { Select, Form, Typography, Tooltip } from 'antd';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -7,7 +7,8 @@ import { Dispatch } from 'redux';
 import * as child_process from 'child_process';
 import { getProfile } from '../redux';
 import * as actions from '../redux/actions';
-import { State, Pod, Actions, Profile } from '../redux/*';
+import { State, Actions } from '../redux/redux';
+import { Profile, Service } from '../types/*';
 
 function filterOption(input: string, option: React.ReactElement) {
   return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -18,8 +19,8 @@ export interface SideBarProps {
 
   updateProfileContext: (context: string) => void;
   updateProfileNamespace: (namespace: string) => void;
-  addProfilePod: (pod: Pod) => void;
-  removeProfilePod: (pod: Pod) => void;
+  addProfileService: (service: Service) => void;
+  removeProfileService: (service: Service) => void;
 }
 
 export interface SideBarState {
@@ -29,9 +30,9 @@ export interface SideBarState {
   isNamespacesLoaded: boolean;
   namespaces: string[];
   selectedNamespace?: string;
-  isPodsLoaded: boolean;
-  pods: string[];
-  selectedPods: string[];
+  isServicesLoaded: boolean;
+  services: string[];
+  selectedServices: string[];
 }
 
 class SideBar extends React.Component<SideBarProps, SideBarState> {
@@ -44,9 +45,9 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       isNamespacesLoaded: false,
       namespaces: [],
       selectedNamespace: undefined,
-      isPodsLoaded: false,
-      pods: [],
-      selectedPods: [],
+      isServicesLoaded: false,
+      services: [],
+      selectedServices: [],
     };
   }
 
@@ -55,37 +56,37 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
   }
 
   componentDidUpdate() {
-    this.mayUpdateSelectedPods();
+    this.mayUpdateSelectedServices();
   }
 
-  mayUpdateSelectedPods = () => {
-    const { selectedContext, selectedNamespace, pods, selectedPods } = this.state;
+  mayUpdateSelectedServices = () => {
+    const { selectedContext, selectedNamespace, services, selectedServices } = this.state;
     const { profile } = this.props;
-    if (selectedContext && selectedNamespace && pods.length > 0 && profile && profile.pods) {
-      const newSelectedPods = this.getSelectedPods(selectedContext, selectedNamespace, pods);
+    if (selectedContext && selectedNamespace && services.length > 0 && profile && profile.services) {
+      const newSelectedServices = this.getSelectedServices(selectedContext, selectedNamespace, services);
 
-      if (_.difference(selectedPods, newSelectedPods).length !== 0) {
+      if (_.difference(selectedServices, newSelectedServices).length !== 0) {
         this.setState({
-          selectedPods: newSelectedPods,
+          selectedServices: newSelectedServices,
         });
       }
     }
   };
 
-  getSelectedPods = (context: string, namespace: string, pods: string[]) => {
+  getSelectedServices = (context: string, namespace: string, services: string[]) => {
     return this.props.profile
       ? _.intersection(
-          this.props.profile.pods
-            .filter(pod => pod.context === context && pod.namespace === namespace)
+          this.props.profile.services
+            .filter(service => service.context === context && service.namespace === namespace)
             .map(({ name }) => name),
-          pods,
+          services,
         )
       : [];
   };
 
   loadContexts = () => {
     child_process.exec("kubectl config get-contexts | awk -F ' ' '{print $2}'", (error, stdout, stderr) => {
-      console.log(error, stdout, stderr);
+      // console.log(error, stdout, stderr);
       if (stdout) {
         const contexts = stdout
           .split('\n')
@@ -110,7 +111,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
     this.setState({
       selectedContext: context,
       isNamespacesLoaded: false,
-      isPodsLoaded: false,
+      isServicesLoaded: false,
     });
 
     this.loadNamespaces(context);
@@ -122,7 +123,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
     child_process.exec(
       `kubectl --context=${context} get namespace | awk -F ' ' '{print $1}'`,
       (error, stdout, stderr) => {
-        console.log(error, stdout, stderr);
+        // console.log(error, stdout, stderr);
         if (stdout) {
           const namespaces = stdout
             .split('\n')
@@ -137,7 +138,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
           });
 
           if (selectedNamespace) {
-            this.loadPods(context, selectedNamespace);
+            this.loadServices(context, selectedNamespace);
           }
         }
       },
@@ -155,36 +156,36 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       selectedNamespace: namespace,
     });
 
-    this.loadPods(selectedContext, namespace);
+    this.loadServices(selectedContext, namespace);
 
     this.props.updateProfileNamespace(namespace);
   };
 
-  loadPods = (context: string, namespace: string) => {
+  loadServices = (context: string, namespace: string) => {
     child_process.exec(
-      `kubectl --context=${this.state.selectedContext} -n${namespace} get pods | awk -F ' ' '{print $1}'`,
+      `kubectl --context=${this.state.selectedContext} -n${namespace} get services | awk -F ' ' '{print $1}'`,
       (error, stdout, stderr) => {
-        console.log(error, stdout, stderr);
+        // console.log(error, stdout, stderr);
         if (stdout) {
-          const pods = stdout
+          const services = stdout
             .split('\n')
             .slice(1)
             .filter(context => !!context);
 
-          const selectedPods = this.getSelectedPods(context, namespace, pods);
+          const selectedServices = this.getSelectedServices(context, namespace, services);
 
           this.setState({
-            pods,
-            selectedPods,
-            isPodsLoaded: true,
+            services,
+            selectedServices,
+            isServicesLoaded: true,
           });
         }
       },
     );
   };
 
-  onSelectPod = (pods: string[]) => {
-    const { selectedContext, selectedNamespace, selectedPods } = this.state;
+  onSelectService = (services: string[]) => {
+    const { selectedContext, selectedNamespace, selectedServices } = this.state;
 
     if (!selectedContext) {
       throw new Error('Should not happen.');
@@ -194,33 +195,33 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       throw new Error('Should not happen.');
     }
 
-    const added = _.difference(pods, selectedPods);
-    const removed = _.difference(selectedPods, pods);
+    const added = _.difference(services, selectedServices);
+    const removed = _.difference(selectedServices, services);
 
-    const { addProfilePod, removeProfilePod } = this.props;
+    const { addProfileService, removeProfileService } = this.props;
 
-    added.forEach(pod =>
-      addProfilePod({
-        name: pod,
+    added.forEach(service =>
+      addProfileService({
+        name: service,
         context: selectedContext,
         namespace: selectedNamespace,
       }),
     );
 
-    removed.forEach(pod =>
-      removeProfilePod({
-        name: pod,
+    removed.forEach(service =>
+      removeProfileService({
+        name: service,
         context: selectedContext,
         namespace: selectedNamespace,
       }),
     );
 
     this.setState({
-      selectedPods: pods,
+      selectedServices: services,
     });
   };
 
-  onDeselectPod = (pod: string) => {
+  onDeselectService = (service: string) => {
     const { selectedContext, selectedNamespace } = this.state;
 
     if (!selectedContext) {
@@ -231,8 +232,8 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       throw new Error('Should not happen.');
     }
 
-    this.props.removeProfilePod({
-      name: pod,
+    this.props.removeProfileService({
+      name: service,
       context: selectedContext,
       namespace: selectedNamespace,
     });
@@ -242,13 +243,13 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
     this.setState({
       selectedContext: undefined,
       selectedNamespace: undefined,
-      selectedPods: [],
+      selectedServices: [],
       contexts: [],
       namespaces: [],
-      pods: [],
+      services: [],
       isContextsLoaded: false,
       isNamespacesLoaded: false,
-      isPodsLoaded: false,
+      isServicesLoaded: false,
     });
 
     this.loadContexts();
@@ -263,17 +264,17 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
 
     this.setState({
       selectedNamespace: undefined,
-      selectedPods: [],
+      selectedServices: [],
       namespaces: [],
-      pods: [],
+      services: [],
       isNamespacesLoaded: false,
-      isPodsLoaded: false,
+      isServicesLoaded: false,
     });
 
     this.loadNamespaces(selectedContext);
   };
 
-  reloadPods = () => {
+  reloadServices = () => {
     const { selectedContext, selectedNamespace } = this.state;
 
     if (!selectedContext) {
@@ -285,12 +286,12 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
     }
 
     this.setState({
-      selectedPods: [],
-      pods: [],
-      isPodsLoaded: false,
+      selectedServices: [],
+      services: [],
+      isServicesLoaded: false,
     });
 
-    this.loadPods(selectedContext, selectedNamespace);
+    this.loadServices(selectedContext, selectedNamespace);
   };
 
   render() {
@@ -301,15 +302,16 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       namespaces,
       isNamespacesLoaded,
       selectedNamespace,
-      isPodsLoaded,
-      pods,
-      selectedPods,
+      isServicesLoaded,
+      services,
+      selectedServices,
     } = this.state;
 
     return (
       <div
         style={{
-          width: 200,
+          flexShrink: 0,
+          width: 240,
           backgroundColor: '#001529',
           padding: 16,
           overflow: 'scroll',
@@ -326,7 +328,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
         >
           <Select
             showSearch={true}
-            style={{ width: 168 }}
+            style={{ width: '100%' }}
             placeholder="Select context"
             optionFilterProp="children"
             value={selectedContext}
@@ -353,7 +355,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
         >
           <Select
             showSearch={true}
-            style={{ width: 168 }}
+            style={{ width: '100%' }}
             placeholder="Select namespace"
             optionFilterProp="children"
             value={selectedNamespace}
@@ -372,25 +374,25 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
         <Form.Item
           label={
             <Tooltip title="Click to reload">
-              <span onClick={this.reloadPods} style={{ cursor: 'pointer' }}>
-                <Typography.Text style={{ color: 'white' }}>Pods</Typography.Text>
+              <span onClick={this.reloadServices} style={{ cursor: 'pointer' }}>
+                <Typography.Text style={{ color: 'white' }}>Services</Typography.Text>
               </span>
             </Tooltip>
           }
         >
           <Select
             mode="multiple"
-            style={{ width: 168 }}
-            placeholder="Select pods"
-            value={selectedPods}
-            onChange={this.onSelectPod}
-            onDeselect={this.onDeselectPod}
-            loading={!!(selectedNamespace && !isPodsLoaded)}
-            disabled={!isPodsLoaded}
+            style={{ width: '100%' }}
+            placeholder="Select services"
+            value={selectedServices}
+            onChange={this.onSelectService}
+            onDeselect={this.onDeselectService}
+            loading={!!(selectedNamespace && !isServicesLoaded)}
+            disabled={!isServicesLoaded}
           >
-            {pods.map(pod => (
-              <Select.Option key={pod} value={pod}>
-                {pod}
+            {services.map(service => (
+              <Select.Option key={service} value={service}>
+                {service}
               </Select.Option>
             ))}
           </Select>
@@ -419,11 +421,11 @@ export default connect(
     updateProfileNamespace: (namespace: string) => {
       dispatch(actions.updateProfileNamespace(namespace));
     },
-    addProfilePod: (pod: Pod) => {
-      dispatch(actions.addProfilePod(pod));
+    addProfileService: (service: Service) => {
+      dispatch(actions.addProfileService(service));
     },
-    removeProfilePod: (pod: Pod) => {
-      dispatch(actions.removeProfilePod(pod));
+    removeProfileService: (service: Service) => {
+      dispatch(actions.removeProfileService(service));
     },
   }),
 )(SideBar);

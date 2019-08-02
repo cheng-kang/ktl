@@ -1,9 +1,9 @@
 import { hot } from 'react-hot-loader/root';
 import * as React from 'react';
-import { Tabs, Input } from 'antd';
+import { Tabs } from 'antd';
 import Profile from './Profile';
 import { connect } from 'react-redux';
-import { State, Actions, Pod } from '../redux/*';
+import { State, Actions } from '../redux/redux';
 import { getProfileIds } from '../redux';
 import * as actions from '../redux/actions';
 import Tab from './Tab';

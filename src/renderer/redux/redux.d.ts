@@ -1,21 +1,5 @@
 import { Action } from 'redux';
-
-export interface Pod {
-  context: string;
-  namespace: string;
-  name: string;
-
-  localPort?: string;
-  remotePort?: string;
-}
-
-export interface Profile {
-  id: string;
-  name: string;
-  context: string;
-  namespace: string;
-  pods: Pod[];
-}
+import { Profile, Service } from '../types/*';
 
 export interface State {
   profiles: Profile[];
@@ -55,19 +39,19 @@ export interface UpdateProfileNamespaceAction extends Action {
   payload: string;
 }
 
-export interface AddProfilePodAction extends Action {
+export interface AddProfileServiceAction extends Action {
   type: 'Add_PROFILE_POD';
-  payload: Pod;
+  payload: Service;
 }
 
-export interface RemoveProfilePodAction extends Action {
+export interface RemoveProfileServiceAction extends Action {
   type: 'REMOVE_PROFILE_POD';
-  payload: Pod;
+  payload: Service;
 }
 
-export interface UpdateProfilePodAction extends Action {
+export interface UpdateProfileServiceAction extends Action {
   type: 'UPDATE_PROFILE_POD';
-  payload: Pod;
+  payload: Service;
 }
 
 export type Actions =
@@ -77,6 +61,6 @@ export type Actions =
   | UpdateProfileNameAction
   | UpdateProfileContextAction
   | UpdateProfileNamespaceAction
-  | AddProfilePodAction
-  | RemoveProfilePodAction
-  | UpdateProfilePodAction;
+  | AddProfileServiceAction
+  | RemoveProfileServiceAction
+  | UpdateProfileServiceAction;

@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { State } from './*';
+import { State } from './redux';
 
 export function getCurrentProfile(state: State) {
   return (
@@ -8,7 +8,7 @@ export function getCurrentProfile(state: State) {
       name: 'default',
       context: '',
       namespace: '',
-      pods: [],
+      services: [],
     }
   );
 }
@@ -17,8 +17,8 @@ export function getCurrentProfileId(state: State) {
   return state.currentProfileId || 'default';
 }
 
-export function getCurrentProfilePods(state: State) {
-  return _.get(getCurrentProfile(state), 'pods', []);
+export function getCurrentProfileServices(state: State) {
+  return _.get(getCurrentProfile(state), 'services', []);
 }
 
 export function getProfileIds(state: State) {

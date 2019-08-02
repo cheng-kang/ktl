@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 import { reducer } from './reducer';
 import { persist } from '../persist';
-import { State, Actions } from './*';
+import { State, Actions } from './redux';
 
 const persistor = (store: Store<State | undefined>) => (next: any) => (action: Actions) => {
   const result = next(action);
