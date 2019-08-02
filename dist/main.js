@@ -8961,8 +8961,8 @@ const createWindow = async () => {
   }
 
   win = new electron__WEBPACK_IMPORTED_MODULE_0__["BrowserWindow"]({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 768,
     title: 'Ktl'
   });
 

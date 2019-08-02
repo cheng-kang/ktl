@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card, Icon, Modal, Tooltip, Tag, Divider, Badge } from 'antd';
+import { Card, Icon, Modal, Tooltip, Tag, Divider, Badge, Breadcrumb, message } from 'antd';
 import * as _ from 'lodash';
 import * as dayjs from 'dayjs';
 import { connect } from 'react-redux';
@@ -16,6 +16,24 @@ export interface ServiceItemProps {
   service: Service;
 
   removeProfileService: (service: Service) => void;
+}
+
+function parseAge(startTime: string) {
+  const seconds = dayjs().diff(dayjs(startTime), 'second');
+
+  if (seconds > 86400) {
+    return `${Math.floor(seconds / 86400)}d`;
+  }
+
+  if (seconds > 3600) {
+    return `${Math.floor(seconds / 3600)}h`;
+  }
+
+  if (seconds > 60) {
+    return `${Math.floor(seconds / 60)}m`;
+  }
+
+  return `${seconds}s`;
 }
 
 class ServiceItem extends React.Component<ServiceItemProps> {
@@ -39,6 +57,12 @@ class ServiceItem extends React.Component<ServiceItemProps> {
           this.setState({
             description: json,
           });
+
+          // TODO: show error msg and retry btn
+        } else if (stderr) {
+          message.error(`Failed to load service description. (${JSON.parse(stderr)})`);
+        } else if (error) {
+          message.error(`Failed to load service description. (${error.message})`);
         }
 
         this.setState({
@@ -69,7 +93,7 @@ class ServiceItem extends React.Component<ServiceItemProps> {
     const { name, context, namespace } = service;
     const { description, loading, isPodsModalOpen } = this.state;
 
-    const age = description ? dayjs().diff(dayjs((description as any).metadata.creationTimestamp), 'day') : '?';
+    const age = description ? parseAge((description as any).metadata.creationTimestamp) : '?';
     const selector = description ? qs.stringify((description as any).spec.selector) : '';
 
     return (
@@ -79,26 +103,29 @@ class ServiceItem extends React.Component<ServiceItemProps> {
           loading
             ? undefined
             : [
-              <Icon type="appstore" key="appstore" onClick={this.openPodsModal} />,
-              <Icon type="delete" key="delete" style={{ color: '#ff4d4f' }} onClick={this.removeProfileService} />,
+              <Tooltip title="Check pods" key="appstore">
+                  {' '}
+                  <Icon type="appstore" onClick={this.openPodsModal} />
+                </Tooltip>,
+              <Tooltip title="Remove service from profile" key="delete">
+                  {' '}
+                  <Icon type="delete" style={{ color: '#ff4d4f' }} onClick={this.removeProfileService} />
+                </Tooltip>,
             ]
         }
         loading={loading}
       >
-        <Card.Meta
-          title={<Tooltip title={name}>{name}</Tooltip>}
-          description={
-            <React.Fragment>
-              <div style={{ marginBottom: 8 }}>
-                <Tag>{context}</Tag>
-                <Tag>{namespace}</Tag>
-              </div>
-              <div>
-                <Badge status="success" text={`${age}d`} />
-              </div>
-            </React.Fragment>
-          }
-        />
+        <Breadcrumb style={{ marginBottom: 16 }}>
+          <Breadcrumb.Item>{context}</Breadcrumb.Item>
+          <Breadcrumb.Item>{namespace}</Breadcrumb.Item>
+          <Breadcrumb.Item>service</Breadcrumb.Item>
+        </Breadcrumb>
+        <Tooltip title={name}>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span className="ant-card-meta-title">{name}</span>
+            <Badge status="success" text={age} style={{ width: 60, flexShrink: 0, textAlign: 'right' }} />
+          </div>
+        </Tooltip>
         {!loading && (
           <React.Fragment>
             <Divider orientation="left" />

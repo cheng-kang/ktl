@@ -26,7 +26,7 @@ function ServiceBoard({ services }: ServiceTableProps) {
         xl: 2,
         xxl: 3,
       }}
-      style={{ padding: 16, flex: 1, overflow: 'scroll' }}
+      style={{ flex: 1, overflow: 'scroll', marginLeft: 16 }}
       dataSource={services}
       renderItem={item => (
         <List.Item>

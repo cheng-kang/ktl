@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Select, Form, Typography, Tooltip } from 'antd';
+import { Select, Form, Typography, Tooltip, message } from 'antd';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -103,6 +103,10 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
         if (selectedContext) {
           this.loadNamespaces(selectedContext);
         }
+      } else if (stderr) {
+        message.error(`Failed to load contexts. (${JSON.parse(stderr)})`);
+      } else if (error) {
+        message.error(`Failed to load contexts. (${error.message})`);
       }
     });
   };
@@ -140,6 +144,10 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
           if (selectedNamespace) {
             this.loadServices(context, selectedNamespace);
           }
+        } else if (stderr) {
+          message.error(`Failed to load namespaces. (${JSON.parse(stderr)})`);
+        } else if (error) {
+          message.error(`Failed to load namespaces. (${error.message})`);
         }
       },
     );
@@ -166,6 +174,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       `kubectl --context=${this.state.selectedContext} -n${namespace} get services | awk -F ' ' '{print $1}'`,
       (error, stdout, stderr) => {
         // console.log(error, stdout, stderr);
+
         if (stdout) {
           const services = stdout
             .split('\n')
@@ -179,6 +188,10 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
             selectedServices,
             isServicesLoaded: true,
           });
+        } else if (stderr) {
+          message.error(`Failed to load services. (${JSON.parse(stderr)})`);
+        } else if (error) {
+          message.error(`Failed to load services. (${error.message})`);
         }
       },
     );
@@ -315,6 +328,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
           backgroundColor: '#001529',
           padding: 16,
           overflow: 'scroll',
+          borderRadius: 4,
         }}
       >
         <Form.Item

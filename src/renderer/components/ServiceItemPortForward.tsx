@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import * as _ from 'lodash';
 import { Icon, Input, Select, Button, Tooltip, message } from 'antd';
 import { Actions } from '../redux/redux';
 import { usePortForward, PORT_FORWARD_STATE } from '../hooks/usePortForward';
@@ -140,7 +141,7 @@ function ServiceItemPortForward({ service, description, updateProfileService }: 
         }}
         onClick={toggleLogs}
       >
-        <Tooltip title="Click to view logs">
+        <Tooltip title={showLogs ? 'Click to hide logs' : 'Click to view logs'}>
           <span>port-forward</span>
         </Tooltip>
       </div>
@@ -197,9 +198,7 @@ function ServiceItemPortForward({ service, description, updateProfileService }: 
             Please click <Icon type="swap" /> to start...
           </div>
         )}
-        {logs.map((log, idx) => (
-          <div key={idx}>{log}</div>
-        ))}
+        {state !== PORT_FORWARD_STATE.IDLE && logs.map((log, idx) => <div key={idx}>{log}</div>)}
       </div>
     </React.Fragment>
   );

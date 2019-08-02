@@ -38,20 +38,49 @@ class Application extends React.Component<ApplicationProps> {
 
     return (
       <React.Fragment>
-        <Tabs
-          onChange={this.onChangeTab}
-          activeKey={activeKey}
-          type="editable-card"
-          onEdit={this.onEditTab}
-          style={{ flex: 1 }}
-        >
-          {profileIds.map(id => (
-            <Tabs.TabPane tab={<Tab id={id} />} key={id} closable={profileIds.length > 1}>
-              <Profile id={id} />
-            </Tabs.TabPane>
-          ))}
-        </Tabs>
+        <div className="tabs-container">
+          <Tabs
+            onChange={this.onChangeTab}
+            activeKey={activeKey}
+            type="editable-card"
+            onEdit={this.onEditTab}
+            style={{ flex: 1 }}
+          >
+            {profileIds.map(id => (
+              <Tabs.TabPane tab={<Tab id={id} />} key={id} closable={profileIds.length > 1 && id === activeKey}>
+                <Profile id={id} />
+              </Tabs.TabPane>
+            ))}
+          </Tabs>
+        </div>
         <style>{`
+          .tabs-container {
+            display: flex;
+            flex: 1;
+          }
+
+          .tabs-container > .ant-tabs-card > .ant-tabs-content {
+            height: 120px;
+          }
+
+          .tabs-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
+            background: #fff;
+            padding: 0 !important;
+          }
+
+          .tabs-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
+            background-color: #fff;
+            border-width: 0;
+          }
+          
+          .tabs-container > .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab {
+            margin-right: 0;
+          }
+
+          .tabs-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+            background-color: rgb(240, 242, 245);
+          }
+
           .ant-tabs {
             display: flex;
             flex-direction: column;
