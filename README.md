@@ -4,6 +4,11 @@
 
 <p align="center">GUI for <code>kubectl</code></p>
 
+<p align="center">
+  <a href="https://www.npmjs.com/package/@chengkang/ktl"><img src="https://img.shields.io/npm/v/@chengkang/ktl.svg" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/@chengkang/ktl"><img src="https://img.shields.io/npm/l/@chengkang/ktl.svg" alt="License"></a>
+</p>
+
 > `ktl` is pronounced `kənˈtrōl`, the same as `control`.
 
 ### Screenshots
