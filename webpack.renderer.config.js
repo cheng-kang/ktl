@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -65,7 +66,10 @@ module.exports = merge.smart(baseConfig, {
             reportFiles: ['src/renderer/**/*']
         }),
         new webpack.NamedModulesPlugin(),
-        new HtmlWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            template: path.resolve(__dirname, 'src', 'index.html'),
+            filename: 'index.html'
+        }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
         })

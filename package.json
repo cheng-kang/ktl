@@ -1,7 +1,7 @@
 {
   "name": "ktl",
   "version": "0.2.0",
-  "description": "",
+  "description": "GUI for kubectl.",
   "author": {
     "name": "Kang Cheng",
     "email": "hi@chengkang.me"
@@ -57,12 +57,19 @@
     }
   },
   "build": {
-    "productName": "Ktl",
+    "productName": "ktl",
     "appId": "me.chengkang.ktl",
     "copyright": "Copyright © year ${author}",
     "mac": {
       "category": "public.app-category.utilities",
-      "icon": "dist/static/ktl.icns"
+      "icon": "static/ktl.icns"
+    },
+    "linux": {
+      "target": "deb"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "static/ktl.png"
     },
     "directories": {
       "output": "release"
@@ -71,14 +78,7 @@
       "dist/",
       "node_modules/",
       "package.json"
-    ],
-    "linux": {
-      "target": "deb"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "dist/static/ktl.ico"
-    }
+    ]
   },
   "repository": {
     "type": "git",
