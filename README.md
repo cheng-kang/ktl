@@ -2,7 +2,7 @@
 
 <h2 align="center">ktl</h2>
 
-<p align="center">GUI for <code>kubectl</code></p>
+<p align="center">GUI for <code>kubectl</code>.</p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@chengkang/ktl"><img src="https://img.shields.io/npm/v/@chengkang/ktl.svg" alt="Version"></a>
