@@ -1,1 +1,3 @@
-# kube
+# ktl
+
+GUI for `kubectl`.
