@@ -36,12 +36,9 @@ export interface ServiceItemPortForwardProps {
 }
 
 function ServiceItemPortForward({ service, description, updateProfileService }: ServiceItemPortForwardProps) {
-  console.log(service);
-
   const { name, context, namespace, localPort: initialLocalPort, remotePort: initialRemotePort } = service;
 
   const ports = (description ? description.spec.ports : []) as Port[];
-  console.log(initialRemotePort, ports[0].port, initialRemotePort || ports[0].port);
 
   const [localPort, setLocalPort] = React.useState(initialLocalPort);
   const [remotePort, setRemotePort] = React.useState(initialRemotePort || ports[0].port);

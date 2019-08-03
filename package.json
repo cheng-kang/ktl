@@ -1,5 +1,5 @@
 {
-  "name": "ktl",
+  "name": "@chengkang/ktl",
   "version": "0.2.0",
   "description": "GUI for kubectl.",
   "author": {
@@ -82,13 +82,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:Robinfr/electron-react-typescript.git"
+    "url": "git+ssh://git@github.com:cheng-kang/ktl.git"
   },
   "license": "SEE LICENSE",
   "bugs": {
-    "url": "https://github.com/Robinfr/electron-react-typescript/issues"
+    "url": "https://github.com/cheng-kang/ktl/issues"
   },
-  "homepage": "https://github.com/Robinfr/electron-react-typescript",
+  "homepage": "https://github.com/cheng-kang/ktl",
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",

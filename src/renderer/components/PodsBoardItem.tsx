@@ -47,7 +47,6 @@ export default class PodsBoardItem extends React.Component<PodsBoardItemProps> {
 
   render() {
     const { name, age, status } = this.props.description;
-    console.log(`${name} - ${status}`);
     return (
       <List.Item>
         <Row type="flex" justify="start" align="middle" style={{ flex: 1 }}>

@@ -32,7 +32,6 @@ class Application extends React.Component<ApplicationProps> {
 
   render() {
     const { profileIds, currentProfileId } = this.props;
-    console.log(currentProfileId, profileIds);
 
     const activeKey = profileIds.includes(currentProfileId) ? currentProfileId : profileIds[0];
 
