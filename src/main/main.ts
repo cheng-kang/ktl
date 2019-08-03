@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Tray, Menu } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import fixPath from 'fix-path';
@@ -41,12 +41,41 @@ const createWindow = async () => {
       win!.webContents.openDevTools();
     });
   }
-  // win!.webContents.openDevTools();
 
   win.on('closed', () => {
     win = null;
   });
+
+  createMenu(win);
 };
+
+function createMenu(win: BrowserWindow) {
+  const tray = new Tray(path.join(__dirname, 'static', 'ktl-tray.png'));
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Toggle DevTool',
+      accelerator: 'CmdOrCtrl+Alt+I',
+      click() {
+        win.webContents.toggleDevTools();
+      },
+    },
+    { type: 'separator' },
+    { label: 'Reload', accelerator: 'CmdOrCtrl+R', role: 'reload' },
+    { label: 'Force Reload', accelerator: 'CmdOrCtrl+Shift+R', role: 'forceReload' },
+    { type: 'separator' },
+    { label: 'Quit', role: 'quit' },
+  ]);
+  tray.setToolTip('ktl - GUI for kubectl');
+  tray.setContextMenu(contextMenu);
+
+  contextMenu.on('menu-will-show', () => {
+    tray.setImage(path.join(__dirname, 'static', 'ktl-tray-active.png'));
+  });
+
+  contextMenu.on('menu-will-close', () => {
+    tray.setImage(path.join(__dirname, 'static', 'ktl-tray.png'));
+  });
+}
 
 app.on('ready', createWindow);
 

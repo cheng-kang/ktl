@@ -8,7 +8,7 @@ import * as child_process from 'child_process';
 import { getProfile } from '../redux';
 import * as actions from '../redux/actions';
 import { State, Actions } from '../redux/redux';
-import { Profile, Service } from '../types/*';
+import { Profile, Service, Config } from '../types/*';
 
 function filterOption(input: string, option: React.ReactElement) {
   return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -24,6 +24,7 @@ export interface SideBarProps {
 }
 
 export interface SideBarState {
+  config?: Config;
   isContextsLoaded: boolean;
   contexts: string[];
   selectedContext?: string;
@@ -39,6 +40,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
   constructor(props: SideBarProps) {
     super(props);
     this.state = {
+      config: undefined,
       isContextsLoaded: false,
       contexts: [],
       selectedContext: undefined,
@@ -85,16 +87,19 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
   };
 
   loadContexts = () => {
-    child_process.exec("kubectl config get-contexts | awk -F ' ' '{print $2}'", (error, stdout, stderr) => {
+    const cp = child_process.exec('kubectl config view -o=json', (error, stdout, stderr) => {
       // console.log(error, stdout, stderr);
       if (stdout) {
-        const contexts = stdout
-          .split('\n')
-          .slice(1)
-          .filter(context => !!context);
+        const config = JSON.parse(stdout) as Config;
 
-        const selectedContext = this.props.profile ? this.props.profile.context : undefined;
+        console.log(config);
+
+        const selectedContext = (this.props.profile && this.props.profile.context) || config['current-context'];
+
+        const contexts = config.contexts.map(({ name }) => name);
+
         this.setState({
+          config,
           contexts,
           selectedContext,
           isContextsLoaded: true,
@@ -108,6 +113,8 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       } else if (error) {
         message.error(`Failed to load contexts. (${error.message})`);
       }
+
+      cp.kill();
     });
   };
 
@@ -124,17 +131,18 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
   };
 
   loadNamespaces = (context: string) => {
-    child_process.exec(
-      `kubectl --context=${context} get namespace | awk -F ' ' '{print $1}'`,
+    const cp = child_process.exec(
+      `kubectl --context=${context} get namespace -o jsonpath='{.items[:].metadata.name}'`,
       (error, stdout, stderr) => {
         // console.log(error, stdout, stderr);
         if (stdout) {
-          const namespaces = stdout
-            .split('\n')
-            .slice(1)
-            .filter(context => !!context);
+          const namespaces = stdout.split(' ');
 
-          const selectedNamespace = this.props.profile ? this.props.profile.namespace : undefined;
+          const selectedContext = this.state.config!.contexts.find(({ name }) => name === context)!;
+
+          const selectedNamespace =
+            (this.props.profile && this.props.profile.namespace) || selectedContext.context.namespace;
+
           this.setState({
             namespaces,
             selectedNamespace,
@@ -149,6 +157,8 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
         } else if (error) {
           message.error(`Failed to load namespaces. (${error.message})`);
         }
+
+        cp.kill();
       },
     );
   };
@@ -170,16 +180,13 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
   };
 
   loadServices = (context: string, namespace: string) => {
-    child_process.exec(
-      `kubectl --context=${this.state.selectedContext} -n${namespace} get services | awk -F ' ' '{print $1}'`,
+    const cp = child_process.exec(
+      `kubectl --context=${context} -n${namespace} get services -o jsonpath='{.items[:].metadata.name}'`,
       (error, stdout, stderr) => {
         // console.log(error, stdout, stderr);
 
         if (stdout) {
-          const services = stdout
-            .split('\n')
-            .slice(1)
-            .filter(context => !!context);
+          const services = stdout.split(' ');
 
           const selectedServices = this.getSelectedServices(context, namespace, services);
 
@@ -193,6 +200,8 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
         } else if (error) {
           message.error(`Failed to load services. (${error.message})`);
         }
+
+        cp.kill();
       },
     );
   };

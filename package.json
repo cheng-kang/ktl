@@ -1,6 +1,6 @@
 {
   "name": "@chengkang/ktl",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "GUI for kubectl.",
   "author": {
     "name": "Kang Cheng",
@@ -109,6 +109,7 @@
     "@types/webdriverio": "^4.8.7",
     "@types/webpack-env": "^1.13.3",
     "babel-loader": "^8.0.6",
+    "copy-webpack-plugin": "^5.0.4",
     "cross-env": "^5.1.3",
     "css-loader": "^2.1.1",
     "electron": "^3.1.9",
