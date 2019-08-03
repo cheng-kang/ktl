@@ -11,9 +11,27 @@
 
 > `ktl` is pronounced `kənˈtrōl`, the same as `control`.
 
-### Screenshots
-
 <p align="center">
-  <img width="240" src="https://raw.githubusercontent.com/cheng-kang/ktl/master/docs/img/services.png" alt="services"/>
+  <img width="240" src="https://raw.githubusercontent.com/cheng-kang/ktl/master/docs/img/profile.png" alt="profile"/>
   <img width="240" src="https://raw.githubusercontent.com/cheng-kang/ktl/master/docs/img/pods.png" alt="pods"/>
 </p>
+
+### Features
+
+- port forward services
+- watch pods
+- delete pod
+
+### Usage
+
+- Use the `+` button to create a new tab. 
+
+- Each tab is a `Profile` with a side panel for service selection and a list of selected services.
+
+- You can select multiple services from different contexts and namespaces.
+
+- In the side panel, click labels to reload content, e.g. click `Contexts:` to reload contexts.
+
+- Click tab title to edit.
+
+- Everything is persisted.
