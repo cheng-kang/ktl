@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card, Icon, Modal, Tooltip, Tag, Divider, Badge, Breadcrumb, message } from 'antd';
+import { Card, Icon, Modal, Tooltip, Row, Col, Button, Divider, Badge, Breadcrumb, message } from 'antd';
 import * as _ from 'lodash';
 import * as dayjs from 'dayjs';
 import { connect } from 'react-redux';
@@ -39,6 +39,8 @@ function parseAge(startTime: string) {
 class ServiceItem extends React.Component<ServiceItemProps> {
   state = {
     loading: true,
+    watching: false,
+    error: undefined,
     description: undefined,
     isPodsModalOpen: false,
   };
@@ -56,13 +58,23 @@ class ServiceItem extends React.Component<ServiceItemProps> {
           const json = JSON.parse(stdout);
           this.setState({
             description: json,
+            error: undefined,
           });
 
           // TODO: show error msg and retry btn
         } else if (stderr) {
-          message.error(`Failed to load service description. (${JSON.parse(stderr)})`);
+          const error = JSON.parse(stderr);
+          message.error(`Failed to load service description. (${error})`);
+          this.setState({
+            error,
+            watching: false,
+          });
         } else if (error) {
           message.error(`Failed to load service description. (${error.message})`);
+          this.setState({
+            error: error.message,
+            watching: false,
+          });
         }
 
         this.setState({
@@ -88,10 +100,42 @@ class ServiceItem extends React.Component<ServiceItemProps> {
     this.props.removeProfileService(this.props.service);
   };
 
+  timer: any = undefined;
+
+  toggleWatch = () => {
+    if (!this.state.watching) {
+      this.timer = setInterval(() => {
+        const { service } = this.props;
+        this.loadServiceDescription(service);
+      }, 1000);
+    } else {
+      if (this.timer) {
+        clearInterval(this.timer);
+      }
+    }
+
+    this.setState({
+      watching: !this.state.watching,
+    });
+  };
+
+  reset = () => {
+    this.setState({
+      loading: true,
+      watching: false,
+      error: undefined,
+    });
+  };
+
+  reload = () => {
+    this.reset();
+    this.loadServiceDescription(this.props.service);
+  };
+
   render() {
     const { service } = this.props;
     const { name, context, namespace } = service;
-    const { description, loading, isPodsModalOpen } = this.state;
+    const { description, loading, isPodsModalOpen, error, watching } = this.state;
 
     const age = description ? parseAge((description as any).metadata.creationTimestamp) : '?';
     const selector = description ? qs.stringify((description as any).spec.selector) : '';
@@ -115,18 +159,36 @@ class ServiceItem extends React.Component<ServiceItemProps> {
         }
         loading={loading}
       >
-        <Breadcrumb style={{ marginBottom: 16 }}>
-          <Breadcrumb.Item>{context}</Breadcrumb.Item>
-          <Breadcrumb.Item>{namespace}</Breadcrumb.Item>
-          <Breadcrumb.Item>service</Breadcrumb.Item>
-        </Breadcrumb>
+        <Row type="flex" justify="start" align="middle" style={{ marginBottom: 16 }}>
+          <Breadcrumb style={{ flex: 1 }}>
+            <Breadcrumb.Item>{context}</Breadcrumb.Item>
+            <Breadcrumb.Item>{namespace}</Breadcrumb.Item>
+            <Breadcrumb.Item>service</Breadcrumb.Item>
+          </Breadcrumb>
+          <Button
+            type="link"
+            onClick={this.reload}
+            style={{ flexShrink: 0, marginLeft: 6, padding: 0, marginTop: -1 }}
+            disabled={!!error}
+          >
+            <Icon type="reload" style={{ fontSize: 12 }} />
+          </Button>
+          <Button
+            type="link"
+            onClick={this.toggleWatch}
+            style={{ flexShrink: 0, marginLeft: 6, padding: 0 }}
+            disabled={!!error}
+          >
+            <Icon type="eye" style={watching ? { color: '#ff4d4f' } : undefined} />
+          </Button>
+        </Row>
         <Tooltip title={name}>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <span className="ant-card-meta-title">{name}</span>
             <Badge status="success" text={age} style={{ width: 60, flexShrink: 0, textAlign: 'right' }} />
           </div>
         </Tooltip>
-        {!loading && (
+        {!loading && !error && (
           <React.Fragment>
             <Divider orientation="left" />
             <ServiceItemPortForward service={service} description={description} />
@@ -137,11 +199,28 @@ class ServiceItem extends React.Component<ServiceItemProps> {
                 visible={isPodsModalOpen}
                 onCancel={this.closePodsModal}
                 width="80%"
-                // bodyStyle={{ padding: 0 }}
               >
                 <PodsBoard service={service} selector={selector} />
               </Modal>
             )}
+          </React.Fragment>
+        )}
+        {error && (
+          <React.Fragment>
+            <Divider orientation="left" />
+            <Row>
+              <Col span={24}>
+                <Row type="flex" justify="center" align="middle" style={{ marginBottom: 16, color: '#ff4d4f' }}>
+                  <Icon type="close-circle" style={{ color: '#ff4d4f', marginRight: 4 }} />
+                  {error}
+                </Row>
+                <Row type="flex" justify="center" align="middle">
+                  <Button type="danger" onClick={this.reload}>
+                    Reload
+                  </Button>
+                </Row>
+              </Col>
+            </Row>
           </React.Fragment>
         )}
       </Card>
