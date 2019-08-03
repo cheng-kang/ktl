@@ -76,7 +76,7 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
   };
 
   getSelectedServices = (context: string, namespace: string, services: string[]) => {
-    return this.props.profile
+    return this.props.profile && this.props.profile.services
       ? _.intersection(
           this.props.profile.services
             .filter(service => service.context === context && service.namespace === namespace)

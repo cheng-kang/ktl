@@ -1,6 +1,6 @@
 {
-  "name": "@chengkang/ktl",
-  "version": "0.3.0",
+  "name": "ktl",
+  "version": "0.3.1",
   "description": "GUI for kubectl.",
   "author": {
     "name": "Kang Cheng",
