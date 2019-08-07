@@ -40,8 +40,8 @@ function ServiceItemPortForward({ service, description, updateProfileService }: 
 
   const ports = (description ? description.spec.ports : []) as Port[];
 
-  const [localPort, setLocalPort] = React.useState(initialLocalPort);
   const [remotePort, setRemotePort] = React.useState(initialRemotePort || ports[0].port);
+  const [localPort, setLocalPort] = React.useState(initialLocalPort || remotePort);
 
   const [showLogs, setShowLogs] = React.useState(false);
 
@@ -151,12 +151,7 @@ function ServiceItemPortForward({ service, description, updateProfileService }: 
           margin: '0 8px',
         }}
       >
-        <Input
-          style={{ width: 90 }}
-          onChange={onChangeLocalPort}
-          placeholder={remotePort.toString()}
-          defaultValue={initialLocalPort ? initialLocalPort.toString() : undefined}
-        />
+        <Input style={{ width: 90 }} onChange={onChangeLocalPort} defaultValue={localPort.toString()} />
         <Tooltip title={stateTooltipMap[state]}>
           <Button
             type="link"
