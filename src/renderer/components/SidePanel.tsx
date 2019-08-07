@@ -322,14 +322,15 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
       message.error('Please select a context and a namespace.');
     }
     window.open(
-      `${window.location.origin}?win=pods&context=${selectedContext}&namespace=${selectedNamespace}`,
+      `${window.location.origin}${
+        window.location.pathname
+      }?win=pods&context=${selectedContext}&namespace=${selectedNamespace}`,
       `${selectedContext}-${selectedNamespace}-pods`,
       'width=512, height=768',
     );
   };
 
   render() {
-    console.log(global);
     const {
       contexts,
       isContextsLoaded,
