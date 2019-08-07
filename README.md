@@ -32,6 +32,8 @@
 
 - In the side panel, click labels to reload content, e.g. click `Contexts:` to reload contexts.
 
+- In the side panel, when both context and namespace are selected, a `View pods` button will be shown. Click to view and watch all pods in the context and namespace.
+
 - Click tab title to edit.
 
 - Everything is persisted.

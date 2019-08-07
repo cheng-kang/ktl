@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Select, Form, Typography, Tooltip, message } from 'antd';
+import { Select, Form, Typography, Tooltip, message, Button } from 'antd';
 import * as _ from 'lodash';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -316,7 +316,20 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
     this.loadServices(selectedContext, selectedNamespace);
   };
 
+  viewPods = () => {
+    const { selectedContext, selectedNamespace } = this.state;
+    if (!selectedContext || !selectedNamespace) {
+      message.error('Please select a context and a namespace.');
+    }
+    window.open(
+      `${window.location.origin}?win=pods&context=${selectedContext}&namespace=${selectedNamespace}`,
+      `${selectedContext}-${selectedNamespace}-pods`,
+      'width=512, height=768',
+    );
+  };
+
   render() {
+    console.log(global);
     const {
       contexts,
       isContextsLoaded,
@@ -394,6 +407,20 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
             ))}
           </Select>
         </Form.Item>
+        {selectedNamespace && (
+          <div style={{ marginTop: -24, textAlign: 'right' }}>
+            <Button
+              type="link"
+              ghost={true}
+              size="small"
+              style={{ opacity: 0.8, padding: 0 }}
+              onClick={this.viewPods}
+              className="view-pods-button"
+            >
+              View pods
+            </Button>
+          </div>
+        )}
         <Form.Item
           label={
             <Tooltip title="Click to reload">
@@ -423,6 +450,14 @@ class SideBar extends React.Component<SideBarProps, SideBarState> {
         <style>{`
           .ant-form-item-label > label {
             color: white;
+          }
+          .view-pods-button > span {
+            text-decoration: underline;
+          }
+          .view-pods-button.ant-btn-background-ghost.ant-btn-link:hover, 
+          .view-pods-button.ant-btn-background-ghost.ant-btn-link:focus {
+            color: #fff;
+            opacity: 1 !important;
           }
         `}</style>
       </div>

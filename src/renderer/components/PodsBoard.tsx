@@ -9,7 +9,7 @@ import PodsBoardItem from './PodsBoardItem';
 
 export interface PodsBoardProps {
   service: Service;
-  selector: string;
+  selector?: string;
 }
 
 // TODO: somehow import doesn't work
@@ -20,6 +20,8 @@ export enum PodLifecyclePhase {
   Failed = 'Failed',
   Unknown = 'Unknown',
 }
+
+export const SERVICE_NAME_ALL = '__ktl_service_name_all';
 
 function parseAge(startTime: string) {
   const seconds = dayjs().diff(dayjs(startTime), 'second');
@@ -39,24 +41,27 @@ function parseAge(startTime: string) {
   return `${seconds}s`;
 }
 
-function mapPods(description: PodsDescription | undefined) {
-  if (!description) {
+function mapPods(rawData: string[] | undefined) {
+  if (!rawData) {
     return [];
   }
 
-  return _.get(description, 'items').map<PodDescription>(item => {
-    return {
-      name: item.metadata.name,
-      age: parseAge(item.status.startTime),
-      status: item.status.phase,
-      startTime: dayjs(item.status.startTime).format('hh:mm, YYYY-MM-DD'),
-    };
-  });
+  const result = [];
+  for (let i = 0; i < rawData.length; i += 3) {
+    result.push({
+      name: rawData[i],
+      age: parseAge(rawData[i + 1]),
+      status: rawData[i + 2] as PodLifecyclePhase,
+      startTime: dayjs(rawData[i + 1]).format('hh:mm, YYYY-MM-DD'),
+    });
+  }
+
+  return result;
 }
 
 function PodsBoard({ service, selector }: PodsBoardProps) {
   const { context, namespace, name: serviceName } = service;
-  const [description, setDescription] = React.useState<PodsDescription | undefined>(undefined);
+  const [description, setDescription] = React.useState<string[] | undefined>(undefined);
   const pods = React.useMemo(() => mapPods(description), [description]);
 
   const [error, setError] = React.useState<child_process.ExecException | null>(null);
@@ -68,20 +73,23 @@ function PodsBoard({ service, selector }: PodsBoardProps) {
   const toogleWatch = React.useCallback(() => setWatching(prev => !prev), []);
 
   useInterval(restart, watching ? 1000 : undefined);
-
   React.useEffect(() => {
     const cp = child_process.exec(
-      `kubectl --context=${context} -n${namespace} get pods --selector=${selector} -o=json`,
+      // tslint:disable-next-line:max-line-length
+      `kubectl --context=${context} -n${namespace} get pods ${
+        selector ? `--selector=${selector}` : ''
+      } -o=jsonpath='{range .items[*]}{.metadata.name}{"\\n"}{.status.startTime}{"\\n"}{.status.phase}{"\\n"}{end}'`,
+      { maxBuffer: 1024 * 1000 },
       (error, stdout, stderr) => {
         // console.log(error, stdout, stderr);
         setUpdatedAt(new Date());
 
         if (stdout) {
-          setDescription(JSON.parse(stdout));
+          setDescription(stdout.split('\n').filter(i => !!i));
         }
 
         if (stderr) {
-          setError(new Error(JSON.parse(stderr)));
+          setError(new Error(stderr));
           setWatching(false);
         }
 
@@ -117,7 +125,7 @@ function PodsBoard({ service, selector }: PodsBoardProps) {
         <Breadcrumb>
           <Breadcrumb.Item>{context}</Breadcrumb.Item>
           <Breadcrumb.Item>{namespace}</Breadcrumb.Item>
-          <Breadcrumb.Item>{serviceName}</Breadcrumb.Item>
+          {serviceName !== SERVICE_NAME_ALL && <Breadcrumb.Item>{serviceName}</Breadcrumb.Item>}
           <Breadcrumb.Item>pods</Breadcrumb.Item>
         </Breadcrumb>
       </Row>
@@ -143,6 +151,7 @@ function PodsBoard({ service, selector }: PodsBoardProps) {
         loading={loading}
         bordered={true}
         dataSource={pods}
+        size="small"
         header={
           <Row>
             <Col span={10}>Pod</Col>
